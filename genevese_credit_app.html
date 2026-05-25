@@ -10,7 +10,7 @@
 <title>Genevese Credit</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#080c14;--bg2:#0d1420;--bg3:#111827;--card:#0f1825;--card2:#141e2e;--border:#1e2d42;--border2:#243347;--gold:#c9a84c;--gold2:#e8c96d;--gold3:#f5e0a0;--gold-dim:#c9a84c22;--text:#e8edf5;--text2:#8a9ab5;--text3:#5a6a85;--green:#2ecc71;--green-dim:#2ecc7122;--red:#e74c3c;--red-dim:#e74c3c22;--orange:#e67e22;--orange-dim:#e67e2222;}
+:root{--bg:#080c14;--bg2:#0d1420;--card:#0f1825;--card2:#141e2e;--border:#1e2d42;--border2:#243347;--gold:#c9a84c;--gold2:#e8c96d;--gold-dim:#c9a84c22;--text:#e8edf5;--text2:#8a9ab5;--text3:#5a6a85;--green:#2ecc71;--green-dim:#2ecc7122;--red:#e74c3c;--red-dim:#e74c3c22;--orange:#e67e22;--orange-dim:#e67e2222;--purple:#9b59b6;--purple-dim:#9b59b622;}
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
 body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;max-width:480px;margin:0 auto;overflow-x:hidden;}
 @keyframes spin{to{transform:rotate(360deg);}}
@@ -26,7 +26,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 .loader-bar{width:120px;height:2px;background:var(--border);border-radius:1px;overflow:hidden;}
 .loader-bar-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--gold2));animation:load-bar 1.5s ease forwards;}
 
-.screen{display:none;min-height:100vh;padding-bottom:80px;}
+.screen{display:none;min-height:100vh;padding-bottom:90px;}
 .screen.active{display:block;animation:screen-in 0.3s ease;}
 
 #login-screen{background:radial-gradient(ellipse at top,#0d1e3a 0%,var(--bg) 70%);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 24px;min-height:100vh;}
@@ -36,8 +36,8 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 .login-card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:28px 24px;width:100%;max-width:360px;position:relative;overflow:hidden;}
 .login-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);}
 .fl{font-size:10px;font-weight:600;color:var(--text3);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:8px;display:block;}
-.fi{width:100%;padding:13px 16px;background:var(--bg2);border:1px solid var(--border);border-radius:12px;color:var(--text);font-size:14px;font-family:'Inter',sans-serif;outline:none;transition:border 0.2s,box-shadow 0.2s;margin-bottom:14px;}
-.fi:focus{border-color:var(--gold);box-shadow:0 0 0 3px #c9a84c11;}
+.fi{width:100%;padding:13px 16px;background:var(--bg2);border:1px solid var(--border);border-radius:12px;color:var(--text);font-size:14px;font-family:'Inter',sans-serif;outline:none;transition:border 0.2s;margin-bottom:14px;}
+.fi:focus{border-color:var(--gold);}
 .fs{width:100%;padding:13px 16px;background:var(--bg2);border:1px solid var(--border);border-radius:12px;color:var(--text);font-size:14px;font-family:'Inter',sans-serif;outline:none;appearance:none;margin-bottom:14px;}
 .fs option{background:var(--bg2);}
 .btn-gold{width:100%;padding:15px;background:linear-gradient(135deg,#b8943e,#c9a84c,#dfc06a);border:none;border-radius:12px;color:#0d1420;font-size:14px;font-weight:700;font-family:'Inter',sans-serif;cursor:pointer;letter-spacing:1px;text-transform:uppercase;box-shadow:0 8px 24px #c9a84c33;transition:all 0.2s;}
@@ -54,54 +54,55 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 .topbar-date{color:var(--text3);font-size:11px;margin-top:4px;}
 .topbar-badge{background:linear-gradient(135deg,#1a2a4a,#1e3355);color:var(--gold2);font-size:10px;font-weight:700;padding:6px 12px;border-radius:20px;border:1px solid var(--gold-dim);letter-spacing:1px;text-transform:uppercase;margin-top:4px;}
 
-.bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:var(--bg2);border-top:1px solid var(--border);display:flex;z-index:100;box-shadow:0 -8px 32px #00000066;}
-.nav-btn{flex:1;padding:10px 0 16px;background:none;border:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;}
-.nav-icon{font-size:20px;transition:transform 0.2s;}
+.bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:var(--bg2);border-top:1px solid var(--border);display:flex;z-index:100;box-shadow:0 -8px 32px #00000066;overflow-x:auto;}
+.nav-btn{flex:1;min-width:56px;padding:8px 0 14px;background:none;border:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;}
+.nav-icon{font-size:18px;transition:transform 0.2s;}
 .nav-btn.active .nav-icon{transform:scale(1.1);}
-.nav-label{font-size:10px;font-weight:600;color:var(--text3);letter-spacing:0.5px;text-transform:uppercase;transition:color 0.2s;}
+.nav-label{font-size:9px;font-weight:600;color:var(--text3);letter-spacing:0.3px;text-transform:uppercase;transition:color 0.2s;white-space:nowrap;}
 .nav-btn.active .nav-label{color:var(--gold2);}
-.nav-line{width:20px;height:2px;border-radius:1px;background:transparent;transition:background 0.2s;}
+.nav-line{width:16px;height:2px;border-radius:1px;background:transparent;transition:background 0.2s;}
 .nav-btn.active .nav-line{background:linear-gradient(90deg,var(--gold),var(--gold2));}
 
 .page{padding:0 16px;margin-top:-16px;}
-
 .stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;}
-.stat-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:18px 16px;position:relative;overflow:hidden;transition:transform 0.2s;animation:fadeIn 0.4s ease both;}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:16px;position:relative;overflow:hidden;animation:fadeIn 0.4s ease both;}
 .stat-card.gold{border-color:#c9a84c33;}
 .stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold-dim),transparent);}
 .stat-card.gold::before{background:linear-gradient(90deg,transparent,var(--gold),transparent);}
-.stat-icon{font-size:20px;margin-bottom:10px;display:block;}
-.stat-value{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;margin-bottom:4px;}
+.stat-icon{font-size:18px;margin-bottom:8px;display:block;}
+.stat-value{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;margin-bottom:3px;}
 .stat-label{font-size:10px;font-weight:600;color:var(--text3);letter-spacing:1px;text-transform:uppercase;}
-.stat-wide{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:18px 20px;margin-bottom:10px;display:flex;align-items:center;gap:16px;position:relative;overflow:hidden;animation:fadeIn 0.4s ease 0.1s both;}
+.stat-wide{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:16px 18px;margin-bottom:10px;display:flex;align-items:center;gap:14px;position:relative;overflow:hidden;animation:fadeIn 0.4s ease both;}
 .stat-wide::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);}
 
-.sec-title{font-size:10px;font-weight:700;color:var(--text3);letter-spacing:2px;text-transform:uppercase;margin:20px 0 12px;display:flex;align-items:center;gap:8px;}
+.sec-title{font-size:10px;font-weight:700;color:var(--text3);letter-spacing:2px;text-transform:uppercase;margin:16px 0 10px;display:flex;align-items:center;gap:8px;}
 .sec-title::after{content:'';flex:1;height:1px;background:var(--border);}
 
-.client-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:8px;position:relative;overflow:hidden;animation:fadeIn 0.3s ease both;}
+.client-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:8px;position:relative;overflow:hidden;animation:fadeIn 0.3s ease both;}
 .cc-accent{position:absolute;left:0;top:0;bottom:0;width:3px;border-radius:14px 0 0 14px;}
 .cc-body{padding-left:10px;}
-.cc-name{font-weight:600;font-size:15px;color:var(--text);margin-bottom:3px;}
+.cc-name{font-weight:600;font-size:15px;color:var(--text);margin-bottom:2px;}
 .cc-meta{font-size:12px;color:var(--text3);margin-bottom:8px;}
 .cc-badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;}
-.cc-actions{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap;}
-.cc-vals{display:flex;gap:0;margin-top:10px;padding-top:10px;border-top:1px solid var(--border);}
+.cc-actions{display:flex;gap:5px;margin-top:10px;flex-wrap:wrap;}
+.cc-vals{display:flex;margin-top:10px;padding-top:10px;border-top:1px solid var(--border);}
 .cv-item{flex:1;text-align:center;}
-.cv-label{font-size:9px;font-weight:700;color:var(--text3);letter-spacing:1px;text-transform:uppercase;margin-bottom:3px;}
-.cv-value{font-size:13px;font-weight:700;}
+.cv-label{font-size:9px;font-weight:700;color:var(--text3);letter-spacing:1px;text-transform:uppercase;margin-bottom:2px;}
+.cv-value{font-size:12px;font-weight:700;}
 .cv-div{width:1px;background:var(--border);}
-.btn-sm{padding:7px 12px;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;letter-spacing:0.5px;border:1px solid;transition:all 0.15s;}
+.btn-sm{padding:6px 10px;border-radius:8px;font-size:10px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;border:1px solid;transition:all 0.15s;white-space:nowrap;}
 .btn-pay{background:linear-gradient(135deg,#1a2a4a,#1e3355);color:var(--gold2);border-color:var(--gold-dim);}
 .btn-edit{background:transparent;color:var(--text2);border-color:var(--border);}
 .btn-del{background:transparent;color:var(--red);border-color:#e74c3c33;}
+.btn-prej{background:transparent;color:#e74c3c;border-color:#e74c3c44;background:#e74c3c11;}
+.btn-negoc{background:transparent;color:var(--purple);border-color:#9b59b644;background:#9b59b611;}
 
 .search-wrap{position:relative;margin-top:14px;}
 .search-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--text3);font-size:14px;pointer-events:none;}
 .search-input{width:100%;padding:12px 16px 12px 40px;background:#ffffff08;border:1px solid var(--border);border-radius:12px;color:var(--text);font-size:14px;font-family:'Inter',sans-serif;outline:none;}
 .search-input::placeholder{color:var(--text3);}
 
-.chip-row{display:flex;gap:8px;padding:16px 0 4px;overflow-x:auto;}
+.chip-row{display:flex;gap:8px;padding:14px 0 4px;overflow-x:auto;}
 .chip-row::-webkit-scrollbar{display:none;}
 .chip{padding:6px 14px;border-radius:20px;border:1px solid var(--border);font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap;font-family:'Inter',sans-serif;background:transparent;color:var(--text3);transition:all 0.2s;}
 .chip.active{background:var(--gold-dim);border-color:var(--gold);color:var(--gold2);}
@@ -113,54 +114,63 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 .modal-sheet{background:var(--bg2);border:1px solid var(--border);border-bottom:none;border-radius:24px 24px 0 0;width:100%;max-width:480px;padding:24px 20px 44px;max-height:92vh;overflow-y:auto;transform:translateY(100%);transition:transform 0.35s cubic-bezier(.4,0,.2,1);position:relative;}
 .modal-sheet::before{content:'';position:absolute;top:0;left:20%;right:20%;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);}
 .modal-overlay.open .modal-sheet{transform:translateY(0);}
-.modal-handle{width:36px;height:3px;background:var(--border2);border-radius:2px;margin:0 auto 24px;}
-.modal-close{float:right;background:var(--card);border:1px solid var(--border);border-radius:50%;width:32px;height:32px;cursor:pointer;font-size:14px;color:var(--text3);display:flex;align-items:center;justify-content:center;transition:all 0.2s;}
-.modal-title{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:var(--text);margin-bottom:24px;}
+.modal-handle{width:36px;height:3px;background:var(--border2);border-radius:2px;margin:0 auto 20px;}
+.modal-close{float:right;background:var(--card);border:1px solid var(--border);border-radius:50%;width:32px;height:32px;cursor:pointer;font-size:14px;color:var(--text3);display:flex;align-items:center;justify-content:center;}
+.modal-title{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:var(--text);margin-bottom:20px;}
 
-.pay-opts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;}
-.pay-opt{padding:20px 14px;border-radius:14px;border:1px solid var(--border);background:var(--card);cursor:pointer;text-align:center;transition:all 0.2s;}
+.pay-opts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;}
+.pay-opt{padding:16px 12px;border-radius:14px;border:1px solid var(--border);background:var(--card);cursor:pointer;text-align:center;transition:all 0.2s;}
 .pay-opt.sel-renov{border-color:var(--orange);background:var(--orange-dim);}
 .pay-opt.sel-quit{border-color:var(--green);background:var(--green-dim);}
-.po-icon{font-size:26px;margin-bottom:8px;display:block;}
-.po-label{font-size:10px;font-weight:700;color:var(--text3);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;}
-.po-value{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;}
+.pay-opt.sel-parcial{border-color:var(--gold);background:var(--gold-dim);}
+.po-icon{font-size:22px;margin-bottom:6px;display:block;}
+.po-label{font-size:10px;font-weight:700;color:var(--text3);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;}
+.po-value{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;}
 
-/* TOGGLE ROW */
-.toggle-row{display:flex;align-items:center;justify-content:space-between;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px 16px;margin-bottom:10px;transition:border-color 0.2s;}
-.toggle-row.active-row{border-color:var(--gold-dim);background:#c9a84c08;}
+.toggle-row{display:flex;align-items:center;justify-content:space-between;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:13px 16px;margin-bottom:10px;transition:border-color 0.2s;}
+.toggle-row.on-row{border-color:var(--gold-dim);background:#c9a84c08;}
 .toggle-sw{width:46px;height:26px;border-radius:13px;background:var(--border2);border:none;cursor:pointer;position:relative;transition:background 0.2s;flex-shrink:0;}
 .toggle-sw.on{background:var(--gold);}
 .toggle-knob{position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:left 0.2s;box-shadow:0 1px 4px #00000044;}
 .toggle-sw.on .toggle-knob{left:23px;}
 
-/* NEGOCIAÇÃO BOX */
-.negoc-box{background:linear-gradient(135deg,#1a2a4a,#141e2e);border:1px solid var(--gold-dim);border-radius:12px;padding:14px 16px;margin-bottom:10px;animation:fadeIn 0.2s ease;}
-.negoc-box::before{display:none;}
-
-.summary-box{background:linear-gradient(135deg,#1a2a4a,#141e2e);border:1px solid var(--gold-dim);border-radius:14px;padding:18px 20px;margin-bottom:16px;position:relative;overflow:hidden;}
+.summary-box{background:linear-gradient(135deg,#1a2a4a,#141e2e);border:1px solid var(--gold-dim);border-radius:14px;padding:16px 18px;margin-bottom:14px;position:relative;overflow:hidden;}
 .summary-box::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);}
-.summary-label{font-size:10px;font-weight:700;color:var(--text3);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:8px;}
-.summary-value{font-family:'Playfair Display',serif;font-size:32px;font-weight:700;color:var(--gold2);}
+.summary-label{font-size:10px;font-weight:700;color:var(--text3);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:6px;}
+.summary-value{font-family:'Playfair Display',serif;font-size:28px;font-weight:700;color:var(--gold2);}
 
-.juros-row{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px 18px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;animation:fadeIn 0.3s ease both;}
+.negoc-box{background:linear-gradient(135deg,#1a2a4a,#141e2e);border:1px solid var(--gold-dim);border-radius:12px;padding:14px 16px;margin-bottom:10px;}
+.info-box{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px 16px;margin-bottom:14px;}
+.atraso-ref{background:#e74c3c11;border:1px solid #e74c3c22;border-radius:10px;padding:10px 14px;margin-bottom:10px;}
+.atraso-card{background:var(--card);border:1px solid var(--border);border-left:3px solid var(--red);border-radius:14px;padding:14px 16px;margin-bottom:8px;animation:fadeIn 0.3s ease both;}
 
 #toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:var(--card2);border:1px solid var(--border);color:var(--text);padding:12px 20px;border-radius:12px;font-size:13px;font-weight:500;z-index:9000;opacity:0;transition:opacity 0.3s;max-width:90%;text-align:center;box-shadow:0 8px 32px #00000066;}
 #toast.show{opacity:1;}
 
-#notif-banner{background:linear-gradient(135deg,#1a2a4a,#141e2e);border:1px solid var(--gold-dim);border-radius:14px;padding:14px 16px;margin:16px 16px 0;display:none;animation:fadeIn 0.3s ease;}
-#notif-banner.show{display:block;}
-
-.success-banner{background:var(--green-dim);border:1px solid #2ecc7133;border-radius:12px;padding:12px 16px;color:var(--green);font-size:13px;font-weight:600;margin-bottom:14px;display:none;}
+.success-banner{background:var(--green-dim);border:1px solid #2ecc7133;border-radius:12px;padding:12px 16px;color:var(--green);font-size:13px;font-weight:600;margin-bottom:12px;display:none;}
 .success-banner.show{display:block;}
-.empty{text-align:center;padding:60px 20px;}
-.empty-icon{font-size:40px;margin-bottom:12px;opacity:0.4;}
+.empty{text-align:center;padding:50px 20px;}
+.empty-icon{font-size:36px;margin-bottom:10px;opacity:0.4;}
 .empty-text{font-size:14px;color:var(--text3);}
-.info-box{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px 16px;margin-bottom:16px;}
-.atraso-ref{background:#e74c3c11;border:1px solid #e74c3c22;border-radius:10px;padding:10px 14px;margin-bottom:10px;}
-.atraso-card{background:var(--card);border:1px solid var(--border);border-left:3px solid var(--red);border-radius:14px;padding:14px 16px;margin-bottom:8px;animation:fadeIn 0.3s ease both;}
+
+/* CARDS ESPECIAIS */
+.prej-card{background:var(--card);border:1px solid var(--border);border-left:3px solid var(--red);border-radius:14px;padding:14px 16px;margin-bottom:8px;animation:fadeIn 0.3s ease both;}
+.negoc-card{background:var(--card);border:1px solid var(--border);border-left:3px solid var(--purple);border-radius:14px;padding:14px 16px;margin-bottom:8px;animation:fadeIn 0.3s ease both;}
+.pend-card{background:var(--card);border:1px solid var(--border);border-left:3px solid var(--orange);border-radius:14px;padding:14px 16px;margin-bottom:8px;animation:fadeIn 0.3s ease both;}
+.custo-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:12px 16px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;animation:fadeIn 0.3s ease both;}
+
+/* PARCELAS */
+.parcelas-bar{height:6px;background:var(--border);border-radius:3px;overflow:hidden;margin-top:8px;}
+.parcelas-fill{height:100%;background:linear-gradient(90deg,var(--purple),#b07ecf);border-radius:3px;transition:width 0.3s;}
+
 input[type=date]::-webkit-calendar-picker-indicator{filter:invert(0.5);}
 input[type=date]{color-scheme:dark;}
 .divider-line{width:1px;background:var(--border);}
+
+/* CATEGORIA CHIPS */
+.cat-chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;}
+.cat-chip{padding:8px 14px;border-radius:20px;border:1px solid var(--border);font-size:12px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;background:transparent;color:var(--text3);transition:all 0.2s;}
+.cat-chip.active{background:var(--gold-dim);border-color:var(--gold);color:var(--gold2);}
 </style>
 </head>
 <body>
@@ -171,18 +181,7 @@ input[type=date]{color-scheme:dark;}
   <div class="loader-sub">Sistema de Gestão</div>
   <div class="loader-bar"><div class="loader-bar-fill"></div></div>
 </div>
-
 <div id="toast"></div>
-
-<div id="notif-banner">
-  <div style="display:flex;justify-content:space-between;align-items:center;">
-    <div>
-      <div style="font-size:13px;font-weight:700;color:var(--gold2);margin-bottom:3px;">🔔 Ativar Notificações</div>
-      <div style="font-size:11px;color:var(--text3);">Alertas de vencimentos às 12h e 19h</div>
-    </div>
-    <button onclick="ativarNotif()" style="background:linear-gradient(135deg,#b8943e,#c9a84c);color:#0d1420;border:none;border-radius:10px;padding:8px 14px;font-size:11px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;white-space:nowrap;">Ativar</button>
-  </div>
-</div>
 
 <!-- LOGIN -->
 <div id="login-screen" class="screen active" style="display:flex;">
@@ -205,6 +204,8 @@ input[type=date]{color-scheme:dark;}
 
 <!-- APP -->
 <div id="app" style="display:none;">
+
+  <!-- DASHBOARD -->
   <div id="screen-dashboard" class="screen active">
     <div class="topbar">
       <div class="topbar-row">
@@ -217,13 +218,11 @@ input[type=date]{color-scheme:dark;}
       </div>
     </div>
     <div class="page" id="dashboard-content" style="padding-top:20px;">
-      <div style="text-align:center;padding:40px;color:var(--text3);">
-        <div style="width:24px;height:24px;border:2px solid var(--border);border-top:2px solid var(--gold);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 12px;"></div>
-        Carregando...
-      </div>
+      <div style="text-align:center;padding:40px;color:var(--text3);"><div style="width:24px;height:24px;border:2px solid var(--border);border-top:2px solid var(--gold);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 12px;"></div>Carregando...</div>
     </div>
   </div>
 
+  <!-- CLIENTES -->
   <div id="screen-clientes" class="screen">
     <div class="topbar">
       <div class="topbar-row">
@@ -247,6 +246,44 @@ input[type=date]{color-scheme:dark;}
     </div>
   </div>
 
+  <!-- PENDÊNCIAS -->
+  <div id="screen-pendencias" class="screen">
+    <div class="topbar"><div class="topbar-title">Pendências</div></div>
+    <div class="page" style="padding-top:20px;">
+      <div id="lista-pend"></div>
+    </div>
+  </div>
+
+  <!-- NEGOCIAÇÕES -->
+  <div id="screen-negociacoes" class="screen">
+    <div class="topbar"><div class="topbar-title">Negociações</div></div>
+    <div class="page" style="padding-top:20px;">
+      <div id="lista-negoc"></div>
+    </div>
+  </div>
+
+  <!-- PREJUÍZOS -->
+  <div id="screen-prejuizos" class="screen">
+    <div class="topbar"><div class="topbar-title">Prejuízos</div></div>
+    <div class="page" style="padding-top:20px;">
+      <div id="lista-prej"></div>
+    </div>
+  </div>
+
+  <!-- CUSTOS -->
+  <div id="screen-custos" class="screen">
+    <div class="topbar">
+      <div class="topbar-row">
+        <div class="topbar-title">Custos</div>
+        <button class="add-btn" onclick="abrirModalCusto()">+ Lançar</button>
+      </div>
+    </div>
+    <div class="page" style="padding-top:20px;">
+      <div id="lista-custos"></div>
+    </div>
+  </div>
+
+  <!-- JUROS -->
   <div id="screen-juros" class="screen">
     <div class="topbar"><div class="topbar-title">Tabela de Juros</div></div>
     <div class="page" style="padding-top:20px;">
@@ -254,16 +291,20 @@ input[type=date]{color-scheme:dark;}
       <div style="background:var(--card);border:1px solid #c9a84c22;border-radius:14px;padding:16px 18px;margin-top:4px;">
         <div style="font-size:11px;font-weight:700;color:var(--gold2);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px;">Multas por Atraso</div>
         <div style="font-size:13px;color:var(--text2);line-height:1.9;">
-          • Após as <strong style="color:var(--text);">21h</strong> no vencimento: <strong style="color:var(--gold2);">R$ 30,00</strong><br>
-          • A partir do dia seguinte: <strong style="color:var(--red);">R$ 50,00 / dia</strong>
+          • Após as <strong style="color:var(--text);">21h</strong>: <strong style="color:var(--gold2);">R$ 30,00</strong><br>
+          • Por dia de atraso: <strong style="color:var(--red);">R$ 50,00 / dia</strong>
         </div>
       </div>
     </div>
   </div>
 
   <nav class="bottom-nav">
-    <button class="nav-btn active" onclick="showS('dashboard',this)"><span class="nav-icon">📊</span><span class="nav-label">Dashboard</span><span class="nav-line"></span></button>
+    <button class="nav-btn active" onclick="showS('dashboard',this)"><span class="nav-icon">📊</span><span class="nav-label">Início</span><span class="nav-line"></span></button>
     <button class="nav-btn" onclick="showS('clientes',this)"><span class="nav-icon">👥</span><span class="nav-label">Clientes</span><span class="nav-line"></span></button>
+    <button class="nav-btn" onclick="showS('pendencias',this)"><span class="nav-icon">⏳</span><span class="nav-label">Pendências</span><span class="nav-line"></span></button>
+    <button class="nav-btn" onclick="showS('negociacoes',this)"><span class="nav-icon">🤝</span><span class="nav-label">Negoc.</span><span class="nav-line"></span></button>
+    <button class="nav-btn" onclick="showS('prejuizos',this)"><span class="nav-icon">💸</span><span class="nav-label">Prejuízos</span><span class="nav-line"></span></button>
+    <button class="nav-btn" onclick="showS('custos',this)"><span class="nav-icon">💳</span><span class="nav-label">Custos</span><span class="nav-line"></span></button>
     <button class="nav-btn" onclick="showS('juros',this)"><span class="nav-icon">💲</span><span class="nav-label">Juros</span><span class="nav-line"></span></button>
     <button class="nav-btn" onclick="fazerLogout()"><span class="nav-icon">🚪</span><span class="nav-label">Sair</span><span class="nav-line"></span></button>
   </nav>
@@ -275,24 +316,24 @@ input[type=date]{color-scheme:dark;}
     <div class="modal-handle"></div>
     <button class="modal-close" onclick="closeM('modal-cad')">✕</button>
     <div class="modal-title" id="modal-cad-title">Novo Cliente</div>
-    <input type="hidden" id="edit-linha" value="">
+    <input type="hidden" id="edit-linha">
     <label class="fl">Nome Completo</label><input id="cad-nome" class="fi" placeholder="Nome do motorista">
     <label class="fl">Telefone</label><input id="cad-tel" class="fi" placeholder="(00) 00000-0000" type="tel">
     <label class="fl">Data do Empréstimo</label><input id="cad-data" class="fi" type="date">
     <label class="fl">Valor Emprestado</label>
     <select id="cad-valor" class="fs" onchange="updResumo()">
       <option value="">Selecione o valor...</option>
-      <option value="250">R$ 250,00 → quitar R$ 350,00</option>
-      <option value="350">R$ 350,00 → quitar R$ 490,00</option>
-      <option value="400">R$ 400,00 → quitar R$ 560,00</option>
-      <option value="500">R$ 500,00 → quitar R$ 690,00</option>
-      <option value="800">R$ 800,00 → quitar R$ 1.100,00</option>
-      <option value="1000">R$ 1.000,00 → quitar R$ 1.390,00</option>
+      <option value="250">R$ 250 → quitar R$ 350</option>
+      <option value="350">R$ 350 → quitar R$ 490</option>
+      <option value="400">R$ 400 → quitar R$ 560</option>
+      <option value="500">R$ 500 → quitar R$ 690</option>
+      <option value="800">R$ 800 → quitar R$ 1.100</option>
+      <option value="1000">R$ 1.000 → quitar R$ 1.390</option>
     </select>
-    <div id="cad-resumo" style="display:none;background:var(--card);border:1px solid var(--gold-dim);border-radius:12px;padding:14px 16px;margin-bottom:16px;">
-      <div style="font-size:10px;font-weight:700;color:var(--gold2);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px;">Resumo</div>
-      <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px;"><span style="color:var(--text3);">Renovar:</span><span id="res-renov" style="font-weight:700;color:var(--orange);"></span></div>
-      <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px;"><span style="color:var(--text3);">Quitar:</span><span id="res-quit" style="font-weight:700;color:var(--green);"></span></div>
+    <div id="cad-resumo" style="display:none;background:var(--card);border:1px solid var(--gold-dim);border-radius:12px;padding:14px 16px;margin-bottom:14px;">
+      <div style="font-size:10px;font-weight:700;color:var(--gold2);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;">Resumo</div>
+      <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;"><span style="color:var(--text3);">Renovar:</span><span id="res-renov" style="font-weight:700;color:var(--orange);"></span></div>
+      <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;"><span style="color:var(--text3);">Quitar:</span><span id="res-quit" style="font-weight:700;color:var(--green);"></span></div>
       <div style="display:flex;justify-content:space-between;font-size:13px;"><span style="color:var(--text3);">Vencimento:</span><span id="res-venc" style="font-weight:700;color:var(--text);"></span></div>
     </div>
     <button class="btn-gold" id="btn-salvar" onclick="salvarCliente()">Cadastrar Cliente</button>
@@ -305,81 +346,125 @@ input[type=date]{color-scheme:dark;}
     <div class="modal-handle"></div>
     <button class="modal-close" onclick="closeM('modal-pag')">✕</button>
     <div class="modal-title">Registrar Pagamento</div>
-
-    <!-- Info do cliente -->
-    <div id="pag-info" class="info-box" style="margin-bottom:16px;"></div>
-
-    <!-- Referência de atraso (só visual) -->
-    <div id="atraso-ref" style="display:none;" class="atraso-ref">
-      <div style="font-size:11px;font-weight:700;color:var(--red);letter-spacing:0.5px;margin-bottom:4px;">📋 REFERÊNCIA DE ATRASO</div>
-      <div id="atraso-ref-texto" style="font-size:13px;color:var(--text2);"></div>
-    </div>
-
-    <!-- Opções renovar/quitar -->
-    <div class="pay-opts">
+    <div id="pag-info" class="info-box" style="margin-bottom:14px;"></div>
+    <div id="atraso-ref" style="display:none;" class="atraso-ref"></div>
+    <div class="pay-opts" id="pay-opts-container">
       <div class="pay-opt" id="opt-renov" onclick="selT('Renovado')"><span class="po-icon">🔄</span><div class="po-label">Renovar</div><div class="po-value" id="pov-renov" style="color:var(--orange);"></div></div>
       <div class="pay-opt" id="opt-quit" onclick="selT('Quitado')"><span class="po-icon">✅</span><div class="po-label">Quitar</div><div class="po-value" id="pov-quit" style="color:var(--green);"></div></div>
+      <div class="pay-opt" id="opt-parcial" onclick="selT('Parcial')" style="grid-column:1/-1;"><span class="po-icon">💛</span><div class="po-label">Pagamento Parcial</div><div style="font-size:12px;color:var(--text3);">Cliente pagou menos — registra pendência</div></div>
     </div>
-
     <div id="pag-extras" style="display:none;">
-
-      <!-- Toggle multa 21h -->
+      <!-- Valor editável -->
+      <div id="valor-edit-box" style="margin-bottom:10px;">
+        <label class="fl">Valor a ser pago</label>
+        <input id="valor-pago-input" class="fi" type="number" placeholder="0,00" oninput="calcT()" style="margin-bottom:0;">
+        <div style="font-size:11px;color:var(--text3);margin-top:4px;" id="valor-ref-hint"></div>
+      </div>
+      <!-- Toggle 21h -->
       <div class="toggle-row" id="tog-row-21h">
-        <div>
-          <div style="font-size:13px;font-weight:600;color:var(--text);">Pagou após as 21h?</div>
-          <div style="font-size:11px;color:var(--text3);margin-top:2px;">Acrescenta R$ 30,00</div>
-        </div>
+        <div><div style="font-size:13px;font-weight:600;color:var(--text);">Pagou após as 21h?</div><div style="font-size:11px;color:var(--text3);margin-top:1px;">Acrescenta R$ 30,00</div></div>
         <button class="toggle-sw" id="tog-btn-21h" onclick="togM21()"><div class="toggle-knob"></div></button>
       </div>
-
       <!-- Toggle negociação -->
       <div class="toggle-row" id="tog-row-negoc">
-        <div>
-          <div style="font-size:13px;font-weight:600;color:var(--text);">Houve negociação?</div>
-          <div style="font-size:11px;color:var(--text3);margin-top:2px;">Cobranças extras ou valor acordado</div>
-        </div>
+        <div><div style="font-size:13px;font-weight:600;color:var(--text);">Houve negociação?</div><div style="font-size:11px;color:var(--text3);margin-top:1px;">Cobranças extras ou desconto</div></div>
         <button class="toggle-sw" id="tog-btn-negoc" onclick="togNegoc()"><div class="toggle-knob"></div></button>
       </div>
-
-      <!-- Campo negociação (aparece quando toggle ativo) -->
       <div id="negoc-campo" style="display:none;">
         <div class="negoc-box">
-          <div style="font-size:10px;font-weight:700;color:var(--gold2);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px;">💰 Valor da Negociação</div>
+          <div style="font-size:10px;font-weight:700;color:var(--gold2);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;">💰 Valor da Negociação</div>
           <input id="negoc-valor" class="fi" type="number" placeholder="Digite o valor negociado..." style="margin-bottom:0;" oninput="calcT()">
-          <div style="font-size:11px;color:var(--text3);margin-top:8px;">Este valor será somado ao total final</div>
+          <div style="font-size:11px;color:var(--text3);margin-top:6px;">Será somado ao total final</div>
         </div>
       </div>
-
-      <!-- Resumo total -->
       <div class="summary-box">
         <div class="summary-label">Total no Caixa</div>
         <div class="summary-value" id="pag-total"></div>
-        <div id="pag-breakdown" style="font-size:11px;color:var(--text3);margin-top:6px;"></div>
+        <div id="pag-breakdown" style="font-size:11px;color:var(--text3);margin-top:4px;"></div>
       </div>
-
       <button class="btn-gold" onclick="confirmarPag()">Confirmar Pagamento</button>
     </div>
   </div>
 </div>
 
-<!-- MODAL EXCLUSÃO -->
+<!-- MODAL PREJUÍZO -->
+<div id="modal-prej" class="modal-overlay" onclick="closeM('modal-prej')">
+  <div class="modal-sheet" onclick="event.stopPropagation()" style="padding-bottom:32px;">
+    <div class="modal-handle"></div>
+    <button class="modal-close" onclick="closeM('modal-prej')">✕</button>
+    <div class="modal-title" style="color:var(--red);">⚠️ Marcar Prejuízo</div>
+    <div id="prej-info" style="font-size:14px;color:var(--text2);margin-bottom:16px;line-height:1.6;"></div>
+    <label class="fl">Observação (opcional)</label>
+    <input id="prej-obs" class="fi" placeholder="Ex: Não foi encontrado, mudou de cidade...">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+      <button onclick="closeM('modal-prej')" style="padding:13px;background:var(--card);border:1px solid var(--border);border-radius:12px;color:var(--text2);font-size:13px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;">Cancelar</button>
+      <button onclick="confirmarPrejuizo()" style="padding:13px;background:var(--red-dim);border:1px solid var(--red);border-radius:12px;color:var(--red);font-size:13px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;">Confirmar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL NEGOCIAÇÃO -->
+<div id="modal-negoc" class="modal-overlay" onclick="closeM('modal-negoc')">
+  <div class="modal-sheet" onclick="event.stopPropagation()">
+    <div class="modal-handle"></div>
+    <button class="modal-close" onclick="closeM('modal-negoc')">✕</button>
+    <div class="modal-title" style="color:var(--purple);">🤝 Criar Negociação</div>
+    <div id="negoc-cli-info" class="info-box" style="margin-bottom:14px;"></div>
+    <label class="fl">Número de Parcelas</label>
+    <input id="negoc-parcelas" class="fi" type="number" placeholder="Ex: 10" oninput="calcNegoc()">
+    <label class="fl">Valor de Cada Parcela</label>
+    <input id="negoc-val-parcela" class="fi" type="number" placeholder="Ex: 150,00" oninput="calcNegoc()">
+    <div id="negoc-resumo" style="display:none;background:var(--card);border:1px solid var(--purple);border-radius:12px;padding:14px 16px;margin-bottom:14px;">
+      <div style="font-size:10px;font-weight:700;color:var(--purple);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;">RESUMO DA NEGOCIAÇÃO</div>
+      <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;"><span style="color:var(--text3);">Total negociado:</span><span id="negoc-total-res" style="font-weight:700;color:var(--purple);"></span></div>
+      <div style="display:flex;justify-content:space-between;font-size:13px;"><span style="color:var(--text3);">Parcelas:</span><span id="negoc-parc-res" style="font-weight:700;color:var(--text);"></span></div>
+    </div>
+    <button class="btn-gold" onclick="confirmarNegociacao()" style="background:linear-gradient(135deg,#7b2d8b,#9b59b6);">Criar Negociação</button>
+  </div>
+</div>
+
+<!-- MODAL CUSTO -->
+<div id="modal-custo" class="modal-overlay" onclick="closeM('modal-custo')">
+  <div class="modal-sheet" onclick="event.stopPropagation()">
+    <div class="modal-handle"></div>
+    <button class="modal-close" onclick="closeM('modal-custo')">✕</button>
+    <div class="modal-title">💳 Lançar Custo</div>
+    <label class="fl">Categoria</label>
+    <div class="cat-chips" id="cat-chips">
+      <button class="cat-chip active" onclick="selCat('Anúncios',this)">📢 Anúncios</button>
+      <button class="cat-chip" onclick="selCat('Saque',this)">💵 Saque</button>
+      <button class="cat-chip" onclick="selCat('Recargas Chip',this)">📱 Recargas Chip</button>
+      <button class="cat-chip" onclick="selCat('Outros',this)">📦 Outros</button>
+    </div>
+    <label class="fl">Descrição (opcional)</label>
+    <input id="custo-desc" class="fi" placeholder="Ex: Campanha Instagram...">
+    <label class="fl">Valor</label>
+    <input id="custo-valor" class="fi" type="number" placeholder="0,00">
+    <button class="btn-gold" onclick="confirmarCusto()">Lançar Custo</button>
+  </div>
+</div>
+
+<!-- MODAL EXCLUIR -->
 <div id="modal-del" class="modal-overlay" onclick="closeM('modal-del')">
   <div class="modal-sheet" onclick="event.stopPropagation()" style="padding-bottom:32px;">
     <div class="modal-handle"></div>
     <div class="modal-title" style="color:var(--red);">Excluir Cliente</div>
-    <div id="del-info" style="font-size:14px;color:var(--text2);margin-bottom:24px;line-height:1.6;"></div>
+    <div id="del-info" style="font-size:14px;color:var(--text2);margin-bottom:20px;line-height:1.6;"></div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-      <button onclick="closeM('modal-del')" style="padding:14px;background:var(--card);border:1px solid var(--border);border-radius:12px;color:var(--text2);font-size:14px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;">Cancelar</button>
-      <button onclick="confirmarExclusao()" style="padding:14px;background:var(--red-dim);border:1px solid var(--red);border-radius:12px;color:var(--red);font-size:14px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;">Excluir</button>
+      <button onclick="closeM('modal-del')" style="padding:13px;background:var(--card);border:1px solid var(--border);border-radius:12px;color:var(--text2);font-size:13px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;">Cancelar</button>
+      <button onclick="confirmarExclusao()" style="padding:13px;background:var(--red-dim);border:1px solid var(--red);border-radius:12px;color:var(--red);font-size:13px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;">Excluir</button>
     </div>
   </div>
 </div>
 
 <script>
-const API='https://script.google.com/macros/s/AKfycbwvBBcEnlM9ZWXRQG90iXyuHsH9nSASpQkhsuuwb3JFNGZFdpFoe8NGZfGoVU3bTFZS/exec';
+const API='https://script.google.com/macros/s/AKfycbzoKF0ZtBraBkhX0R4S0UdNTAybrhME6tVDpMGbCfovkHfbP_gud6RiSD2caNp5Y8Q/exec';
 const JUROS=[{emp:250,quit:350,renov:100},{emp:350,quit:490,renov:140},{emp:400,quit:560,renov:160},{emp:500,quit:690,renov:190},{emp:800,quit:1100,renov:300},{emp:1000,quit:1390,renov:390}];
 const USERS={admin:{senha:'1234',nome:'Admin',perfil:'admin'},cobranca:{senha:'5678',nome:'Cobrança',perfil:'cobranca'}};
-let user=null,clientes=[],filtro='todos',cliPag=null,tipoPag=null,m21=false,negoc=false,cliDel=null,modoEdit=false;
+
+let user=null,clientes=[],prejuizos=[],pendencias=[],negociacoes=[],custos=[];
+let filtro='todos',cliPag=null,tipoPag=null,m21=false,negocPag=false;
+let cliDel=null,cliPrej=null,cliNegoc=null,modoEdit=false,catCusto='Anúncios';
 
 const R=v=>Number(v).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
 const D=d=>{if(!d)return'';return new Date(d+'T12:00:00').toLocaleDateString('pt-BR');};
@@ -392,7 +477,7 @@ const toast=(m,d=3000)=>{const t=document.getElementById('toast');t.textContent=
 function jsonp(p){
   return new Promise((res,rej)=>{
     const cb='cb_'+Date.now()+'_'+Math.random().toString(36).substr(2,5);
-    const to=setTimeout(()=>{delete window[cb];s.parentNode&&s.parentNode.removeChild(s);rej(new Error('Timeout'));},15000);
+    const to=setTimeout(()=>{delete window[cb];s.parentNode&&s.parentNode.removeChild(s);rej(new Error('Timeout'));},20000);
     window[cb]=data=>{clearTimeout(to);delete window[cb];s.parentNode&&s.parentNode.removeChild(s);res(data);};
     const s=document.createElement('script');
     s.src=API+'?'+new URLSearchParams({...p,callback:cb});
@@ -401,39 +486,6 @@ function jsonp(p){
   });
 }
 
-// NOTIFICAÇÕES
-let notifScheduled=false;
-async function ativarNotif(){
-  if(!('Notification' in window)){toast('⚠️ Não suportado neste dispositivo');return;}
-  const p=await Notification.requestPermission();
-  if(p==='granted'){document.getElementById('notif-banner').style.display='none';localStorage.setItem('notif_enabled','1');toast('✅ Notificações ativadas!');agendarVerif();}
-  else toast('❌ Permissão negada');
-}
-function agendarVerif(){
-  if(notifScheduled)return;notifScheduled=true;verificarNotif();
-  setInterval(verificarNotif,30*60*1000);
-}
-async function verificarNotif(){
-  if(Notification.permission!=='granted')return;
-  const hora=new Date().getHours();
-  if(hora!==11&&hora!==12&&hora!==18&&hora!==19)return;
-  const chave=`notif_${new Date().toDateString()}_${hora<15?'manha':'tarde'}`;
-  if(localStorage.getItem(chave))return;
-  try{
-    const data=await jsonp({action:'getDashboard'});
-    const hoje=new Date();hoje.setHours(0,0,0,0);
-    const vH=(data.clientes||[]).filter(c=>{if(c.status!=='Ativo')return false;const v=addD(c.dataEmprestimo,7);v.setHours(0,0,0,0);return v.getTime()===hoje.getTime();});
-    const eA=(data.clientes||[]).filter(c=>c.status==='Ativo'&&diasA(c.dataEmprestimo)>0);
-    if(vH.length===0&&eA.length===0)return;
-    let corpo='';
-    if(vH.length>0)corpo+=`⚠️ ${vH.length} vencendo hoje\n`;
-    if(eA.length>0)corpo+=`🚨 ${eA.length} em atraso`;
-    new Notification('🚗 Genevese Credit',{body:corpo.trim(),tag:'genevese-alert'});
-    localStorage.setItem(chave,'1');
-  }catch(e){}
-}
-
-// LOGIN
 function fazerLogin(){
   const p=document.getElementById('login-perfil').value;
   const s=document.getElementById('login-senha').value;
@@ -457,11 +509,6 @@ async function init(){
   document.getElementById('topbar-date').textContent=new Date().toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
   renderJuros();
   document.getElementById('loader').style.display='none';
-  if('Notification' in window&&Notification.permission==='default'){
-    setTimeout(()=>{document.getElementById('notif-banner').classList.add('show');document.getElementById('notif-banner').style.display='block';},2000);
-  }else if(localStorage.getItem('notif_enabled')==='1'&&Notification.permission==='granted'){
-    agendarVerif();
-  }
   await reload();
 }
 
@@ -469,7 +516,10 @@ async function reload(){
   try{
     const d=await jsonp({action:'getDashboard'});
     clientes=d.clientes||[];
-    renderDash(d);renderCli();
+    prejuizos=d.prejuizos||[];
+    pendencias=d.pendencias||[];
+    negociacoes=d.negociacoes||[];
+    renderDash(d);renderCli();renderPend();renderNegoc();renderPrej();
   }catch(e){
     toast('❌ Erro: '+e.message);
     document.getElementById('dashboard-content').innerHTML='<div class="empty"><div class="empty-icon">⚠️</div><div class="empty-text">Erro ao conectar</div></div>';
@@ -481,27 +531,40 @@ function showS(id,btn){
   document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
   document.getElementById('screen-'+id).classList.add('active');
   if(btn)btn.classList.add('active');
+  if(id==='custos')carregarCustos();
 }
 
+// ============================================================
 // DASHBOARD
+// ============================================================
 function renderDash(d){
-  const{totalNaRua=0,ativos=0,emAtraso=0,venceHoje=0,caixaMes=0}=d;
+  const{totalNaRua=0,ativos=0,emAtraso=0,venceHoje=0,caixaMes=0,totalPrejuizo=0,totalPendencias=0,totalCustosMes=0}=d;
   const hj=new Date();hj.setHours(0,0,0,0);
   const cA=(clientes||[]).filter(c=>c.status==='Ativo'&&diasA(c.dataEmprestimo)>0);
   const cH=(clientes||[]).filter(c=>{if(c.status!=='Ativo')return false;const v=addD(c.dataEmprestimo,7);v.setHours(0,0,0,0);return v.getTime()===hj.getTime();});
+
   let html=`
     <div class="stat-grid">
-      <div class="stat-card gold" style="animation-delay:0s"><span class="stat-icon">💰</span><div class="stat-value" style="color:var(--gold2);font-size:18px;">${R(totalNaRua)}</div><div class="stat-label">Na Rua</div></div>
-      <div class="stat-card" style="animation-delay:0.05s"><span class="stat-icon">💼</span><div class="stat-value" style="color:var(--green);">${ativos}</div><div class="stat-label">Clientes Ativos</div></div>
+      <div class="stat-card gold"><span class="stat-icon">💰</span><div class="stat-value" style="color:var(--gold2);font-size:18px;">${R(totalNaRua)}</div><div class="stat-label">Na Rua</div></div>
+      <div class="stat-card"><span class="stat-icon">💼</span><div class="stat-value" style="color:var(--green);">${ativos}</div><div class="stat-label">Ativos</div></div>
     </div>
-    <div class="stat-wide" style="animation-delay:0.1s">
-      <div style="font-size:32px;">📈</div>
-      <div><div style="font-size:10px;font-weight:600;color:var(--text3);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;">Caixa do Mês</div><div style="font-family:'Playfair Display',serif;font-size:28px;font-weight:700;color:var(--gold2);">${R(caixaMes)}</div></div>
+    <div class="stat-wide">
+      <div style="font-size:28px;">📈</div>
+      <div><div style="font-size:10px;font-weight:600;color:var(--text3);letter-spacing:1px;text-transform:uppercase;margin-bottom:3px;">Caixa do Mês</div><div style="font-family:'Playfair Display',serif;font-size:26px;font-weight:700;color:var(--gold2);">${R(caixaMes)}</div></div>
     </div>
     <div class="stat-grid">
-      <div class="stat-card" style="animation-delay:0.15s"><span class="stat-icon">⚠️</span><div class="stat-value" style="color:#f39c12;">${venceHoje}</div><div class="stat-label">Vence Hoje</div></div>
-      <div class="stat-card" style="animation-delay:0.2s"><span class="stat-icon">🚨</span><div class="stat-value" style="color:var(--red);">${emAtraso}</div><div class="stat-label">Em Atraso</div></div>
+      <div class="stat-card"><span class="stat-icon">⚠️</span><div class="stat-value" style="color:#f39c12;">${venceHoje}</div><div class="stat-label">Vence Hoje</div></div>
+      <div class="stat-card"><span class="stat-icon">🚨</span><div class="stat-value" style="color:var(--red);">${emAtraso}</div><div class="stat-label">Em Atraso</div></div>
+    </div>
+    <div class="stat-grid">
+      <div class="stat-card"><span class="stat-icon">⏳</span><div class="stat-value" style="color:var(--orange);font-size:18px;">${R(totalPendencias)}</div><div class="stat-label">Pendências</div></div>
+      <div class="stat-card"><span class="stat-icon">💸</span><div class="stat-value" style="color:var(--red);font-size:18px;">${R(totalPrejuizo)}</div><div class="stat-label">Prejuízos</div></div>
+    </div>
+    <div class="stat-grid">
+      <div class="stat-card"><span class="stat-icon">🤝</span><div class="stat-value" style="color:var(--purple);">${negociacoes.length}</div><div class="stat-label">Negociações</div></div>
+      <div class="stat-card"><span class="stat-icon">💳</span><div class="stat-value" style="color:var(--red);font-size:18px;">${R(totalCustosMes)}</div><div class="stat-label">Custos Mês</div></div>
     </div>`;
+
   if(cA.length>0){
     html+=`<div class="sec-title">Em Atraso</div>`;
     cA.forEach((c,i)=>{
@@ -512,13 +575,15 @@ function renderDash(d){
   if(cH.length>0){
     html+=`<div class="sec-title">Vence Hoje</div>`;
     cH.forEach((c,i)=>{
-      html+=`<div class="client-card" style="border-left:3px solid #f39c12;animation-delay:${i*0.05}s"><div class="cc-body"><div style="display:flex;justify-content:space-between;align-items:center;"><div><div class="cc-name">${c.nome}</div><div class="cc-meta">${c.telefone||'—'}</div></div><div style="font-family:'Playfair Display',serif;font-size:16px;font-weight:700;color:#f39c12;">${R(c.valor)}</div></div></div></div>`;
+      html+=`<div class="client-card" style="border-left:3px solid #f39c12;animation-delay:${i*0.05}s"><div class="cc-body"><div style="display:flex;justify-content:space-between;align-items:center;"><div><div class="cc-name">${c.nome}</div><div class="cc-meta">${c.telefone||'—'}</div></div><div style="font-family:'Playfair Display',serif;font-size:15px;font-weight:700;color:#f39c12;">${R(c.valor)}</div></div></div></div>`;
     });
   }
   document.getElementById('dashboard-content').innerHTML=html;
 }
 
+// ============================================================
 // CLIENTES
+// ============================================================
 function renderCli(){
   const busca=document.getElementById('busca').value.toLowerCase();
   const hj=new Date();hj.setHours(0,0,0,0);
@@ -531,6 +596,7 @@ function renderCli(){
     return true;
   });
   if(lista.length===0){document.getElementById('lista-cli').innerHTML='<div class="empty"><div class="empty-icon">🔍</div><div class="empty-text">Nenhum cliente encontrado</div></div>';return;}
+  const isAdmin=user&&user.perfil==='admin';
   let html='';
   lista.forEach((c,i)=>{
     const j=getJ(c.valor);const d=c.status==='Ativo'?diasA(c.dataEmprestimo):0;
@@ -540,16 +606,16 @@ function renderCli(){
     else if(c.status==='Renovado'){ac='var(--orange)';bl='🔄 Renovado';bb='var(--orange-dim)';bc='var(--orange)';}
     else if(d>0){ac='var(--red)';bl=`🚨 ${d}d atraso`;bb='var(--red-dim)';bc='var(--red)';}
     else if(vH.getTime()===hj.getTime()){ac='#f39c12';bl='⚠️ Vence hoje';bb='#f39c1222';bc='#f39c12';}
-    const isAdmin=user&&user.perfil==='admin';
     html+=`<div class="client-card" style="animation-delay:${i*0.04}s">
       <div class="cc-accent" style="background:${ac};"></div>
       <div class="cc-body">
-        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;">
           <div style="flex:1;"><div class="cc-name">${c.nome}</div><div class="cc-meta">${c.telefone?`📞 ${c.telefone} • `:''}Vence ${D(toS(venc))}</div><span class="cc-badge" style="background:${bb};color:${bc};border:1px solid ${bc}33;">${bl}</span></div>
         </div>
         <div class="cc-actions">
           ${c.status==='Ativo'?`<button class="btn-sm btn-pay" onclick="abrirPag(${c.linha})">💰 Pagar</button>`:''}
-          ${isAdmin?`<button class="btn-sm btn-edit" onclick="abrirEdit(${c.linha})">✏️ Editar</button><button class="btn-sm btn-del" onclick="abrirDel(${c.linha})">🗑️ Excluir</button>`:''}
+          ${isAdmin&&c.status==='Ativo'?`<button class="btn-sm btn-negoc" onclick="abrirNegoc(${c.linha})">🤝 Negociar</button><button class="btn-sm btn-prej" onclick="abrirPrej(${c.linha})">💸 Prejuízo</button>`:''}
+          ${isAdmin?`<button class="btn-sm btn-edit" onclick="abrirEdit(${c.linha})">✏️</button><button class="btn-sm btn-del" onclick="abrirDel(${c.linha})">🗑️</button>`:''}
         </div>
         ${j&&c.status==='Ativo'?`<div class="cc-vals">
           <div class="cv-item"><div class="cv-label">Emprestado</div><div class="cv-value" style="color:var(--text);">${R(c.valor)}</div></div>
@@ -566,7 +632,153 @@ function renderCli(){
 
 function setF(f,btn){filtro=f;document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));btn.classList.add('active');renderCli();}
 
+// ============================================================
+// PENDÊNCIAS
+// ============================================================
+function renderPend(){
+  const lista=pendencias||[];
+  if(lista.length===0){document.getElementById('lista-pend').innerHTML='<div class="empty"><div class="empty-icon">✅</div><div class="empty-text">Nenhuma pendência ativa</div></div>';return;}
+  let html='';
+  lista.forEach((p,i)=>{
+    html+=`<div class="pend-card" style="animation-delay:${i*0.05}s">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">
+        <div><div style="font-weight:600;font-size:15px;color:var(--text);">${p.nome}</div><div style="font-size:12px;color:var(--text3);margin-top:2px;">${p.tipo} • ${p.data}</div></div>
+        <div style="text-align:right;">
+          <div style="font-size:14px;font-weight:700;color:var(--orange);">${R(p.saldo)}</div>
+          <div style="font-size:11px;color:var(--text3);">a receber</div>
+        </div>
+      </div>
+      <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text3);margin-bottom:10px;">
+        <span>Devido: <strong style="color:var(--text);">${R(p.valorDevido)}</strong></span>
+        <span>Pago: <strong style="color:var(--green);">${R(p.valorPago)}</strong></span>
+      </div>
+      <button onclick="quitarPend(${p.linha})" style="width:100%;padding:9px;background:var(--green-dim);border:1px solid var(--green);border-radius:10px;color:var(--green);font-size:12px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;">✅ Marcar como Recebido</button>
+    </div>`;
+  });
+  document.getElementById('lista-pend').innerHTML=html;
+}
+
+async function quitarPend(linha){
+  toast('💾 Salvando...');
+  try{
+    const r=await jsonp({action:'quitarPendencia',linha});
+    if(r.ok){await reload();showOk('✅ Pendência quitada!');}
+    else toast('❌ '+(r.error||'Erro'));
+  }catch(e){toast('❌ '+e.message);}
+}
+
+// ============================================================
+// NEGOCIAÇÕES
+// ============================================================
+function renderNegoc(){
+  const lista=negociacoes||[];
+  if(lista.length===0){document.getElementById('lista-negoc').innerHTML='<div class="empty"><div class="empty-icon">🤝</div><div class="empty-text">Nenhuma negociação ativa</div></div>';return;}
+  let html='';
+  lista.forEach((n,i)=>{
+    const pct=Math.round((n.parcelasPagas/n.parcelas)*100);
+    const restantes=n.parcelas-n.parcelasPagas;
+    html+=`<div class="negoc-card" style="animation-delay:${i*0.05}s">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;">
+        <div><div style="font-weight:600;font-size:15px;color:var(--text);">${n.nome}</div><div style="font-size:12px;color:var(--text3);margin-top:2px;">Desde ${n.data}</div></div>
+        <span style="background:var(--purple-dim);color:var(--purple);border:1px solid #9b59b633;border-radius:20px;padding:3px 10px;font-size:11px;font-weight:600;">${n.status}</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:8px;">
+        <span style="color:var(--text3);">${n.parcelasPagas}/${n.parcelas} parcelas pagas</span>
+        <span style="font-weight:700;color:var(--purple);">${R(n.valorParcela)}/parcela</span>
+      </div>
+      <div class="parcelas-bar"><div class="parcelas-fill" style="width:${pct}%;"></div></div>
+      <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text3);margin-top:6px;margin-bottom:10px;">
+        <span>Total: ${R(n.totalNegociado)}</span>
+        <span>${restantes} parcela(s) restante(s)</span>
+      </div>
+      ${restantes>0?`<button onclick="pagarParcela(${n.linha},${n.parcelasPagas},${n.parcelas})" style="width:100%;padding:9px;background:var(--purple-dim);border:1px solid var(--purple);border-radius:10px;color:var(--purple);font-size:12px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;">💜 Registrar Parcela ${n.parcelasPagas+1}</button>`:'<div style="text-align:center;font-size:13px;color:var(--green);font-weight:700;">✅ Quitado!</div>'}
+    </div>`;
+  });
+  document.getElementById('lista-negoc').innerHTML=html;
+}
+
+async function pagarParcela(linha,pagas,total){
+  toast('💾 Salvando...');
+  try{
+    const r=await jsonp({action:'pagarParcelaNegociacao',linha,parcelasPagas:pagas,totalParcelas:total});
+    if(r.ok){await reload();showOk(r.quitado?'✅ Negociação quitada!':'✅ Parcela registrada!');}
+    else toast('❌ '+(r.error||'Erro'));
+  }catch(e){toast('❌ '+e.message);}
+}
+
+// ============================================================
+// PREJUÍZOS
+// ============================================================
+function renderPrej(){
+  const lista=prejuizos||[];
+  if(lista.length===0){document.getElementById('lista-prej').innerHTML='<div class="empty"><div class="empty-icon">💸</div><div class="empty-text">Nenhum prejuízo registrado</div></div>';return;}
+  const total=lista.reduce((s,p)=>s+p.quitar,0);
+  let html=`<div style="background:var(--red-dim);border:1px solid var(--red);border-radius:14px;padding:14px 16px;margin-bottom:14px;text-align:center;">
+    <div style="font-size:11px;font-weight:700;color:var(--red);letter-spacing:1px;margin-bottom:4px;">TOTAL EM PREJUÍZO</div>
+    <div style="font-family:'Playfair Display',serif;font-size:26px;font-weight:700;color:var(--red);">${R(total)}</div>
+  </div>`;
+  lista.forEach((p,i)=>{
+    html+=`<div class="prej-card" style="animation-delay:${i*0.05}s">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+        <div>
+          <div style="font-weight:600;font-size:15px;color:var(--text);">${p.nome}</div>
+          <div style="font-size:12px;color:var(--text3);margin-top:2px;">${p.telefone?`📞 ${p.telefone} • `:''}${p.data}</div>
+          ${p.obs?`<div style="font-size:11px;color:var(--text3);margin-top:3px;font-style:italic;">${p.obs}</div>`:''}
+        </div>
+        <div style="text-align:right;">
+          <div style="font-size:14px;font-weight:700;color:var(--red);">${R(p.quitar)}</div>
+          <div style="font-size:11px;color:var(--text3);">${p.diasAtraso}d atraso</div>
+        </div>
+      </div>
+    </div>`;
+  });
+  document.getElementById('lista-prej').innerHTML=html;
+}
+
+// ============================================================
+// CUSTOS
+// ============================================================
+async function carregarCustos(){
+  document.getElementById('lista-custos').innerHTML='<div style="text-align:center;padding:30px;color:var(--text3);"><div style="width:24px;height:24px;border:2px solid var(--border);border-top:2px solid var(--gold);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 10px;"></div>Carregando...</div>';
+  try{
+    const d=await jsonp({action:'getPlanilha2'});
+    custos=d.custos||[];
+    renderCustos();
+  }catch(e){toast('❌ Erro ao carregar custos');}
+}
+
+function renderCustos(){
+  if(custos.length===0){document.getElementById('lista-custos').innerHTML='<div class="empty"><div class="empty-icon">💳</div><div class="empty-text">Nenhum custo lançado</div></div>';return;}
+  const totalMes=custos.filter(c=>{
+    const d=new Date(c.data+'T12:00:00');
+    const hj=new Date();
+    return d.getMonth()===hj.getMonth()&&d.getFullYear()===hj.getFullYear();
+  }).reduce((s,c)=>s+c.valor,0);
+  const total=custos.reduce((s,c)=>s+c.valor,0);
+  let html=`
+    <div class="stat-grid" style="margin-bottom:14px;">
+      <div class="stat-card"><span class="stat-icon">📅</span><div class="stat-value" style="color:var(--red);font-size:18px;">${R(totalMes)}</div><div class="stat-label">Este Mês</div></div>
+      <div class="stat-card"><span class="stat-icon">📊</span><div class="stat-value" style="color:var(--orange);font-size:18px;">${R(total)}</div><div class="stat-label">Total Geral</div></div>
+    </div>`;
+  [...custos].reverse().forEach((c,i)=>{
+    const catIcon={'Anúncios':'📢','Saque':'💵','Recargas Chip':'📱','Outros':'📦'}[c.categoria]||'📦';
+    html+=`<div class="custo-card" style="animation-delay:${i*0.03}s">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div style="font-size:20px;">${catIcon}</div>
+        <div>
+          <div style="font-weight:600;font-size:14px;color:var(--text);">${c.categoria}</div>
+          <div style="font-size:12px;color:var(--text3);">${c.descricao||'—'} • ${c.data}</div>
+        </div>
+      </div>
+      <div style="font-family:'Playfair Display',serif;font-size:16px;font-weight:700;color:var(--red);">-${R(c.valor)}</div>
+    </div>`;
+  });
+  document.getElementById('lista-custos').innerHTML=html;
+}
+
+// ============================================================
 // CADASTRO / EDITAR
+// ============================================================
 function abrirCad(){
   modoEdit=false;
   document.getElementById('modal-cad-title').textContent='Novo Cliente';
@@ -622,13 +834,14 @@ async function salvarCliente(){
   }catch(e){toast('❌ '+e.message);}
 }
 
+// ============================================================
 // EXCLUSÃO
+// ============================================================
 function abrirDel(linha){
   cliDel=clientes.find(c=>c.linha===linha);if(!cliDel)return;
   document.getElementById('del-info').innerHTML=`Tem certeza que deseja excluir <strong style="color:var(--text);">${cliDel.nome}</strong>?<br><br>Esta ação não pode ser desfeita.`;
   openM('modal-del');
 }
-
 async function confirmarExclusao(){
   if(!cliDel)return;
   toast('🗑️ Excluindo...');
@@ -639,54 +852,87 @@ async function confirmarExclusao(){
   }catch(e){toast('❌ '+e.message);}
 }
 
+// ============================================================
+// PREJUÍZO
+// ============================================================
+function abrirPrej(linha){
+  cliPrej=clientes.find(c=>c.linha===linha);if(!cliPrej)return;
+  const j=getJ(cliPrej.valor);const d=diasA(cliPrej.dataEmprestimo);
+  document.getElementById('prej-info').innerHTML=`Marcar <strong style="color:var(--text);">${cliPrej.nome}</strong> como prejuízo?<br><br>Valor emprestado: <strong>${R(cliPrej.valor)}</strong><br>Para quitar: <strong style="color:var(--red);">${R(j?j.quit:0)}</strong><br>Dias em atraso: <strong>${d}</strong>`;
+  document.getElementById('prej-obs').value='';
+  openM('modal-prej');
+}
+async function confirmarPrejuizo(){
+  if(!cliPrej)return;
+  toast('💾 Salvando...');
+  try{
+    const obs=document.getElementById('prej-obs').value;
+    const r=await jsonp({action:'marcarPrejuizo',linha:cliPrej.linha,obs});
+    if(r.ok){closeM('modal-prej');await reload();showOk(`💸 ${cliPrej.nome} movido para Prejuízos.`);cliPrej=null;}
+    else toast('❌ '+(r.error||'Erro'));
+  }catch(e){toast('❌ '+e.message);}
+}
+
+// ============================================================
+// NEGOCIAÇÃO
+// ============================================================
+function abrirNegoc(linha){
+  cliNegoc=clientes.find(c=>c.linha===linha);if(!cliNegoc)return;
+  const j=getJ(cliNegoc.valor);
+  document.getElementById('negoc-cli-info').innerHTML=`<div style="font-weight:700;font-size:15px;margin-bottom:6px;">${cliNegoc.nome}</div><div style="font-size:13px;color:var(--text3);">Valor original para quitar: <strong style="color:var(--text);">${R(j?j.quit:0)}</strong></div>`;
+  document.getElementById('negoc-parcelas').value='';
+  document.getElementById('negoc-val-parcela').value='';
+  document.getElementById('negoc-resumo').style.display='none';
+  openM('modal-negoc');
+}
+
+function calcNegoc(){
+  const p=Number(document.getElementById('negoc-parcelas').value)||0;
+  const v=Number(document.getElementById('negoc-val-parcela').value)||0;
+  const el=document.getElementById('negoc-resumo');
+  if(p>0&&v>0){
+    el.style.display='block';
+    document.getElementById('negoc-total-res').textContent=R(p*v);
+    document.getElementById('negoc-parc-res').textContent=`${p}x de ${R(v)}`;
+  }else{el.style.display='none';}
+}
+
+async function confirmarNegociacao(){
+  if(!cliNegoc)return;
+  const parcelas=Number(document.getElementById('negoc-parcelas').value);
+  const valorParcela=Number(document.getElementById('negoc-val-parcela').value);
+  if(!parcelas||!valorParcela){toast('⚠️ Preencha as parcelas e o valor');return;}
+  toast('💾 Salvando...');
+  try{
+    const r=await jsonp({action:'cadastrarNegociacao',linha:cliNegoc.linha,nome:cliNegoc.nome,telefone:cliNegoc.telefone||'',valorOriginal:cliNegoc.valor,parcelas,valorParcela});
+    if(r.ok){closeM('modal-negoc');await reload();showOk(`🤝 Negociação criada para ${cliNegoc.nome}!`);cliNegoc=null;}
+    else toast('❌ '+(r.error||'Erro'));
+  }catch(e){toast('❌ '+e.message);}
+}
+
+// ============================================================
 // PAGAMENTO
+// ============================================================
 function abrirPag(linha){
   cliPag=clientes.find(c=>c.linha===linha);if(!cliPag)return;
-  tipoPag=null;m21=false;negoc=false;
-
-  const j=getJ(cliPag.valor);
-  const d=diasA(cliPag.dataEmprestimo);
-  const v=addD(cliPag.dataEmprestimo,7);
-
-  // Valores base
+  tipoPag=null;m21=false;negocPag=false;
+  const j=getJ(cliPag.valor);const d=diasA(cliPag.dataEmprestimo);const v=addD(cliPag.dataEmprestimo,7);
   document.getElementById('pov-renov').textContent=j?R(j.renov):'-';
   document.getElementById('pov-quit').textContent=j?R(j.quit):'-';
-
-  // Reset opções
   document.getElementById('opt-renov').className='pay-opt';
   document.getElementById('opt-quit').className='pay-opt';
+  document.getElementById('opt-parcial').className='pay-opt';
   document.getElementById('pag-extras').style.display='none';
-
-  // Reset toggles
   document.getElementById('tog-btn-21h').classList.remove('on');
-  document.getElementById('tog-row-21h').classList.remove('active-row');
+  document.getElementById('tog-row-21h').classList.remove('on-row');
   document.getElementById('tog-btn-negoc').classList.remove('on');
-  document.getElementById('tog-row-negoc').classList.remove('active-row');
+  document.getElementById('tog-row-negoc').classList.remove('on-row');
   document.getElementById('negoc-campo').style.display='none';
   document.getElementById('negoc-valor').value='';
-
-  // Referência de atraso (só visual, sem cálculo automático)
-  const refBox=document.getElementById('atraso-ref');
-  if(d>0){
-    refBox.style.display='block';
-    document.getElementById('atraso-ref-texto').innerHTML=
-      `${d} dia(s) em atraso • Multa referência: <strong style="color:var(--red);">${R(d*50)}</strong><br>
-      <span style="font-size:11px;color:var(--text3);">Use "Houve negociação?" para definir o valor cobrado</span>`;
-  }else{
-    refBox.style.display='none';
-  }
-
-  // Info cliente
-  document.getElementById('pag-info').innerHTML=`
-    <div style="font-weight:700;font-size:16px;margin-bottom:10px;">${cliPag.nome}</div>
-    <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px;">
-      <span style="color:var(--text3);">Emprestado</span><span style="font-weight:600;">${R(cliPag.valor)}</span>
-    </div>
-    <div style="display:flex;justify-content:space-between;font-size:13px;">
-      <span style="color:var(--text3);">Vencimento</span><span style="font-weight:600;">${D(toS(v))}</span>
-    </div>
-    ${d>0?`<div style="background:var(--red-dim);border-radius:8px;padding:6px 12px;margin-top:8px;color:var(--red);font-weight:600;font-size:12px;">🚨 ${d} dia(s) em atraso</div>`:''}`;
-
+  const aRef=document.getElementById('atraso-ref');
+  if(d>0){aRef.style.display='block';aRef.innerHTML=`<div style="font-size:11px;font-weight:700;color:var(--red);margin-bottom:3px;">📋 REFERÊNCIA DE ATRASO</div><div style="font-size:13px;color:var(--text2);">${d} dia(s) • Multa referência: <strong style="color:var(--red);">${R(d*50)}</strong></div>`;}
+  else aRef.style.display='none';
+  document.getElementById('pag-info').innerHTML=`<div style="font-weight:700;font-size:16px;margin-bottom:8px;">${cliPag.nome}</div><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;"><span style="color:var(--text3);">Emprestado</span><span style="font-weight:600;">${R(cliPag.valor)}</span></div><div style="display:flex;justify-content:space-between;font-size:13px;"><span style="color:var(--text3);">Vencimento</span><span style="font-weight:600;">${D(toS(v))}</span></div>${d>0?`<div style="background:var(--red-dim);border-radius:8px;padding:6px 12px;margin-top:8px;color:var(--red);font-weight:600;font-size:12px;">🚨 ${d} dia(s) em atraso</div>`:''}`;
   openM('modal-pag');
 }
 
@@ -694,66 +940,82 @@ function selT(t){
   tipoPag=t;
   document.getElementById('opt-renov').className='pay-opt'+(t==='Renovado'?' sel-renov':'');
   document.getElementById('opt-quit').className='pay-opt'+(t==='Quitado'?' sel-quit':'');
+  document.getElementById('opt-parcial').className='pay-opt'+(t==='Parcial'?' sel-parcial':'');
   document.getElementById('pag-extras').style.display='block';
+  const j=getJ(cliPag.valor);
+  let valorRef=0;
+  if(t==='Renovado')valorRef=j?j.renov:0;
+  else if(t==='Quitado')valorRef=j?j.quit:0;
+  else valorRef=j?j.renov:0;
+  document.getElementById('valor-pago-input').value=valorRef||'';
+  document.getElementById('valor-ref-hint').textContent=t==='Parcial'?'Digite o valor que o cliente conseguiu pagar':`Valor padrão: ${R(valorRef)} — edite se necessário`;
   calcT();
 }
 
-function togM21(){
-  m21=!m21;
-  document.getElementById('tog-btn-21h').classList.toggle('on',m21);
-  document.getElementById('tog-row-21h').classList.toggle('active-row',m21);
-  calcT();
-}
-
-function togNegoc(){
-  negoc=!negoc;
-  document.getElementById('tog-btn-negoc').classList.toggle('on',negoc);
-  document.getElementById('tog-row-negoc').classList.toggle('active-row',negoc);
-  document.getElementById('negoc-campo').style.display=negoc?'block':'none';
-  if(!negoc)document.getElementById('negoc-valor').value='';
-  calcT();
-}
+function togM21(){m21=!m21;document.getElementById('tog-btn-21h').classList.toggle('on',m21);document.getElementById('tog-row-21h').classList.toggle('on-row',m21);calcT();}
+function togNegoc(){negocPag=!negocPag;document.getElementById('tog-btn-negoc').classList.toggle('on',negocPag);document.getElementById('tog-row-negoc').classList.toggle('on-row',negocPag);document.getElementById('negoc-campo').style.display=negocPag?'block':'none';if(!negocPag)document.getElementById('negoc-valor').value='';calcT();}
 
 function calcT(){
   if(!cliPag||!tipoPag)return;
-  const j=getJ(cliPag.valor);if(!j)return;
-  const base=tipoPag==='Quitado'?j.quit:j.renov;
+  const valorPago=Number(document.getElementById('valor-pago-input').value)||0;
   const multa21=m21?30:0;
-  const negocVal=negoc?Number(document.getElementById('negoc-valor').value)||0:0;
-  const total=base+multa21+negocVal;
-
+  const negocVal=negocPag?Number(document.getElementById('negoc-valor').value)||0:0;
+  const total=valorPago+multa21+negocVal;
   document.getElementById('pag-total').textContent=R(total);
-
-  // Breakdown detalhado
-  let bd=`<span style="color:var(--text3);">${tipoPag==='Quitado'?'Quitação':'Renovação'}: ${R(base)}</span>`;
+  let bd=`<span style="color:var(--text3);">Pagamento: ${R(valorPago)}</span>`;
   if(multa21>0)bd+=` <span style="color:var(--gold2);">+ 21h: ${R(multa21)}</span>`;
-  if(negocVal>0)bd+=` <span style="color:var(--green);">+ Negociação: ${R(negocVal)}</span>`;
+  if(negocVal>0)bd+=` <span style="color:var(--green);">+ Negoc: ${R(negocVal)}</span>`;
   document.getElementById('pag-breakdown').innerHTML=bd;
 }
-
 document.getElementById('negoc-valor').addEventListener('input',calcT);
+document.getElementById('valor-pago-input').addEventListener('input',calcT);
 
 async function confirmarPag(){
   if(!cliPag||!tipoPag)return;
   const j=getJ(cliPag.valor);
+  const valorPago=Number(document.getElementById('valor-pago-input').value)||0;
   const multa21=m21?30:0;
-  const negocVal=negoc?Number(document.getElementById('negoc-valor').value)||0:0;
+  const negocVal=negocPag?Number(document.getElementById('negoc-valor').value)||0:0;
   const multaTotal=multa21+negocVal;
+  const isParcial=tipoPag==='Parcial';
+  let valorDevido=0;
+  if(tipoPag==='Renovado'||isParcial)valorDevido=j?j.renov:0;
+  else valorDevido=j?j.quit:0;
   toast('💾 Salvando...');
   try{
-    const r=await jsonp({action:'registrarPagamento',linha:cliPag.linha,nome:cliPag.nome,valor:cliPag.valor,dataEmprestimo:cliPag.dataEmprestimo,tipo:tipoPag,multa:multaTotal});
-    if(r.ok){closeM('modal-pag');await reload();showOk(`${tipoPag==='Quitado'?'✅ Quitado':'🔄 Renovado'} com sucesso!`);}
+    const r=await jsonp({action:'registrarPagamento',linha:cliPag.linha,nome:cliPag.nome,valor:cliPag.valor,dataEmprestimo:cliPag.dataEmprestimo,tipo:isParcial?'Renovado':tipoPag,multa:multaTotal,valorPago,valorDevido:valorDevido+multaTotal,isParcial});
+    if(r.ok){closeM('modal-pag');await reload();showOk(isParcial?`💛 Pagamento parcial de ${R(valorPago)} registrado!`:tipoPag==='Quitado'?'✅ Quitado com sucesso!':'🔄 Renovado com sucesso!');}
     else toast('❌ '+(r.error||'Erro'));
   }catch(e){toast('❌ '+e.message);}
 }
 
+// ============================================================
+// CUSTOS
+// ============================================================
+function abrirModalCusto(){catCusto='Anúncios';document.getElementById('custo-desc').value='';document.getElementById('custo-valor').value='';document.querySelectorAll('.cat-chip').forEach((c,i)=>{c.classList.toggle('active',i===0);});openM('modal-custo');}
+function selCat(cat,btn){catCusto=cat;document.querySelectorAll('.cat-chip').forEach(c=>c.classList.remove('active'));btn.classList.add('active');}
+async function confirmarCusto(){
+  const valor=Number(document.getElementById('custo-valor').value);
+  if(!valor){toast('⚠️ Digite o valor do custo');return;}
+  const desc=document.getElementById('custo-desc').value;
+  toast('💾 Salvando...');
+  try{
+    const r=await jsonp({action:'lancarCusto',categoria:catCusto,descricao:desc||'',valor});
+    if(r.ok){closeM('modal-custo');await carregarCustos();showOk(`💳 Custo de ${R(valor)} lançado!`);}
+    else toast('❌ '+(r.error||'Erro'));
+  }catch(e){toast('❌ '+e.message);}
+}
+
+// ============================================================
 // JUROS
+// ============================================================
+const JUROS2=[{emp:250,quit:350,renov:100},{emp:350,quit:490,renov:140},{emp:400,quit:560,renov:160},{emp:500,quit:690,renov:190},{emp:800,quit:1100,renov:300},{emp:1000,quit:1390,renov:390}];
 function renderJuros(){
   let html='';
-  JUROS.forEach((j,i)=>{
-    html+=`<div class="juros-row" style="animation-delay:${i*0.05}s">
-      <div><div style="font-family:'Playfair Display',serif;font-size:18px;font-weight:700;">${R(j.emp)}</div><div style="font-size:11px;color:var(--text3);margin-top:2px;">${Math.round((j.renov/j.emp)*100)}% de juros semanais</div></div>
-      <div style="display:flex;gap:20px;">
+  JUROS2.forEach((j,i)=>{
+    html+=`<div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px 18px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;animation:fadeIn 0.3s ease ${i*0.05}s both;">
+      <div><div style="font-family:'Playfair Display',serif;font-size:18px;font-weight:700;">${R(j.emp)}</div><div style="font-size:11px;color:var(--text3);margin-top:2px;">${Math.round((j.renov/j.emp)*100)}% juros semanais</div></div>
+      <div style="display:flex;gap:16px;">
         <div style="text-align:center;"><div style="font-size:14px;font-weight:700;color:var(--orange);">${R(j.renov)}</div><div style="font-size:9px;font-weight:700;color:var(--text3);letter-spacing:1px;text-transform:uppercase;margin-top:2px;">Renovar</div></div>
         <div style="width:1px;background:var(--border);"></div>
         <div style="text-align:center;"><div style="font-size:14px;font-weight:700;color:var(--green);">${R(j.quit)}</div><div style="font-size:9px;font-weight:700;color:var(--text3);letter-spacing:1px;text-transform:uppercase;margin-top:2px;">Quitar</div></div>
