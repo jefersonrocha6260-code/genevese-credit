@@ -242,10 +242,11 @@ input[type=date]{color-scheme:dark;}
     </div>
     <div class="page">
       <div class="chip-row">
-        <button class="chip active" onclick="setF('todos',this)">Todos</button>
-        <button class="chip" onclick="setF('Ativo',this)">Ativos</button>
-        <button class="chip" onclick="setF('Atraso',this)">Em Atraso</button>
-        <button class="chip" onclick="setF('Quitado',this)">Quitados</button>
+        <button class="chip active" id="chip-todos" onclick="setF('todos',this)">Todos</button>
+        <button class="chip" id="chip-ativo" onclick="setF('Ativo',this)">Ativos</button>
+        <button class="chip" id="chip-hoje" onclick="setF('Hoje',this)">⚠️ Vence Hoje</button>
+        <button class="chip" id="chip-atraso" onclick="setF('Atraso',this)">🚨 Em Atraso</button>
+        <button class="chip" id="chip-quitado" onclick="setF('Quitado',this)">Quitados</button>
       </div>
       <div id="success-banner" class="success-banner"></div>
       <div id="lista-cli" style="padding-top:8px;"></div>
@@ -538,16 +539,16 @@ function renderDash(d){
       <div><div style="font-size:10px;font-weight:600;color:var(--text3);letter-spacing:1px;text-transform:uppercase;margin-bottom:3px;">Caixa do Mês</div><div style="font-family:'Playfair Display',serif;font-size:26px;font-weight:700;color:var(--gold2);">${R(caixaMes)}</div></div>
     </div>
     <div class="stat-grid">
-      <div class="stat-card"><span class="stat-icon">⚠️</span><div class="stat-value" style="color:#f39c12;">${venceHoje}</div><div class="stat-label">Vence Hoje</div></div>
-      <div class="stat-card"><span class="stat-icon">🚨</span><div class="stat-value" style="color:var(--red);">${emAtraso}</div><div class="stat-label">Em Atraso</div></div>
+      <div class="stat-card" onclick="navParaClientes('Hoje')" style="cursor:pointer;" title="Ver clientes que vencem hoje"><span class="stat-icon">⚠️</span><div class="stat-value" style="color:#f39c12;">${venceHoje}</div><div class="stat-label">Vence Hoje ↗</div></div>
+      <div class="stat-card" onclick="navParaClientes('Atraso')" style="cursor:pointer;" title="Ver clientes em atraso"><span class="stat-icon">🚨</span><div class="stat-value" style="color:var(--red);">${emAtraso}</div><div class="stat-label">Em Atraso ↗</div></div>
     </div>
     <div class="stat-grid">
-      <div class="stat-card"><span class="stat-icon">⏳</span><div class="stat-value" style="color:var(--orange);font-size:18px;">${R(totalPendencias)}</div><div class="stat-label">Pendências</div></div>
-      <div class="stat-card"><span class="stat-icon">💸</span><div class="stat-value" style="color:var(--red);font-size:18px;">${R(totalPrejuizo)}</div><div class="stat-label">Prejuízos</div></div>
+      <div class="stat-card" onclick="showS('pendencias',document.querySelectorAll('.nav-btn')[2])" style="cursor:pointer;"><span class="stat-icon">⏳</span><div class="stat-value" style="color:var(--orange);font-size:18px;">${R(totalPendencias)}</div><div class="stat-label">Pendências ↗</div></div>
+      <div class="stat-card" onclick="showS('prejuizos',document.querySelectorAll('.nav-btn')[4])" style="cursor:pointer;"><span class="stat-icon">💸</span><div class="stat-value" style="color:var(--red);font-size:18px;">${R(totalPrejuizo)}</div><div class="stat-label">Prejuízos ↗</div></div>
     </div>
     <div class="stat-grid">
-      <div class="stat-card"><span class="stat-icon">🤝</span><div class="stat-value" style="color:var(--purple);">${negociacoes.length}</div><div class="stat-label">Negociações</div></div>
-      <div class="stat-card"><span class="stat-icon">💳</span><div class="stat-value" style="color:var(--red);font-size:18px;">${R(totalCustosMes)}</div><div class="stat-label">Custos Mês</div></div>
+      <div class="stat-card" onclick="showS('negociacoes',document.querySelectorAll('.nav-btn')[3])" style="cursor:pointer;"><span class="stat-icon">🤝</span><div class="stat-value" style="color:var(--purple);">${negociacoes.length}</div><div class="stat-label">Negociações ↗</div></div>
+      <div class="stat-card" onclick="showS('custos',document.querySelectorAll('.nav-btn')[5])" style="cursor:pointer;"><span class="stat-icon">💳</span><div class="stat-value" style="color:var(--red);font-size:18px;">${R(totalCustosMes)}</div><div class="stat-label">Custos Mês ↗</div></div>
     </div>`;
   if(cA.length>0){
     html+=`<div class="sec-title">Em Atraso</div>`;
@@ -591,6 +592,7 @@ function renderCli(){
     if(!c.nome)return false;
     if(busca&&!c.nome.toLowerCase().includes(busca))return false;
     if(filtro==='Ativo')return c.status==='Ativo'&&diasA(c.dataEmprestimo)===0;
+    if(filtro==='Hoje'){const v=addD(c.dataEmprestimo,7);v.setHours(0,0,0,0);const hj=new Date();hj.setHours(0,0,0,0);return c.status==='Ativo'&&v.getTime()===hj.getTime();}
     if(filtro==='Atraso')return c.status==='Ativo'&&diasA(c.dataEmprestimo)>0;
     if(filtro==='Quitado')return c.status==='Quitado';
     return true;
@@ -644,7 +646,20 @@ function renderCli(){
   document.getElementById('lista-cli').innerHTML=html;
 }
 
-function setF(f,btn){filtro=f;document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));btn.classList.add('active');renderCli();}
+function setF(f,btn){filtro=f;document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));if(btn)btn.classList.add('active');renderCli();}
+
+function navParaClientes(filtroNav) {
+  // Navega para clientes com filtro específico
+  filtro = filtroNav;
+  const navBtn = document.querySelectorAll('.nav-btn')[1]; // botão Clientes
+  showS('clientes', navBtn);
+  // Ativa o chip correto
+  document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+  const chipMap = {'todos':'chip-todos','Ativo':'chip-ativo','Hoje':'chip-hoje','Atraso':'chip-atraso','Quitado':'chip-quitado'};
+  const chipEl = document.getElementById(chipMap[filtroNav]);
+  if(chipEl) chipEl.classList.add('active');
+  renderCli();
+}
 
 function renderPend(){
   const lista=pendencias||[];
