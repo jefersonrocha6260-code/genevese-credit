@@ -10,7 +10,7 @@
 <title>Genevese Credit</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#080c14;--bg2:#0d1420;--card:#0f1825;--card2:#141e2e;--border:#1e2d42;--border2:#243347;--gold:#c9a84c;--gold2:#e8c96d;--gold-dim:#c9a84c22;--text:#e8edf5;--text2:#8a9ab5;--text3:#5a6a85;--green:#2ecc71;--green-dim:#2ecc7122;--red:#e74c3c;--red-dim:#e74c3c22;--orange:#e67e22;--orange-dim:#e67e2222;--purple:#9b59b6;--purple-dim:#9b59b622;--wpp:#25D366;}
+:root{--bg:#080c14;--bg2:#0d1420;--card:#0f1825;--card2:#141e2e;--border:#1e2d42;--border2:#243347;--gold:#c9a84c;--gold2:#e8c96d;--gold-dim:#c9a84c22;--text:#e8edf5;--text2:#8a9ab5;--text3:#5a6a85;--green:#2ecc71;--green-dim:#2ecc7122;--red:#e74c3c;--red-dim:#e74c3c22;--orange:#e67e22;--orange-dim:#e67e2222;--purple:#9b59b6;--purple-dim:#9b59b622;--wpp:#25D366;--wpp-dim:#25D36622;}
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
 body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;max-width:480px;margin:0 auto;overflow-x:hidden;}
 @keyframes spin{to{transform:rotate(360deg);}}
@@ -278,17 +278,6 @@ input[type=date]{color-scheme:dark;}
     <div class="page" style="padding-top:20px;"><div id="lista-custos"></div></div>
   </div>
 
-  <div id="screen-juros" class="screen">
-    <div class="topbar"><div class="topbar-title">Tabela de Juros</div></div>
-    <div class="page" style="padding-top:20px;">
-      <div id="lista-juros"></div>
-      <div style="background:var(--card);border:1px solid #c9a84c22;border-radius:14px;padding:16px 18px;margin-top:4px;">
-        <div style="font-size:11px;font-weight:700;color:var(--gold2);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px;">Multas por Atraso</div>
-        <div style="font-size:13px;color:var(--text2);line-height:1.9;">• Após as <strong style="color:var(--text);">21h</strong>: <strong style="color:var(--gold2);">R$ 30,00</strong><br>• Por dia: <strong style="color:var(--red);">R$ 50,00/dia</strong></div>
-      </div>
-    </div>
-  </div>
-
   <nav class="bottom-nav">
     <button class="nav-btn active" onclick="showS('dashboard',this)"><span class="nav-icon">📊</span><span class="nav-label">Início</span><span class="nav-line"></span></button>
     <button class="nav-btn" onclick="showS('clientes',this)"><span class="nav-icon">👥</span><span class="nav-label">Clientes</span><span class="nav-line"></span></button>
@@ -296,7 +285,6 @@ input[type=date]{color-scheme:dark;}
     <button class="nav-btn" onclick="showS('negociacoes',this)"><span class="nav-icon">🤝</span><span class="nav-label">Negoc.</span><span class="nav-line"></span></button>
     <button class="nav-btn" onclick="showS('prejuizos',this)"><span class="nav-icon">💸</span><span class="nav-label">Prejuízos</span><span class="nav-line"></span></button>
     <button class="nav-btn" onclick="showS('custos',this)"><span class="nav-icon">💳</span><span class="nav-label">Custos</span><span class="nav-line"></span></button>
-    <button class="nav-btn" onclick="showS('juros',this)"><span class="nav-icon">💲</span><span class="nav-label">Juros</span><span class="nav-line"></span></button>
     <button class="nav-btn" onclick="fazerLogout()"><span class="nav-icon">🚪</span><span class="nav-label">Sair</span><span class="nav-line"></span></button>
   </nav>
 </div>
@@ -308,8 +296,10 @@ input[type=date]{color-scheme:dark;}
     <button class="modal-close" onclick="closeM('modal-cad')">✕</button>
     <div class="modal-title" id="modal-cad-title">Novo Cliente</div>
     <input type="hidden" id="edit-linha">
-    <label class="fl">Nome Completo</label><input id="cad-nome" class="fi" placeholder="Nome do motorista">
-    <label class="fl">Telefone</label><input id="cad-tel" class="fi" placeholder="(00) 00000-0000" type="tel">
+    <label class="fl">Nome Completo <span style="color:var(--red);">*</span></label><input id="cad-nome" class="fi" placeholder="Nome do motorista">
+    <label class="fl">CPF <span style="color:var(--red);">*</span></label><input id="cad-cpf" class="fi" placeholder="000.000.000-00">
+    <label class="fl">Telefone Principal <span style="color:var(--red);">*</span></label><input id="cad-tel" class="fi" placeholder="(00) 00000-0000" type="tel">
+    <label class="fl">Telefone Adicional <span style="color:var(--text3);font-size:10px;">(opcional)</span></label><input id="cad-tel2" class="fi" placeholder="(00) 00000-0000" type="tel">
     <label class="fl">Data do Empréstimo</label><input id="cad-data" class="fi" type="date">
     <label class="fl">Valor Emprestado</label>
     <select id="cad-valor" class="fs" onchange="updResumo()">
@@ -320,7 +310,12 @@ input[type=date]{color-scheme:dark;}
       <option value="500">R$ 500 → quitar R$ 690</option>
       <option value="800">R$ 800 → quitar R$ 1.100</option>
       <option value="1000">R$ 1.000 → quitar R$ 1.390</option>
+      <option value="custom">💡 Valor personalizado...</option>
     </select>
+    <div id="cad-valor-custom" style="display:none;">
+      <label class="fl">Valor personalizado (R$)</label>
+      <input id="cad-valor-num" class="fi" type="number" placeholder="Digite o valor..." oninput="updResumo()">
+    </div>
     <div id="cad-resumo" style="display:none;background:var(--card);border:1px solid var(--gold-dim);border-radius:12px;padding:14px 16px;margin-bottom:14px;">
       <div style="font-size:10px;font-weight:700;color:var(--gold2);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;">Resumo</div>
       <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;"><span style="color:var(--text3);">Renovar:</span><span id="res-renov" style="font-weight:700;color:var(--orange);"></span></div>
@@ -440,6 +435,29 @@ input[type=date]{color-scheme:dark;}
   </div>
 </div>
 
+
+<!-- MODAL HISTÓRICO -->
+<div id="modal-hist" class="modal-overlay" onclick="closeM('modal-hist')">
+  <div class="modal-sheet" onclick="event.stopPropagation()">
+    <div class="modal-handle"></div>
+    <button class="modal-close" onclick="closeM('modal-hist')">✕</button>
+    <div class="modal-title">📜 Histórico do Caixa</div>
+    <div id="hist-content">
+      <div style="text-align:center;padding:30px;color:var(--text3);"><div style="width:24px;height:24px;border:2px solid var(--border);border-top:2px solid var(--gold);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 10px;"></div>Carregando...</div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL WHATSAPP ESCOLHER NÚMERO -->
+<div id="modal-wpp" class="modal-overlay" onclick="closeM('modal-wpp')">
+  <div class="modal-sheet" onclick="event.stopPropagation()" style="padding-bottom:32px;">
+    <div class="modal-handle"></div>
+    <div class="modal-title" style="color:var(--wpp);">💬 Entrar em Contato</div>
+    <div id="wpp-nome" style="font-size:14px;color:var(--text2);margin-bottom:16px;"></div>
+    <div id="wpp-opcoes"></div>
+  </div>
+</div>
+
 <script>
 const API='https://script.google.com/macros/s/AKfycbzoKF0ZtBraBkhX0R4S0UdNTAybrhME6tVDpMGbCfovkHfbP_gud6RiSD2caNp5Y8Q/exec';
 const JUROS=[{emp:250,quit:350,renov:100},{emp:350,quit:490,renov:140},{emp:400,quit:560,renov:160},{emp:500,quit:690,renov:190},{emp:800,quit:1100,renov:300},{emp:1000,quit:1390,renov:390}];
@@ -458,10 +476,28 @@ const getJ=v=>JUROS.find(j=>j.emp===Number(v));
 const toast=(m,d=3000)=>{const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),d);};
 
 // Link WhatsApp
-function abrirWpp(tel) {
-  const numero = tel.replace(/\D/g,'');
-  const link = numero.startsWith('55') ? `https://wa.me/${numero}` : `https://wa.me/55${numero}`;
-  window.open(link,'_blank');
+function abrirWpp(tel, tel2, nome) {
+  if(tel2) {
+    // Tem telefone adicional — pergunta qual usar
+    document.getElementById('wpp-nome').textContent='Com qual número deseja falar com ' + (nome||'o cliente') + '?';
+    const opts = document.getElementById('wpp-opcoes');
+    const n1 = tel.replace(/\D/g,'');
+    const n2 = tel2.replace(/\D/g,'');
+    const l1 = n1.startsWith('55')?`https://wa.me/${n1}`:`https://wa.me/55${n1}`;
+    const l2 = n2.startsWith('55')?`https://wa.me/${n2}`:`https://wa.me/55${n2}`;
+    opts.innerHTML = `
+      <button onclick="window.open('${l1}','_blank');closeM('modal-wpp');" style="width:100%;padding:14px;background:var(--wpp-dim);border:1px solid var(--wpp);border-radius:12px;color:var(--wpp);font-size:14px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;margin-bottom:10px;">
+        📱 Principal: ${tel}
+      </button>
+      <button onclick="window.open('${l2}','_blank');closeM('modal-wpp');" style="width:100%;padding:14px;background:var(--wpp-dim);border:1px solid var(--wpp);border-radius:12px;color:var(--wpp);font-size:14px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;">
+        📱 Adicional: ${tel2}
+      </button>`;
+    openM('modal-wpp');
+  } else {
+    const numero = tel.replace(/\D/g,'');
+    const link = numero.startsWith('55')?`https://wa.me/${numero}`:`https://wa.me/55${numero}`;
+    window.open(link,'_blank');
+  }
 }
 
 function jsonp(p){
@@ -525,7 +561,7 @@ function showS(id,btn){
 }
 
 function renderDash(d){
-  const{totalNaRua=0,ativos=0,emAtraso=0,venceHoje=0,caixaMes=0,totalPrejuizo=0,totalPendencias=0,totalCustosMes=0}=d;
+  const{totalNaRua=0,ativos=0,emAtraso=0,venceHoje=0,caixaMes=0,totalPrejuizo=0,totalPendencias=0,totalCustosMes=0,projecaoSemana=0,projecaoMes=0}=d;
   const hj=new Date();hj.setHours(0,0,0,0);
   const cA=(clientes||[]).filter(c=>c.status==='Ativo'&&diasA(c.dataEmprestimo)>0);
   const cH=(clientes||[]).filter(c=>{if(c.status!=='Ativo')return false;const v=addD(c.dataEmprestimo,7);v.setHours(0,0,0,0);return v.getTime()===hj.getTime();});
@@ -534,9 +570,10 @@ function renderDash(d){
       <div class="stat-card gold"><span class="stat-icon">💰</span><div class="stat-value" style="color:var(--gold2);font-size:18px;">${R(totalNaRua)}</div><div class="stat-label">Na Rua</div></div>
       <div class="stat-card"><span class="stat-icon">💼</span><div class="stat-value" style="color:var(--green);">${ativos}</div><div class="stat-label">Ativos</div></div>
     </div>
-    <div class="stat-wide">
+    <div class="stat-wide" onclick="abrirHistorico()" style="cursor:pointer;" title="Ver histórico do caixa">
       <div style="font-size:28px;">📈</div>
-      <div><div style="font-size:10px;font-weight:600;color:var(--text3);letter-spacing:1px;text-transform:uppercase;margin-bottom:3px;">Caixa do Mês</div><div style="font-family:'Playfair Display',serif;font-size:26px;font-weight:700;color:var(--gold2);">${R(caixaMes)}</div></div>
+      <div style="flex:1;"><div style="font-size:10px;font-weight:600;color:var(--text3);letter-spacing:1px;text-transform:uppercase;margin-bottom:3px;">Caixa do Mês</div><div style="font-family:'Playfair Display',serif;font-size:26px;font-weight:700;color:var(--gold2);">${R(caixaMes)}</div></div>
+      <div style="font-size:11px;color:var(--text3);">📜 Histórico</div>
     </div>
     <div class="stat-grid">
       <div class="stat-card" onclick="navParaClientes('Hoje')" style="cursor:pointer;" title="Ver clientes que vencem hoje"><span class="stat-icon">⚠️</span><div class="stat-value" style="color:#f39c12;">${venceHoje}</div><div class="stat-label">Vence Hoje ↗</div></div>
@@ -549,6 +586,11 @@ function renderDash(d){
     <div class="stat-grid">
       <div class="stat-card" onclick="showS('negociacoes',document.querySelectorAll('.nav-btn')[3])" style="cursor:pointer;"><span class="stat-icon">🤝</span><div class="stat-value" style="color:var(--purple);">${negociacoes.length}</div><div class="stat-label">Negociações ↗</div></div>
       <div class="stat-card" onclick="showS('custos',document.querySelectorAll('.nav-btn')[5])" style="cursor:pointer;"><span class="stat-icon">💳</span><div class="stat-value" style="color:var(--red);font-size:18px;">${R(totalCustosMes)}</div><div class="stat-label">Custos Mês ↗</div></div>
+    </div>
+    <div class="sec-title">Projeção de Renovações</div>
+    <div class="stat-grid">
+      <div class="stat-card" style="border-color:#00c47a33;"><span class="stat-icon">📅</span><div class="stat-value" style="color:#2ecc71;font-size:18px;">${R(projecaoSemana)}</div><div class="stat-label">Esta Semana</div></div>
+      <div class="stat-card" style="border-color:#00c47a33;"><span class="stat-icon">📆</span><div class="stat-value" style="color:#2ecc71;font-size:18px;">${R(projecaoMes)}</div><div class="stat-label">Este Mês</div></div>
     </div>`;
   if(cA.length>0){
     html+=`<div class="sec-title">Em Atraso</div>`;
@@ -590,7 +632,7 @@ function renderCli(){
   const hj=new Date();hj.setHours(0,0,0,0);
   const lista=(clientes||[]).filter(c=>{
     if(!c.nome)return false;
-    if(busca&&!c.nome.toLowerCase().includes(busca))return false;
+    if(busca&&!c.nome.toLowerCase().includes(busca)&&!(c.cpf||'').replace(/\D/g,'').includes(busca.replace(/\D/g,'')))return false;
     if(filtro==='Ativo')return c.status==='Ativo'&&diasA(c.dataEmprestimo)===0;
     if(filtro==='Hoje'){const v=addD(c.dataEmprestimo,7);v.setHours(0,0,0,0);const hj=new Date();hj.setHours(0,0,0,0);return c.status==='Ativo'&&v.getTime()===hj.getTime();}
     if(filtro==='Atraso')return c.status==='Ativo'&&diasA(c.dataEmprestimo)>0;
@@ -611,7 +653,7 @@ function renderCli(){
 
     // Botão WhatsApp inline
     const wppBtn = c.telefone
-      ? `<button class="btn-wpp-float" onclick="abrirWpp('${c.telefone}')">💬 WhatsApp</button>`
+      ? `<button class="btn-wpp-float" onclick="abrirWpp('${c.telefone}','${c.telefone2||''}','${c.nome}')">💬 WhatsApp</button>`
       : '';
 
     html+=`<div class="client-card" style="animation-delay:${i*0.04}s">
@@ -621,6 +663,7 @@ function renderCli(){
           <div style="flex:1;">
             <div class="cc-name">${c.nome}</div>
             <div class="cc-meta">
+              ${c.cpf?`<span style="font-size:11px;color:var(--text3);">CPF: ${c.cpf}</span>`:''}
               ${c.telefone?`<span>📞 ${c.telefone}</span>`:''}
               ${wppBtn}
             </div>
@@ -794,7 +837,12 @@ function abrirCad(){
   document.getElementById('btn-salvar').textContent='Cadastrar Cliente';
   document.getElementById('edit-linha').value='';
   document.getElementById('cad-data').value=new Date().toISOString().split('T')[0];
-  document.getElementById('cad-nome').value='';document.getElementById('cad-tel').value='';document.getElementById('cad-valor').value='';
+  document.getElementById('cad-nome').value='';
+  document.getElementById('cad-cpf').value='';
+  document.getElementById('cad-tel').value='';
+  document.getElementById('cad-tel2').value='';
+  document.getElementById('cad-valor').value='';
+  document.getElementById('cad-valor-custom').style.display='none';
   document.getElementById('cad-resumo').style.display='none';
   openM('modal-cad');
 }
@@ -806,37 +854,58 @@ function abrirEdit(linha){
   document.getElementById('btn-salvar').textContent='Salvar Alterações';
   document.getElementById('edit-linha').value=linha;
   document.getElementById('cad-nome').value=c.nome;
+  document.getElementById('cad-cpf').value=c.cpf||'';
   document.getElementById('cad-tel').value=c.telefone||'';
+  document.getElementById('cad-tel2').value=c.telefone2||'';
   document.getElementById('cad-data').value=c.dataEmprestimo||new Date().toISOString().split('T')[0];
-  document.getElementById('cad-valor').value=c.valor;
+  document.getElementById('cad-valor').value=JUROS.find(j=>j.emp===c.valor)?c.valor:'custom';
+  if(!JUROS.find(j=>j.emp===c.valor)){
+    document.getElementById('cad-valor-custom').style.display='block';
+    document.getElementById('cad-valor-num').value=c.valor;
+  }
   updResumo();openM('modal-cad');
 }
 
 function updResumo(){
-  const v=document.getElementById('cad-valor').value;const d=document.getElementById('cad-data').value;
-  const el=document.getElementById('cad-resumo');if(!v){el.style.display='none';return;}
-  const j=getJ(Number(v));if(!j)return;
+  const sel=document.getElementById('cad-valor').value;
+  const d=document.getElementById('cad-data').value;
+  const el=document.getElementById('cad-resumo');
+  const customBox=document.getElementById('cad-valor-custom');
+  if(sel==='custom'){customBox.style.display='block';}
+  else{customBox.style.display='none';}
+  const v=sel==='custom'?Number(document.getElementById('cad-valor-num').value||0):Number(sel);
+  if(!v){el.style.display='none';return;}
+  const j=getJ(v);
   el.style.display='block';
-  document.getElementById('res-renov').textContent=R(j.renov);
-  document.getElementById('res-quit').textContent=R(j.quit);
+  if(j){
+    document.getElementById('res-renov').textContent=R(j.renov);
+    document.getElementById('res-quit').textContent=R(j.quit);
+  } else {
+    // Valor personalizado — calcula 40% juros
+    document.getElementById('res-renov').textContent=R(Math.round(v*0.4));
+    document.getElementById('res-quit').textContent=R(Math.round(v*1.4));
+  }
   if(d)document.getElementById('res-venc').textContent=D(toS(addD(d,7)));
 }
 
 async function salvarCliente(){
   const nome=document.getElementById('cad-nome').value.trim();
+  const cpf=document.getElementById('cad-cpf').value.trim();
   const tel=document.getElementById('cad-tel').value.trim();
+  const tel2=document.getElementById('cad-tel2').value.trim();
   const data=document.getElementById('cad-data').value;
-  const valor=document.getElementById('cad-valor').value;
+  const sel=document.getElementById('cad-valor').value;
+  const valorNum=sel==='custom'?Number(document.getElementById('cad-valor-num').value||0):Number(sel);
   const linha=document.getElementById('edit-linha').value;
-  if(!nome||!data||!valor){toast('⚠️ Preencha todos os campos');return;}
+  if(!nome||!cpf||!tel||!data||!valorNum){toast('⚠️ Nome, CPF, telefone e valor são obrigatórios');return;}
   toast('💾 Salvando...');
   try{
     let r;
     if(modoEdit){
       const c=clientes.find(c=>c.linha===Number(linha));
-      r=await jsonp({action:'editarCliente',linha:Number(linha),nome,telefone:tel||'',dataEmprestimo:data,valor:Number(valor),status:c?c.status:'Ativo'});
+      r=await jsonp({action:'editarCliente',linha:Number(linha),nome,cpf,telefone:tel||'',telefone2:tel2||'',dataEmprestimo:data,valor:valorNum,status:c?c.status:'Ativo'});
     }else{
-      r=await jsonp({action:'cadastrarCliente',nome,telefone:tel||'',dataEmprestimo:data,valor:Number(valor)});
+      r=await jsonp({action:'cadastrarCliente',nome,cpf,telefone:tel||'',telefone2:tel2||'',dataEmprestimo:data,valor:valorNum});
     }
     if(r.ok){closeM('modal-cad');await reload();showOk(modoEdit?`✅ ${nome} atualizado!`:`✅ ${nome} cadastrado!`);}
     else toast('❌ '+(r.error||'Erro'));
@@ -984,6 +1053,57 @@ async function confirmarCusto(){
   try{
     const r=await jsonp({action:'lancarCusto',categoria:catCusto,descricao:desc||'',valor});
     if(r.ok){closeM('modal-custo');await carregarCustos();showOk(`💳 Custo de ${R(valor)} lançado!`);}
+    else toast('❌ '+(r.error||'Erro'));
+  }catch(e){toast('❌ '+e.message);}
+}
+
+// ============================================================
+// HISTÓRICO DO CAIXA
+// ============================================================
+async function abrirHistorico(){
+  openM('modal-hist');
+  document.getElementById('hist-content').innerHTML='<div style="text-align:center;padding:30px;color:var(--text3);"><div style="width:24px;height:24px;border:2px solid var(--border);border-top:2px solid var(--gold);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 10px;"></div>Carregando...</div>';
+  try{
+    const d=await jsonp({action:'getHistorico'});
+    renderHistorico(d.historico||[]);
+  }catch(e){document.getElementById('hist-content').innerHTML='<div class="empty"><div class="empty-text">Erro ao carregar</div></div>';}
+}
+
+function renderHistorico(hist){
+  if(hist.length===0){document.getElementById('hist-content').innerHTML='<div class="empty"><div class="empty-icon">📜</div><div class="empty-text">Nenhum registro ainda</div></div>';return;}
+  const tipoColor={'Renovado':'var(--orange)','Quitado':'var(--green)','Parcial':'var(--gold)','Parcela Negociação':'var(--purple)'};
+  const tipoIcon={'Renovado':'🔄','Quitado':'✅','Parcial':'💛','Parcela Negociação':'💜'};
+  let html='';
+  hist.forEach((h,i)=>{
+    if(h.status==='Desfeito') return;
+    const cor=tipoColor[h.tipo]||'var(--text2)';
+    const ico=tipoIcon[h.tipo]||'💰';
+    html+=`<div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px 16px;margin-bottom:8px;animation:fadeIn 0.3s ease ${i*0.03}s both;">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;">
+        <div>
+          <div style="font-weight:600;font-size:15px;color:var(--text);">${h.nome}</div>
+          <div style="font-size:12px;color:var(--text3);margin-top:2px;">${h.dataHora}</div>
+        </div>
+        <div style="text-align:right;">
+          <span style="background:${cor}22;color:${cor};border:1px solid ${cor}33;border-radius:20px;padding:3px 10px;font-size:11px;font-weight:600;">${ico} ${h.tipo}</span>
+          <div style="font-size:15px;font-weight:700;color:${cor};margin-top:4px;">${R(h.valorPago)}</div>
+          ${h.multa>0?`<div style="font-size:11px;color:var(--text3);">+ multa ${R(h.multa)}</div>`:''}
+        </div>
+      </div>
+      <button onclick="desfazerAcao(${h.linha},${h.linhaCliente},'${h.tipo}','${h.dataEmprestimo}','${h.nome}')" style="width:100%;padding:8px;background:var(--red-dim);border:1px solid #e74c3c33;border-radius:10px;color:var(--red);font-size:11px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;margin-top:4px;">
+        ↩️ Desfazer esta ação
+      </button>
+    </div>`;
+  });
+  document.getElementById('hist-content').innerHTML=html||'<div class="empty"><div class="empty-icon">✅</div><div class="empty-text">Nenhum registro ativo</div></div>';
+}
+
+async function desfazerAcao(linhaHist, linhaCliente, tipo, dataEmprestimo, nome){
+  if(!confirm('Desfazer esta ação? O cliente voltará para a base.'))return;
+  toast('↩️ Desfazendo...');
+  try{
+    const r=await jsonp({action:'desfazerHistorico',linhaHist,linhaCliente,tipo,dataEmprestimo,nome});
+    if(r.ok){closeM('modal-hist');await reload();showOk('↩️ Ação desfeita! Cliente restaurado.');}
     else toast('❌ '+(r.error||'Erro'));
   }catch(e){toast('❌ '+e.message);}
 }
