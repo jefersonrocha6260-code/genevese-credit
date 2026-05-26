@@ -560,6 +560,7 @@ function showS(id,btn){
 }
 
 function renderDash(d){
+  if(!d)return;
   const{totalNaRua=0,ativos=0,emAtraso=0,venceHoje=0,caixaMes=0,totalPrejuizo=0,totalPendencias=0,totalCustosMes=0,projecaoSemana=0,projecaoMes=0}=d;
   const hj=new Date();hj.setHours(0,0,0,0);
   const cA=(clientes||[]).filter(c=>c.status==='Ativo'&&diasA(c.dataEmprestimo)>0);
@@ -631,7 +632,7 @@ function renderCli(){
   const hj=new Date();hj.setHours(0,0,0,0);
   const lista=(clientes||[]).filter(c=>{
     if(!c.nome)return false;
-    if(busca&&!c.nome.toLowerCase().includes(busca)&&!(c.cpf||'').replace(/\D/g,'').includes(busca.replace(/\D/g,'')))return false;
+    if(busca&&!c.nome.toLowerCase().includes(busca)&&!(c.cpf||'').includes(busca))return false;
     if(filtro==='Ativo')return c.status==='Ativo'&&diasA(c.dataEmprestimo)===0;
     if(filtro==='Hoje'){const v=addD(c.dataEmprestimo,7);v.setHours(0,0,0,0);const hj=new Date();hj.setHours(0,0,0,0);return c.status==='Ativo'&&v.getTime()===hj.getTime();}
     if(filtro==='Atraso')return c.status==='Ativo'&&diasA(c.dataEmprestimo)>0;
@@ -1037,7 +1038,11 @@ async function confirmarPag(){
   toast('💾 Salvando...');
   try{
     const r=await jsonp({action:'registrarPagamento',linha:cliPag.linha,nome:cliPag.nome,valor:cliPag.valor,dataEmprestimo:cliPag.dataEmprestimo,tipo:isParcial?'Renovado':tipoPag,multa:multaTotal,valorPago,valorDevido:valorDevido+multaTotal,isParcial});
-    if(r.ok){closeM('modal-pag');await reload();showOk(isParcial?`💛 Parcial de ${R(valorPago)} registrado!`:tipoPag==='Quitado'?'✅ Quitado!':'🔄 Renovado!');}
+    if(r.ok){
+      closeM('modal-pag');
+      showOk(isParcial?`💛 Parcial de ${R(valorPago)} registrado!`:tipoPag==='Quitado'?'✅ Quitado!':'🔄 Renovado!');
+      setTimeout(async()=>{await reload();},1500);
+    }
     else toast('❌ '+(r.error||'Erro'));
   }catch(e){toast('❌ '+e.message);}
 }
