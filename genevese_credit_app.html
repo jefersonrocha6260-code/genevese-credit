@@ -1040,8 +1040,38 @@ async function confirmarPag(){
     const r=await jsonp({action:'registrarPagamento',linha:cliPag.linha,nome:cliPag.nome,valor:cliPag.valor,dataEmprestimo:cliPag.dataEmprestimo,tipo:isParcial?'Renovado':tipoPag,multa:multaTotal,valorPago,valorDevido:valorDevido+multaTotal,isParcial});
     if(r.ok){
       closeM('modal-pag');
-      showOk(isParcial?`💛 Parcial de ${R(valorPago)} registrado!`:tipoPag==='Quitado'?'✅ Quitado!':'🔄 Renovado!');
-      setTimeout(async()=>{await reload();},3000);
+      const msg=isParcial?`💛 Parcial de ${R(valorPago)} registrado!`:tipoPag==='Quitado'?'✅ Quitado!':'🔄 Renovado!';
+      showOk(msg);
+      
+      // Atualiza localmente de imediato (sem esperar a planilha)
+      if(tipoPag==='Quitado'){
+        const idx=clientes.findIndex(c=>c.linha===cliPag.linha);
+        if(idx>=0) clientes[idx].status='Quitado';
+      } else if(tipoPag==='Renovado' || isParcial){
+        const idx=clientes.findIndex(c=>c.linha===cliPag.linha);
+        if(idx>=0){
+          // Nova data = vencimento atual + 7 dias
+          const vencAtual=addD(cliPag.dataEmprestimo,7);
+          const novaData=toS(addD(toS(vencAtual),7));
+          clientes[idx].dataEmprestimo=novaData;
+        }
+      }
+      renderCli();
+      renderDash({
+        totalNaRua: clientes.filter(c=>c.status==='Ativo').reduce((s,c)=>s+c.valor,0),
+        ativos: clientes.filter(c=>c.status==='Ativo').length,
+        emAtraso: clientes.filter(c=>c.status==='Ativo'&&diasA(c.dataEmprestimo)>0).length,
+        venceHoje: clientes.filter(c=>{if(c.status!=='Ativo')return false;const v=addD(c.dataEmprestimo,7);v.setHours(0,0,0,0);const h=new Date();h.setHours(0,0,0,0);return v.getTime()===h.getTime();}).length,
+        caixaMes: 0,
+        totalPrejuizo: prejuizos.reduce((s,p)=>s+p.quitar,0),
+        totalPendencias: pendencias.reduce((s,p)=>s+p.saldo,0),
+        totalCustosMes: 0,
+        projecaoSemana: 0,
+        projecaoMes: 0,
+      });
+      
+      // Recarrega do servidor após 5 segundos para atualizar caixa
+      setTimeout(async()=>{await reload();},5000);
     }
     else toast('❌ '+(r.error||'Erro'));
   }catch(e){toast('❌ '+e.message);}
