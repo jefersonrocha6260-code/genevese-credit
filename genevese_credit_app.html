@@ -922,7 +922,7 @@ async function confirmarExclusao(){
   toast('🗑️ Excluindo...');
   try{
     const r=await jsonp({action:'excluirCliente',linha:cliDel.linha});
-    if(r.ok){closeM('modal-del');await reload();showOk(`🗑️ ${cliDel.nome} excluído.`);cliDel=null;}
+    if(r.ok){closeM('modal-del');setTimeout(async()=>{await reload();},2000);showOk(`🗑️ ${cliDel.nome} excluído.`);cliDel=null;}
     else toast('❌ '+(r.error||'Erro'));
   }catch(e){toast('❌ '+e.message);}
 }
@@ -940,7 +940,7 @@ async function confirmarPrejuizo(){
   try{
     const obs=document.getElementById('prej-obs').value;
     const r=await jsonp({action:'marcarPrejuizo',linha:cliPrej.linha,obs});
-    if(r.ok){closeM('modal-prej');await reload();showOk(`💸 ${cliPrej.nome} movido para Prejuízos.`);cliPrej=null;}
+    if(r.ok){closeM('modal-prej');setTimeout(async()=>{await reload();},2000);showOk(`💸 ${cliPrej.nome} movido para Prejuízos.`);cliPrej=null;}
     else toast('❌ '+(r.error||'Erro'));
   }catch(e){toast('❌ '+e.message);}
 }
@@ -967,7 +967,7 @@ async function confirmarNegociacao(){
   toast('💾 Salvando...');
   try{
     const r=await jsonp({action:'cadastrarNegociacao',linha:cliNegoc.linha,nome:cliNegoc.nome,telefone:cliNegoc.telefone||'',valorOriginal:cliNegoc.valor,parcelas,valorParcela});
-    if(r.ok){closeM('modal-negoc');await reload();showOk(`🤝 Negociação criada para ${cliNegoc.nome}!`);cliNegoc=null;}
+    if(r.ok){closeM('modal-negoc');setTimeout(async()=>{await reload();},2000);showOk(`🤝 Negociação criada para ${cliNegoc.nome}!`);cliNegoc=null;}
     else toast('❌ '+(r.error||'Erro'));
   }catch(e){toast('❌ '+e.message);}
 }
@@ -1041,7 +1041,7 @@ async function confirmarPag(){
     if(r.ok){
       closeM('modal-pag');
       showOk(isParcial?`💛 Parcial de ${R(valorPago)} registrado!`:tipoPag==='Quitado'?'✅ Quitado!':'🔄 Renovado!');
-      setTimeout(async()=>{await reload();},1500);
+      setTimeout(async()=>{await reload();},3000);
     }
     else toast('❌ '+(r.error||'Erro'));
   }catch(e){toast('❌ '+e.message);}
