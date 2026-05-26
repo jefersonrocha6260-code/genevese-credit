@@ -533,7 +533,6 @@ function fazerLogout(){user=null;document.getElementById('app').style.display='n
 
 async function init(){
   document.getElementById('topbar-date').textContent=new Date().toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
-  renderJuros();
   document.getElementById('loader').style.display='none';
   await reload();
 }
@@ -1108,21 +1107,6 @@ async function desfazerAcao(linhaHist, linhaCliente, tipo, dataEmprestimo, nome)
   }catch(e){toast('❌ '+e.message);}
 }
 
-const JUROS2=JUROS;
-function renderJuros(){
-  let html='';
-  JUROS2.forEach((j,i)=>{
-    html+=`<div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px 18px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;animation:fadeIn 0.3s ease ${i*0.05}s both;">
-      <div><div style="font-family:'Playfair Display',serif;font-size:18px;font-weight:700;">${R(j.emp)}</div><div style="font-size:11px;color:var(--text3);margin-top:2px;">${Math.round((j.renov/j.emp)*100)}% juros semanais</div></div>
-      <div style="display:flex;gap:16px;">
-        <div style="text-align:center;"><div style="font-size:14px;font-weight:700;color:var(--orange);">${R(j.renov)}</div><div style="font-size:9px;font-weight:700;color:var(--text3);letter-spacing:1px;text-transform:uppercase;margin-top:2px;">Renovar</div></div>
-        <div style="width:1px;background:var(--border);"></div>
-        <div style="text-align:center;"><div style="font-size:14px;font-weight:700;color:var(--green);">${R(j.quit)}</div><div style="font-size:9px;font-weight:700;color:var(--text3);letter-spacing:1px;text-transform:uppercase;margin-top:2px;">Quitar</div></div>
-      </div>
-    </div>`;
-  });
-  document.getElementById('lista-juros').innerHTML=html;
-}
 
 function openM(id){document.getElementById(id).classList.add('open');}
 function closeM(id){document.getElementById(id).classList.remove('open');}
