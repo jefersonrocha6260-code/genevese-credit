@@ -953,4 +953,46 @@ async function confirmarPag(){
   let valorDevido=tipoPag==='Quitado'?(j?j.quit:0):(j?j.renov:0);
   toast('💾 Salvando...');
   try{
-    const r=await jsonp({action:'registrarPagamento',linha:cliPag.linha,nome:cliPag.nome,valor:cliPag.valor,dataEmprestimo:cliPag.dataEmprestimo,tipo:isParcial?'Renovado':tipoPag,multa:multaTotal,valorPago,valorDevido:valorDevido+
+    const r=await jsonp({action:'registrarPagamento',linha:cliPag.linha,nome:cliPag.nome,valor:cliPag.valor,dataEmprestimo:cliPag.dataEmprestimo,tipo:isParcial?'Renovado':tipoPag,multa:multaTotal,valorPago,valorDevido:valorDevido+multaTotal,isParcial});
+    if(r.ok){closeM('modal-pag');await reload();showOk(isParcial?`💛 Parcial de ${R(valorPago)} registrado!`:tipoPag==='Quitado'?'✅ Quitado!':'🔄 Renovado!');}
+    else toast('❌ '+(r.error||'Erro'));
+  }catch(e){toast('❌ '+e.message);}
+}
+
+function abrirModalCusto(){catCusto='Anúncios';document.getElementById('custo-desc').value='';document.getElementById('custo-valor').value='';document.querySelectorAll('.cat-chip').forEach((c,i)=>{c.classList.toggle('active',i===0);});openM('modal-custo');}
+function selCat(cat,btn){catCusto=cat;document.querySelectorAll('.cat-chip').forEach(c=>c.classList.remove('active'));btn.classList.add('active');}
+async function confirmarCusto(){
+  const valor=Number(document.getElementById('custo-valor').value);
+  if(!valor){toast('⚠️ Digite o valor');return;}
+  const desc=document.getElementById('custo-desc').value;
+  toast('💾 Salvando...');
+  try{
+    const r=await jsonp({action:'lancarCusto',categoria:catCusto,descricao:desc||'',valor});
+    if(r.ok){closeM('modal-custo');await carregarCustos();showOk(`💳 Custo de ${R(valor)} lançado!`);}
+    else toast('❌ '+(r.error||'Erro'));
+  }catch(e){toast('❌ '+e.message);}
+}
+
+const JUROS2=JUROS;
+function renderJuros(){
+  let html='';
+  JUROS2.forEach((j,i)=>{
+    html+=`<div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px 18px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;animation:fadeIn 0.3s ease ${i*0.05}s both;">
+      <div><div style="font-family:'Playfair Display',serif;font-size:18px;font-weight:700;">${R(j.emp)}</div><div style="font-size:11px;color:var(--text3);margin-top:2px;">${Math.round((j.renov/j.emp)*100)}% juros semanais</div></div>
+      <div style="display:flex;gap:16px;">
+        <div style="text-align:center;"><div style="font-size:14px;font-weight:700;color:var(--orange);">${R(j.renov)}</div><div style="font-size:9px;font-weight:700;color:var(--text3);letter-spacing:1px;text-transform:uppercase;margin-top:2px;">Renovar</div></div>
+        <div style="width:1px;background:var(--border);"></div>
+        <div style="text-align:center;"><div style="font-size:14px;font-weight:700;color:var(--green);">${R(j.quit)}</div><div style="font-size:9px;font-weight:700;color:var(--text3);letter-spacing:1px;text-transform:uppercase;margin-top:2px;">Quitar</div></div>
+      </div>
+    </div>`;
+  });
+  document.getElementById('lista-juros').innerHTML=html;
+}
+
+function openM(id){document.getElementById(id).classList.add('open');}
+function closeM(id){document.getElementById(id).classList.remove('open');}
+function showOk(msg){const el=document.getElementById('success-banner');el.textContent=msg;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),4000);}
+window.addEventListener('load',()=>{setTimeout(()=>{document.getElementById('loader').style.display='none';},1800);});
+</script>
+</body>
+</html>
