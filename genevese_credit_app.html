@@ -469,6 +469,7 @@ const USERS={admin:{senha:'1234',nome:'Admin',perfil:'admin'},cobranca:{senha:'5
 let user=null,clientes=[],prejuizos=[],pendencias=[],negociacoes=[],custos=[];
 let filtro='todos',cliPag=null,tipoPag=null,m21=false,negocPag=false;
 let cliDel=null,cliPrej=null,cliNegoc=null,modoEdit=false,catCusto='Anúncios';
+let bloqueioReload=false; // Bloqueia reload após atualização local
 
 const R=v=>Number(v).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
 const D=d=>{if(!d)return'';return new Date(d+'T12:00:00').toLocaleDateString('pt-BR');};
@@ -541,6 +542,7 @@ async function init(){
 }
 
 async function reload(){
+  if(bloqueioReload){return;}
   try{
     const d=await jsonp({action:'getDashboard'});
     clientes=d.clientes||[];
@@ -1057,6 +1059,9 @@ async function confirmarPag(){
   renderCli();
   showOk(isParcial?`💛 Parcial de ${R(valorPago)} registrado!`:tipoPag==='Quitado'?'✅ Quitado!':'🔄 Renovado!');
   if(btnConf){btnConf.disabled=false;btnConf.textContent='Confirmar Pagamento';}
+  // Bloqueia reload por 15 segundos para não sobrescrever estado local
+  bloqueioReload=true;
+  setTimeout(()=>{bloqueioReload=false;},15000);
 
   // Dispara para o servidor em background usando script tag (ignora redirect)
   try{
