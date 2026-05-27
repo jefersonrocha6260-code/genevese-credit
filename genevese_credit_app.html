@@ -1031,57 +1031,57 @@ document.getElementById('valor-pago-input').addEventListener('input',calcT);
 
 async function confirmarPag(){
   if(!cliPag||!tipoPag)return;
-  // Bloqueia botão para evitar duplo clique
   const btnConf=document.getElementById('btn-confirmar-pag');
   if(btnConf){btnConf.disabled=true;btnConf.textContent='Salvando...';}
+  
   const j=getJ(cliPag.valor);
   const valorPago=Number(document.getElementById('valor-pago-input').value)||0;
   const multa21=m21?30:0;
   const negocVal=negocPag?Number(document.getElementById('negoc-valor').value)||0:0;
   const multaTotal=multa21+negocVal;
   const isParcial=tipoPag==='Parcial';
-  let valorDevido=tipoPag==='Quitado'?(j?j.quit:0):(j?j.renov:0);
-  toast('💾 Salvando...');
+  const tipoFinal=isParcial?'Renovado':tipoPag;
+  const valorDevido=tipoPag==='Quitado'?(j?j.quit:0):(j?j.renov:0);
+
+  // Fecha modal e atualiza tela IMEDIATAMENTE
+  closeM('modal-pag');
+  if(tipoPag==='Quitado'){
+    const idx=clientes.findIndex(c=>c.linha===cliPag.linha);
+    if(idx>=0) clientes[idx].status='Quitado';
+  } else {
+    const idx=clientes.findIndex(c=>c.linha===cliPag.linha);
+    if(idx>=0){
+      clientes[idx].dataEmprestimo=toS(addD(cliPag.dataEmprestimo,7));
+    }
+  }
+  renderCli();
+  showOk(isParcial?`💛 Parcial de ${R(valorPago)} registrado!`:tipoPag==='Quitado'?'✅ Quitado!':'🔄 Renovado!');
+  if(btnConf){btnConf.disabled=false;btnConf.textContent='Confirmar Pagamento';}
+
+  // Dispara para o servidor em background usando script tag (ignora redirect)
   try{
-    let r;
-    try {
-      r=await jsonp({action:'registrarPagamento',linha:cliPag.linha,nome:encodeURIComponent(cliPag.nome),valor:cliPag.valor,dataEmprestimo:cliPag.dataEmprestimo,tipo:isParcial?'Renovado':tipoPag,multa:multaTotal,valorPago,valorDevido:valorDevido+multaTotal,isParcial});
-    } catch(eJ) {
-      // JSONP timeout pode acontecer com redirect 302 mas o script executou
-      // Considera sucesso e atualiza localmente
-      r = {ok: true};
-    }
-    if(r.ok||r===undefined){
-      // Fecha modal PRIMEIRO
-      closeM('modal-pag');
-      
-      // Atualiza localmente
-      if(tipoPag==='Quitado'){
-        const idx=clientes.findIndex(c=>c.linha===cliPag.linha);
-        if(idx>=0) clientes[idx].status='Quitado';
-      } else if(tipoPag==='Renovado'||isParcial){
-        const idx=clientes.findIndex(c=>c.linha===cliPag.linha);
-        if(idx>=0){
-          const vencAtual=addD(cliPag.dataEmprestimo,7);
-          clientes[idx].dataEmprestimo=toS(vencAtual);
-        }
-      }
-      
-      // Atualiza telas
-      renderCli();
-      
-      // Mostra mensagem
-      const msg=isParcial?`💛 Parcial de ${R(valorPago)} registrado!`:tipoPag==='Quitado'?'✅ Quitado!':'🔄 Renovado!';
-      showOk(msg);
-      
-      // Sem reload automático — usuário atualiza manualmente
-    }
-    else toast('❌ '+(r.error||'Erro'));
-  }catch(e){toast('❌ '+e.message);const b=document.getElementById('btn-confirmar-pag');if(b){b.disabled=false;b.textContent='Confirmar Pagamento';}}
+    const p=new URLSearchParams({
+      action:'registrarPagamento',
+      linha:cliPag.linha,
+      nome:cliPag.nome,
+      valor:cliPag.valor,
+      dataEmprestimo:cliPag.dataEmprestimo,
+      tipo:tipoFinal,
+      multa:multaTotal,
+      valorPago,
+      valorDevido:valorDevido+multaTotal,
+      isParcial,
+      callback:'noop'
+    });
+    window.noop=function(){};
+    const s=document.createElement('script');
+    s.src=API+'?'+p.toString();
+    document.head.appendChild(s);
+    setTimeout(()=>{if(s.parentNode)s.parentNode.removeChild(s);},10000);
+  }catch(e){}
 }
 
-function abrirModalCusto(){catCusto='Anúncios';document.getElementById('custo-desc').value='';document.getElementById('custo-valor').value='';document.querySelectorAll('.cat-chip').forEach((c,i)=>{c.classList.toggle('active',i===0);});openM('modal-custo');}
-function selCat(cat,btn){catCusto=cat;document.querySelectorAll('.cat-chip').forEach(c=>c.classList.remove('active'));btn.classList.add('active');}
+
 async function confirmarCusto(){
   const valor=Number(document.getElementById('custo-valor').value);
   if(!valor){toast('⚠️ Digite o valor');return;}
