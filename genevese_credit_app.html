@@ -481,7 +481,7 @@ const toast=(m,d=3000)=>{const t=document.getElementById('toast');t.textContent=
 
 // Link WhatsApp
 function abrirWpp(tel, tel2, nome) {
-  if(tel2) {
+  if(tel2 && tel2.trim() !== '') {
     // Tem telefone adicional — pergunta qual usar
     document.getElementById('wpp-nome').textContent='Com qual número deseja falar com ' + (nome||'o cliente') + '?';
     const opts = document.getElementById('wpp-opcoes');
@@ -597,39 +597,8 @@ function renderDash(d){
       <div class="stat-card" style="border-color:#00c47a33;"><span class="stat-icon">📅</span><div class="stat-value" style="color:#2ecc71;font-size:18px;">${R(projecaoSemana)}</div><div class="stat-label">Esta Semana</div></div>
       <div class="stat-card" style="border-color:#00c47a33;"><span class="stat-icon">📆</span><div class="stat-value" style="color:#2ecc71;font-size:18px;">${R(projecaoMes)}</div><div class="stat-label">Este Mês</div></div>
     </div>`;
-  if(cA.length>0){
-    html+=`<div class="sec-title">Em Atraso</div>`;
-    cA.forEach((c,i)=>{
-      const d=diasA(c.dataEmprestimo);const m=d*50;const v=addD(c.dataEmprestimo,7);
-      html+=`<div class="atraso-card" style="animation-delay:${i*0.05}s">
-        <div style="display:flex;justify-content:space-between;align-items:flex-start;">
-          <div>
-            <div style="font-weight:600;font-size:15px;">${c.nome}</div>
-            <div style="font-size:12px;color:var(--text3);margin-top:2px;">Venceu ${D(toS(v))}</div>
-            ${c.telefone?`<button class="btn-wpp-float" style="margin-top:6px;" onclick="abrirWpp('${c.telefone}')">💬 WhatsApp</button>`:''}
-          </div>
-          <div style="text-align:right;"><div style="font-size:13px;font-weight:700;color:var(--red);">${d}d atraso</div><div style="font-size:11px;color:var(--text3);">${R(m)}</div></div>
-        </div>
-      </div>`;
-    });
-  }
-  if(cH.length>0){
-    html+=`<div class="sec-title">Vence Hoje</div>`;
-    cH.forEach((c,i)=>{
-      html+=`<div class="client-card" style="border-left:3px solid #f39c12;animation-delay:${i*0.05}s">
-        <div class="cc-body">
-          <div style="display:flex;justify-content:space-between;align-items:center;">
-            <div>
-              <div class="cc-name">${c.nome}</div>
-              ${c.telefone?`<button class="btn-wpp-float" style="margin-top:4px;" onclick="abrirWpp('${c.telefone}')">💬 WhatsApp</button>`:''}
-            </div>
-            <div style="font-family:'Playfair Display',serif;font-size:15px;font-weight:700;color:#f39c12;">${R(c.valor)}</div>
-          </div>
-        </div>
-      </div>`;
-    });
-  }
-  document.getElementById('dashboard-content').innerHTML=html;
+
+    document.getElementById('dashboard-content').innerHTML=html;
 }
 
 function renderCli(){
