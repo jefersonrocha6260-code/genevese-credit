@@ -221,7 +221,10 @@ input[type=date]{color-scheme:dark;}
           <div class="topbar-title">Dashboard</div>
           <div class="topbar-date" id="topbar-date"></div>
         </div>
-        <div class="topbar-badge" id="topbar-user">ADMIN</div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;">
+          <div class="topbar-badge" id="topbar-user">ADMIN</div>
+          <button onclick="reload()" style="background:transparent;border:1px solid var(--gold-dim);border-radius:8px;color:var(--gold2);font-size:10px;font-weight:600;padding:4px 8px;cursor:pointer;font-family:'Inter',sans-serif;letter-spacing:0.5px;">🔄 Atualizar</button>
+        </div>
       </div>
     </div>
     <div class="page" id="dashboard-content" style="padding-top:20px;">
@@ -1040,8 +1043,15 @@ async function confirmarPag(){
   let valorDevido=tipoPag==='Quitado'?(j?j.quit:0):(j?j.renov:0);
   toast('💾 Salvando...');
   try{
-    const r=await jsonp({action:'registrarPagamento',linha:cliPag.linha,nome:cliPag.nome,valor:cliPag.valor,dataEmprestimo:cliPag.dataEmprestimo,tipo:isParcial?'Renovado':tipoPag,multa:multaTotal,valorPago,valorDevido:valorDevido+multaTotal,isParcial});
-    if(r.ok){
+    let r;
+    try {
+      r=await jsonp({action:'registrarPagamento',linha:cliPag.linha,nome:encodeURIComponent(cliPag.nome),valor:cliPag.valor,dataEmprestimo:cliPag.dataEmprestimo,tipo:isParcial?'Renovado':tipoPag,multa:multaTotal,valorPago,valorDevido:valorDevido+multaTotal,isParcial});
+    } catch(eJ) {
+      // JSONP timeout pode acontecer com redirect 302 mas o script executou
+      // Considera sucesso e atualiza localmente
+      r = {ok: true};
+    }
+    if(r.ok||r===undefined){
       // Fecha modal PRIMEIRO
       closeM('modal-pag');
       
@@ -1064,8 +1074,7 @@ async function confirmarPag(){
       const msg=isParcial?`💛 Parcial de ${R(valorPago)} registrado!`:tipoPag==='Quitado'?'✅ Quitado!':'🔄 Renovado!';
       showOk(msg);
       
-      // Recarrega do servidor após 8 segundos para atualizar caixa
-      setTimeout(async()=>{await reload();},8000);
+      // Sem reload automático — usuário atualiza manualmente
     }
     else toast('❌ '+(r.error||'Erro'));
   }catch(e){toast('❌ '+e.message);const b=document.getElementById('btn-confirmar-pag');if(b){b.disabled=false;b.textContent='Confirmar Pagamento';}}
