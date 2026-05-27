@@ -1050,10 +1050,10 @@ async function confirmarPag(){
       } else if(tipoPag==='Renovado' || isParcial){
         const idx=clientes.findIndex(c=>c.linha===cliPag.linha);
         if(idx>=0){
-          // Nova data = vencimento atual + 7 dias
+          // Nova data de empréstimo = vencimento atual (dataEmprestimo + 7)
+          // Assim o próximo vencimento será daqui a 7 dias
           const vencAtual=addD(cliPag.dataEmprestimo,7);
-          const novaData=toS(addD(toS(vencAtual),7));
-          clientes[idx].dataEmprestimo=novaData;
+          clientes[idx].dataEmprestimo=toS(vencAtual);
         }
       }
       renderCli();
@@ -1070,8 +1070,8 @@ async function confirmarPag(){
         projecaoMes: 0,
       });
       
-      // Recarrega do servidor após 5 segundos para atualizar caixa
-      setTimeout(async()=>{await reload();},5000);
+      // Não recarrega automaticamente para não sobrescrever estado local
+      // O caixa será atualizado na próxima navegação manual
     }
     else toast('❌ '+(r.error||'Erro'));
   }catch(e){toast('❌ '+e.message);}
