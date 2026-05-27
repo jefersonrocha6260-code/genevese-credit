@@ -470,6 +470,20 @@ input[type=date]{color-scheme:dark;}
   </div>
 </div>
 
+<!-- MODAL AÇÃO MOVIMENTAÇÃO -->
+<div id="modal-acao-mov" class="modal-overlay" onclick="closeM('modal-acao-mov')">
+  <div class="modal-sheet" onclick="event.stopPropagation()" style="padding-bottom:32px;">
+    <div class="modal-handle"></div>
+    <button class="modal-close" onclick="closeM('modal-acao-mov')">✕</button>
+    <div class="modal-title" id="acao-mov-title">Excluir Movimentação</div>
+    <div id="acao-mov-info" style="font-size:13px;color:var(--text2);margin-bottom:20px;line-height:1.7;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px;"></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+      <button onclick="closeM('modal-acao-mov')" style="padding:13px;background:var(--card);border:1px solid var(--border);border-radius:12px;color:var(--text2);font-size:13px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;">Cancelar</button>
+      <button id="btn-confirmar-acao-mov" onclick="confirmarAcaoMov()" style="padding:13px;background:var(--red-dim);border:1px solid var(--red);border-radius:12px;color:var(--red);font-size:13px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;">Confirmar</button>
+    </div>
+  </div>
+</div>
+
 <!-- MODAL WHATSAPP ESCOLHER NÚMERO -->
 <div id="modal-wpp" class="modal-overlay" onclick="closeM('modal-wpp')">
   <div class="modal-sheet" onclick="event.stopPropagation()" style="padding-bottom:32px;">
@@ -481,7 +495,7 @@ input[type=date]{color-scheme:dark;}
 </div>
 
 <script>
-const API='https://script.google.com/macros/s/AKfycbz4-lR4BGezI4WCjgfv4Wz01uk3u---oIPC_YBrrxGI2OBDp7P1Yx8kUmP5cKGCmcDA/exec';
+const API='https://script.google.com/macros/s/AKfycbw9DAWyvGm0jedV2gcZL3JK1V_-PJn4gYGTtyv-fTBHleW6L09S9ABIFpcsN3QDWPzY/exec';
 const JUROS=[{emp:250,quit:350,renov:100},{emp:350,quit:490,renov:140},{emp:400,quit:560,renov:160},{emp:500,quit:690,renov:190},{emp:800,quit:1100,renov:300},{emp:1000,quit:1390,renov:390}];
 const USERS={admin:{senha:'1234',nome:'Admin',perfil:'admin'},cobranca:{senha:'5678',nome:'Cobrança',perfil:'cobranca'}};
 
@@ -1152,12 +1166,20 @@ function renderMovimentosCaixa(saldo, movimentos){
       const isEntrada = m.tipo==='Entrada';
       const cor = isEntrada ? 'var(--green)' : 'var(--red)';
       const sinal = isEntrada ? '+' : '-';
-      html+=`<div style="background:var(--card);border:1px solid var(--border);border-left:3px solid ${cor};border-radius:12px;padding:12px 14px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center;animation:fadeIn 0.3s ease ${i*0.02}s both;">
-        <div>
-          <div style="font-size:13px;font-weight:600;color:var(--text);">${m.descricao}</div>
-          <div style="font-size:11px;color:var(--text3);margin-top:2px;">${m.dataHora.split(',')[1]||m.dataHora}</div>
+      // Só mostra ações para movimentos que vieram de pagamentos (têm linhaCliente)
+      const temCliente = m.linhaCliente && m.linhaCliente > 0;
+      html+=`<div style="background:var(--card);border:1px solid var(--border);border-left:3px solid ${cor};border-radius:14px;padding:12px 14px;margin-bottom:8px;animation:fadeIn 0.3s ease ${i*0.02}s both;">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">
+          <div>
+            <div style="font-size:13px;font-weight:600;color:var(--text);">${m.descricao}</div>
+            <div style="font-size:11px;color:var(--text3);margin-top:2px;">${m.dataHora.split(',')[1]||m.dataHora}</div>
+          </div>
+          <div style="font-size:15px;font-weight:700;color:${cor};">${sinal}${R(m.valor)}</div>
         </div>
-        <div style="font-size:15px;font-weight:700;color:${cor};">${sinal}${R(m.valor)}</div>
+        <div style="display:flex;gap:6px;">
+          ${temCliente?`<button onclick="abrirAcaoMov(${JSON.stringify(m).replace(/'/g,'\'')},'desfazer')" style="flex:1;padding:7px;background:var(--orange-dim);border:1px solid var(--orange);border-radius:8px;color:var(--orange);font-size:10px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;">↩️ Desfazer</button>`:''}
+          <button onclick="abrirAcaoMov(${JSON.stringify(m).replace(/'/g,'\'')},'excluir')" style="flex:1;padding:7px;background:var(--red-dim);border:1px solid #e74c3c33;border-radius:8px;color:var(--red);font-size:10px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;">🗑️ Excluir</button>
+        </div>
       </div>`;
     });
   }
@@ -1203,6 +1225,62 @@ async function desfazerAcao(linhaHist, linhaCliente, tipo, dataEmprestimo, nome)
   }catch(e){toast('❌ '+e.message);}
 }
 
+
+let movAcaoAtual = null;
+let tipoAcaoAtual = null;
+
+function abrirAcaoMov(mov, acao) {
+  movAcaoAtual = mov;
+  tipoAcaoAtual = acao;
+  const isDesfazer = acao === 'desfazer';
+  const cor = isDesfazer ? 'var(--orange)' : 'var(--red)';
+  document.getElementById('acao-mov-title').textContent = isDesfazer ? '↩️ Desfazer Movimentação' : '🗑️ Excluir Movimentação';
+  document.getElementById('acao-mov-title').style.color = cor;
+  document.getElementById('btn-confirmar-acao-mov').style.background = isDesfazer ? 'var(--orange-dim)' : 'var(--red-dim)';
+  document.getElementById('btn-confirmar-acao-mov').style.borderColor = isDesfazer ? 'var(--orange)' : 'var(--red)';
+  document.getElementById('btn-confirmar-acao-mov').style.color = isDesfazer ? 'var(--orange)' : 'var(--red)';
+  
+  const isEntrada = mov.tipo === 'Entrada';
+  const info = isDesfazer
+    ? `Desfazer: <strong style="color:var(--text);">${mov.descricao}</strong><br><br>
+       Valor: <strong>${isEntrada?'-':'+'}${R(mov.valor)}</strong> será estornado do caixa.<br>
+       O cliente voltará ao estado anterior.`
+    : `Excluir: <strong style="color:var(--text);">${mov.descricao}</strong><br><br>
+       Valor: <strong>${isEntrada?'-':'+'}${R(mov.valor)}</strong> será estornado do caixa.<br>
+       <span style="color:var(--text3);font-size:11px;">O cliente NÃO volta ao estado anterior.</span>`;
+  document.getElementById('acao-mov-info').innerHTML = info;
+  openM('modal-acao-mov');
+}
+
+async function confirmarAcaoMov() {
+  if(!movAcaoAtual) return;
+  const mov = movAcaoAtual;
+  const acao = tipoAcaoAtual;
+  toast('💾 Processando...');
+  try {
+    // 1. Estorna no caixa (inverte entrada/saída)
+    const tipoEstorno = mov.tipo === 'Entrada' ? 'Saída' : 'Entrada';
+    await jsonp({action:'movimentarCaixa', descricao:'Estorno: '+mov.descricao, tipo:tipoEstorno, valor:mov.valor});
+    
+    // 2. Se desfazer, volta o cliente
+    if(acao === 'desfazer' && mov.linhaCliente > 0) {
+      await jsonp({action:'desfazerHistorico', linhaHist:mov.linha, linhaCliente:mov.linhaCliente, tipo:mov.tipo==='Entrada'?'Renovado':'Quitado', dataEmprestimo:mov.dataEmprestimo, nome:mov.nome||''});
+    }
+    
+    closeM('modal-acao-mov');
+    showOk(acao==='desfazer'?'↩️ Movimentação desfeita!':'🗑️ Movimentação excluída!');
+    
+    // Recarrega caixa
+    const cx = await jsonp({action:'getCaixaReal'});
+    renderMovimentosCaixa(cx.saldo||0, cx.movimentos||[]);
+    
+    // Se desfez, recarrega clientes
+    if(acao === 'desfazer') await reload();
+    
+    movAcaoAtual = null;
+    tipoAcaoAtual = null;
+  } catch(e) { toast('❌ '+e.message); }
+}
 
 function abrirMovCaixa(tipo){
   const isSup = tipo==='suprimento';
