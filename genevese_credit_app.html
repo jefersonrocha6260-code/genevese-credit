@@ -364,7 +364,7 @@ input[type=date]{color-scheme:dark;}
         <div class="summary-value" id="pag-total"></div>
         <div id="pag-breakdown" style="font-size:11px;color:var(--text3);margin-top:4px;"></div>
       </div>
-      <button class="btn-gold" onclick="confirmarPag()">Confirmar Pagamento</button>
+      <button class="btn-gold" id="btn-confirmar-pag" onclick="confirmarPag()">Confirmar Pagamento</button>
     </div>
   </div>
 </div>
@@ -1028,6 +1028,9 @@ document.getElementById('valor-pago-input').addEventListener('input',calcT);
 
 async function confirmarPag(){
   if(!cliPag||!tipoPag)return;
+  // Bloqueia botão para evitar duplo clique
+  const btnConf=document.getElementById('btn-confirmar-pag');
+  if(btnConf){btnConf.disabled=true;btnConf.textContent='Salvando...';}
   const j=getJ(cliPag.valor);
   const valorPago=Number(document.getElementById('valor-pago-input').value)||0;
   const multa21=m21?30:0;
@@ -1039,42 +1042,33 @@ async function confirmarPag(){
   try{
     const r=await jsonp({action:'registrarPagamento',linha:cliPag.linha,nome:cliPag.nome,valor:cliPag.valor,dataEmprestimo:cliPag.dataEmprestimo,tipo:isParcial?'Renovado':tipoPag,multa:multaTotal,valorPago,valorDevido:valorDevido+multaTotal,isParcial});
     if(r.ok){
+      // Fecha modal PRIMEIRO
       closeM('modal-pag');
-      const msg=isParcial?`💛 Parcial de ${R(valorPago)} registrado!`:tipoPag==='Quitado'?'✅ Quitado!':'🔄 Renovado!';
-      showOk(msg);
       
-      // Atualiza localmente de imediato (sem esperar a planilha)
+      // Atualiza localmente
       if(tipoPag==='Quitado'){
         const idx=clientes.findIndex(c=>c.linha===cliPag.linha);
         if(idx>=0) clientes[idx].status='Quitado';
-      } else if(tipoPag==='Renovado' || isParcial){
+      } else if(tipoPag==='Renovado'||isParcial){
         const idx=clientes.findIndex(c=>c.linha===cliPag.linha);
         if(idx>=0){
-          // Nova data de empréstimo = vencimento atual (dataEmprestimo + 7)
-          // Assim o próximo vencimento será daqui a 7 dias
           const vencAtual=addD(cliPag.dataEmprestimo,7);
           clientes[idx].dataEmprestimo=toS(vencAtual);
         }
       }
-      renderCli();
-      renderDash({
-        totalNaRua: clientes.filter(c=>c.status==='Ativo').reduce((s,c)=>s+c.valor,0),
-        ativos: clientes.filter(c=>c.status==='Ativo').length,
-        emAtraso: clientes.filter(c=>c.status==='Ativo'&&diasA(c.dataEmprestimo)>0).length,
-        venceHoje: clientes.filter(c=>{if(c.status!=='Ativo')return false;const v=addD(c.dataEmprestimo,7);v.setHours(0,0,0,0);const h=new Date();h.setHours(0,0,0,0);return v.getTime()===h.getTime();}).length,
-        caixaMes: 0,
-        totalPrejuizo: prejuizos.reduce((s,p)=>s+p.quitar,0),
-        totalPendencias: pendencias.reduce((s,p)=>s+p.saldo,0),
-        totalCustosMes: 0,
-        projecaoSemana: 0,
-        projecaoMes: 0,
-      });
       
-      // Não recarrega automaticamente para não sobrescrever estado local
-      // O caixa será atualizado na próxima navegação manual
+      // Atualiza telas
+      renderCli();
+      
+      // Mostra mensagem
+      const msg=isParcial?`💛 Parcial de ${R(valorPago)} registrado!`:tipoPag==='Quitado'?'✅ Quitado!':'🔄 Renovado!';
+      showOk(msg);
+      
+      // Recarrega do servidor após 8 segundos para atualizar caixa
+      setTimeout(async()=>{await reload();},8000);
     }
     else toast('❌ '+(r.error||'Erro'));
-  }catch(e){toast('❌ '+e.message);}
+  }catch(e){toast('❌ '+e.message);const b=document.getElementById('btn-confirmar-pag');if(b){b.disabled=false;b.textContent='Confirmar Pagamento';}}
 }
 
 function abrirModalCusto(){catCusto='Anúncios';document.getElementById('custo-desc').value='';document.getElementById('custo-valor').value='';document.querySelectorAll('.cat-chip').forEach((c,i)=>{c.classList.toggle('active',i===0);});openM('modal-custo');}
