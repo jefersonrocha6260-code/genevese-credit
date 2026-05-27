@@ -445,9 +445,28 @@ input[type=date]{color-scheme:dark;}
     <div class="modal-handle"></div>
     <button class="modal-close" onclick="closeM('modal-hist')">✕</button>
     <div class="modal-title">💰 Caixa Real</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;">
+      <button onclick="abrirMovCaixa('suprimento')" style="padding:12px;background:#2ecc7122;border:1px solid var(--green);border-radius:12px;color:var(--green);font-size:12px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;">➕ Suprimento</button>
+      <button onclick="abrirMovCaixa('sangria')" style="padding:12px;background:var(--red-dim);border:1px solid var(--red);border-radius:12px;color:var(--red);font-size:12px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;">➖ Sangria</button>
+    </div>
     <div id="hist-content">
       <div style="text-align:center;padding:30px;color:var(--text3);"><div style="width:24px;height:24px;border:2px solid var(--border);border-top:2px solid var(--gold);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 10px;"></div>Carregando...</div>
     </div>
+  </div>
+</div>
+
+<!-- MODAL SANGRIA/SUPRIMENTO -->
+<div id="modal-mov-caixa" class="modal-overlay" onclick="closeM('modal-mov-caixa')">
+  <div class="modal-sheet" onclick="event.stopPropagation()" style="padding-bottom:32px;">
+    <div class="modal-handle"></div>
+    <button class="modal-close" onclick="closeM('modal-mov-caixa')">✕</button>
+    <div class="modal-title" id="mov-caixa-title">Suprimento</div>
+    <input type="hidden" id="mov-caixa-tipo">
+    <label class="fl">Valor (R$)</label>
+    <input id="mov-caixa-valor" class="fi" type="number" placeholder="0,00">
+    <label class="fl">Observação</label>
+    <input id="mov-caixa-obs" class="fi" placeholder="Ex: Reforço de caixa, retirada pessoal...">
+    <button class="btn-gold" id="btn-mov-caixa" onclick="confirmarMovCaixa()">Confirmar</button>
   </div>
 </div>
 
@@ -462,7 +481,7 @@ input[type=date]{color-scheme:dark;}
 </div>
 
 <script>
-const API='https://script.google.com/macros/s/AKfycbwdKyiC0gxNeGUEM5-6jkN_RAYT0DpH3Ukl963lCz136s_LZuTIHgExHxlaTu7h9er3/exec';
+const API='https://script.google.com/macros/s/AKfycbz4-lR4BGezI4WCjgfv4Wz01uk3u---oIPC_YBrrxGI2OBDp7P1Yx8kUmP5cKGCmcDA/exec';
 const JUROS=[{emp:250,quit:350,renov:100},{emp:350,quit:490,renov:140},{emp:400,quit:560,renov:160},{emp:500,quit:690,renov:190},{emp:800,quit:1100,renov:300},{emp:1000,quit:1390,renov:390}];
 const USERS={admin:{senha:'1234',nome:'Admin',perfil:'admin'},cobranca:{senha:'5678',nome:'Cobrança',perfil:'cobranca'}};
 
@@ -1144,6 +1163,37 @@ async function desfazerAcao(linhaHist, linhaCliente, tipo, dataEmprestimo, nome)
   }catch(e){toast('❌ '+e.message);}
 }
 
+
+function abrirMovCaixa(tipo){
+  const isSup = tipo==='suprimento';
+  document.getElementById('mov-caixa-tipo').value=tipo;
+  document.getElementById('mov-caixa-title').textContent=isSup?'➕ Suprimento':'➖ Sangria';
+  document.getElementById('mov-caixa-title').style.color=isSup?'var(--green)':'var(--red)';
+  document.getElementById('btn-mov-caixa').style.background=isSup?'linear-gradient(135deg,#27ae60,#2ecc71)':'linear-gradient(135deg,#c0392b,#e74c3c)';
+  document.getElementById('mov-caixa-valor').value='';
+  document.getElementById('mov-caixa-obs').value='';
+  openM('modal-mov-caixa');
+}
+
+async function confirmarMovCaixa(){
+  const tipo=document.getElementById('mov-caixa-tipo').value;
+  const valor=Number(document.getElementById('mov-caixa-valor').value||0);
+  const obs=document.getElementById('mov-caixa-obs').value.trim();
+  if(!valor){toast('⚠️ Digite o valor');return;}
+  const isSup=tipo==='suprimento';
+  const descricao=(isSup?'Suprimento':'Sangria')+(obs?' - '+obs:'');
+  toast('💾 Salvando...');
+  try{
+    const r=await jsonp({action:'movimentarCaixa',descricao,tipo:isSup?'Entrada':'Saída',valor});
+    if(r.ok){
+      closeM('modal-mov-caixa');
+      showOk(isSup?`➕ Suprimento de ${R(valor)} registrado!`:`➖ Sangria de ${R(valor)} registrada!`);
+      // Recarrega o caixa
+      const cx=await jsonp({action:'getCaixaReal'});
+      renderMovimentosCaixa(cx.saldo||0,cx.movimentos||[]);
+    } else toast('❌ '+(r.error||'Erro'));
+  }catch(e){toast('❌ '+e.message);}
+}
 
 function openM(id){document.getElementById(id).classList.add('open');}
 function closeM(id){document.getElementById(id).classList.remove('open');}
