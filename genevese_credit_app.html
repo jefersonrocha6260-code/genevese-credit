@@ -1063,27 +1063,24 @@ async function confirmarPag(){
   bloqueioReload=true;
   setTimeout(()=>{bloqueioReload=false;},15000);
 
-  // Dispara para o servidor em background usando script tag (ignora redirect)
-  try{
-    const p=new URLSearchParams({
-      action:'registrarPagamento',
-      linha:cliPag.linha,
-      nome:cliPag.nome,
-      valor:cliPag.valor,
-      dataEmprestimo:cliPag.dataEmprestimo,
-      tipo:tipoFinal,
-      multa:multaTotal,
-      valorPago,
-      valorDevido:valorDevido+multaTotal,
-      isParcial,
-      callback:'noop'
-    });
-    window.noop=function(){};
-    const s=document.createElement('script');
-    s.src=API+'?'+p.toString();
-    document.head.appendChild(s);
-    setTimeout(()=>{if(s.parentNode)s.parentNode.removeChild(s);},10000);
-  }catch(e){}
+  // Dispara para o servidor via JSONP (fire and forget — não trava a tela)
+  jsonp({
+    action:'registrarPagamento',
+    linha:cliPag.linha,
+    nome:cliPag.nome,
+    valor:cliPag.valor,
+    dataEmprestimo:cliPag.dataEmprestimo,
+    tipo:tipoFinal,
+    multa:multaTotal,
+    valorPago,
+    valorDevido:valorDevido+multaTotal,
+    isParcial
+  }).then(r=>{
+    if(r&&r.ok) console.log('✅ Salvo no servidor');
+    else console.log('⚠️ Resposta servidor:', r);
+  }).catch(e=>{
+    console.log('⚠️ Erro servidor (pode ser normal):', e.message);
+  });
 }
 
 
