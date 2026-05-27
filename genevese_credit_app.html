@@ -1178,6 +1178,7 @@ async function abrirHistorico(){
 }
 
 function renderMovimentosCaixa(saldo, movimentos){
+  movCaixaCache = []; // Reseta cache
   const corSaldo = saldo >= 0 ? 'var(--green)' : 'var(--red)';
   
   // Filtra só movimentos de hoje
@@ -1221,6 +1222,9 @@ function renderMovimentosCaixa(saldo, movimentos){
       const sinal = isEntrada ? '+' : '-';
       // Só mostra ações para movimentos que vieram de pagamentos (têm linhaCliente)
       const temCliente = m.linhaCliente && m.linhaCliente > 0;
+      // Salva no array global para referenciar por índice
+      movCaixaCache.push(m);
+      const idx = movCaixaCache.length - 1;
       html+=`<div style="background:var(--card);border:1px solid var(--border);border-left:3px solid ${cor};border-radius:14px;padding:12px 14px;margin-bottom:8px;animation:fadeIn 0.3s ease ${i*0.02}s both;">
         <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">
           <div>
@@ -1230,8 +1234,8 @@ function renderMovimentosCaixa(saldo, movimentos){
           <div style="font-size:15px;font-weight:700;color:${cor};">${sinal}${R(m.valor)}</div>
         </div>
         <div style="display:flex;gap:6px;">
-          ${temCliente?`<button onclick="abrirAcaoMov(${JSON.stringify(m).replace(/'/g,'\'')},'desfazer')" style="flex:1;padding:7px;background:var(--orange-dim);border:1px solid var(--orange);border-radius:8px;color:var(--orange);font-size:10px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;">↩️ Desfazer</button>`:''}
-          <button onclick="abrirAcaoMov(${JSON.stringify(m).replace(/'/g,'\'')},'excluir')" style="flex:1;padding:7px;background:var(--red-dim);border:1px solid #e74c3c33;border-radius:8px;color:var(--red);font-size:10px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;">🗑️ Excluir</button>
+          ${temCliente?`<button onclick="abrirAcaoMovIdx(${idx},'desfazer')" style="flex:1;padding:7px;background:var(--orange-dim);border:1px solid var(--orange);border-radius:8px;color:var(--orange);font-size:10px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;">↩️ Desfazer</button>`:''}
+          <button onclick="abrirAcaoMovIdx(${idx},'excluir')" style="flex:1;padding:7px;background:var(--red-dim);border:1px solid #e74c3c33;border-radius:8px;color:var(--red);font-size:10px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;">🗑️ Excluir</button>
         </div>
       </div>`;
     });
@@ -1281,6 +1285,13 @@ async function desfazerAcao(linhaHist, linhaCliente, tipo, dataEmprestimo, nome)
 
 let movAcaoAtual = null;
 let tipoAcaoAtual = null;
+let movCaixaCache = [];
+
+function abrirAcaoMovIdx(idx, acao) {
+  const m = movCaixaCache[idx];
+  if(!m) return;
+  abrirAcaoMov(m, acao);
+}
 
 function abrirAcaoMov(mov, acao) {
   movAcaoAtual = mov;
