@@ -1078,6 +1078,14 @@ async function confirmarPag(){
 }
 
 
+function abrirModalCusto(){
+  catCusto='Anúncios';
+  document.getElementById('custo-desc').value='';
+  document.getElementById('custo-valor').value='';
+  document.querySelectorAll('.cat-chip').forEach((c,i)=>{c.classList.toggle('active',i===0);});
+  openM('modal-custo');
+}
+
 async function confirmarCusto(){
   const valor=Number(document.getElementById('custo-valor').value);
   if(!valor){toast('⚠️ Digite o valor');return;}
@@ -1104,23 +1112,55 @@ async function abrirHistorico(){
 
 function renderMovimentosCaixa(saldo, movimentos){
   const corSaldo = saldo >= 0 ? 'var(--green)' : 'var(--red)';
-  let html = `<div style="background:linear-gradient(135deg,#1a2a4a,#141e2e);border:1px solid var(--gold-dim);border-radius:14px;padding:16px 18px;margin-bottom:16px;text-align:center;">
+  
+  // Filtra só movimentos de hoje
+  const hoje = new Date().toLocaleDateString('pt-BR');
+  const hoje2 = new Date();
+  const movHoje = movimentos.filter(m => {
+    try {
+      // Tenta comparar a data
+      const partes = m.dataHora.split(',')[0].trim(); // pega só a data "dd/mm/yyyy"
+      return partes === hoje;
+    } catch(e) { return false; }
+  });
+
+  // Total entradas/saídas de hoje
+  const entradasHoje = movHoje.filter(m=>m.tipo==='Entrada').reduce((s,m)=>s+m.valor,0);
+  const saidasHoje = movHoje.filter(m=>m.tipo==='Saída').reduce((s,m)=>s+m.valor,0);
+
+  let html = `
+  <div style="background:linear-gradient(135deg,#1a2a4a,#141e2e);border:1px solid var(--gold-dim);border-radius:14px;padding:16px 18px;margin-bottom:12px;text-align:center;">
     <div style="font-size:10px;font-weight:700;color:var(--text3);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:6px;">SALDO ATUAL</div>
     <div style="font-family:'Playfair Display',serif;font-size:30px;font-weight:700;color:${corSaldo};">${R(saldo)}</div>
-  </div>`;
-  if(movimentos.length===0){html+='<div class="empty"><div class="empty-text">Nenhuma movimentação</div></div>';}
-  movimentos.forEach((m,i)=>{
-    const isEntrada = m.tipo==='Entrada';
-    const cor = isEntrada ? 'var(--green)' : 'var(--red)';
-    const sinal = isEntrada ? '+' : '-';
-    html+=`<div style="background:var(--card);border:1px solid var(--border);border-left:3px solid ${cor};border-radius:12px;padding:12px 14px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center;animation:fadeIn 0.3s ease ${i*0.02}s both;">
-      <div>
-        <div style="font-size:13px;font-weight:600;color:var(--text);">${m.descricao}</div>
-        <div style="font-size:11px;color:var(--text3);margin-top:2px;">${m.dataHora}</div>
-      </div>
-      <div style="font-size:15px;font-weight:700;color:${cor};">${sinal}${R(m.valor)}</div>
-    </div>`;
-  });
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px;">
+    <div style="background:var(--green-dim);border:1px solid #2ecc7133;border-radius:12px;padding:12px;text-align:center;">
+      <div style="font-size:10px;font-weight:700;color:var(--green);letter-spacing:1px;margin-bottom:4px;">ENTRADAS HOJE</div>
+      <div style="font-size:16px;font-weight:700;color:var(--green);">+${R(entradasHoje)}</div>
+    </div>
+    <div style="background:var(--red-dim);border:1px solid #e74c3c33;border-radius:12px;padding:12px;text-align:center;">
+      <div style="font-size:10px;font-weight:700;color:var(--red);letter-spacing:1px;margin-bottom:4px;">SAÍDAS HOJE</div>
+      <div style="font-size:16px;font-weight:700;color:var(--red);">-${R(saidasHoje)}</div>
+    </div>
+  </div>
+  <div style="font-size:10px;font-weight:700;color:var(--text3);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;">MOVIMENTAÇÕES DE HOJE</div>`;
+
+  if(movHoje.length===0){
+    html+='<div class="empty"><div class="empty-icon">📋</div><div class="empty-text">Nenhuma movimentação hoje</div></div>';
+  } else {
+    movHoje.forEach((m,i)=>{
+      const isEntrada = m.tipo==='Entrada';
+      const cor = isEntrada ? 'var(--green)' : 'var(--red)';
+      const sinal = isEntrada ? '+' : '-';
+      html+=`<div style="background:var(--card);border:1px solid var(--border);border-left:3px solid ${cor};border-radius:12px;padding:12px 14px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center;animation:fadeIn 0.3s ease ${i*0.02}s both;">
+        <div>
+          <div style="font-size:13px;font-weight:600;color:var(--text);">${m.descricao}</div>
+          <div style="font-size:11px;color:var(--text3);margin-top:2px;">${m.dataHora.split(',')[1]||m.dataHora}</div>
+        </div>
+        <div style="font-size:15px;font-weight:700;color:${cor};">${sinal}${R(m.valor)}</div>
+      </div>`;
+    });
+  }
   document.getElementById('hist-content').innerHTML=html;
 }
 
