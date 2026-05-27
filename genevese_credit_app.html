@@ -430,7 +430,26 @@ input[type=date]{color-scheme:dark;}
   <div class="modal-sheet" onclick="event.stopPropagation()" style="padding-bottom:32px;">
     <div class="modal-handle"></div>
     <div class="modal-title" style="color:var(--red);">Excluir Cliente</div>
-    <div id="del-info" style="font-size:14px;color:var(--text2);margin-bottom:20px;line-height:1.6;"></div>
+    <div id="del-info" style="font-size:14px;color:var(--text2);margin-bottom:14px;line-height:1.6;"></div>
+    
+    <div style="font-size:10px;font-weight:700;color:var(--text3);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:8px;">Retornar valor ao caixa?</div>
+    <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px;">
+      <label onclick="selOpcaoDel('total')" id="del-opt-total" style="display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px 14px;cursor:pointer;transition:all 0.2s;">
+        <div id="del-radio-total" style="width:18px;height:18px;border-radius:50%;border:2px solid var(--border);flex-shrink:0;"></div>
+        <div><div style="font-size:13px;font-weight:600;color:var(--text);">Retornar valor total emprestado</div><div id="del-valor-total-label" style="font-size:11px;color:var(--text3);margin-top:1px;"></div></div>
+      </label>
+      <label onclick="selOpcaoDel('parcial')" id="del-opt-parcial" style="display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px 14px;cursor:pointer;transition:all 0.2s;">
+        <div id="del-radio-parcial" style="width:18px;height:18px;border-radius:50%;border:2px solid var(--border);flex-shrink:0;"></div>
+        <div style="flex:1;"><div style="font-size:13px;font-weight:600;color:var(--text);">Retornar valor específico</div>
+          <input id="del-valor-parcial" type="number" onclick="event.stopPropagation();selOpcaoDel('parcial')" placeholder="Digite o valor..." style="width:100%;margin-top:6px;padding:8px 10px;background:var(--bg2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:13px;font-family:'Inter',sans-serif;outline:none;">
+        </div>
+      </label>
+      <label onclick="selOpcaoDel('nao')" id="del-opt-nao" style="display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px 14px;cursor:pointer;transition:all 0.2s;">
+        <div id="del-radio-nao" style="width:18px;height:18px;border-radius:50%;border:2px solid var(--border);flex-shrink:0;"></div>
+        <div><div style="font-size:13px;font-weight:600;color:var(--text);">Não retornar ao caixa</div><div style="font-size:11px;color:var(--text3);margin-top:1px;">Ex: cliente já pagou parcialmente</div></div>
+      </label>
+    </div>
+
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
       <button onclick="closeM('modal-del')" style="padding:13px;background:var(--card);border:1px solid var(--border);border-radius:12px;color:var(--text2);font-size:13px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;">Cancelar</button>
       <button onclick="confirmarExclusao()" style="padding:13px;background:var(--red-dim);border:1px solid var(--red);border-radius:12px;color:var(--red);font-size:13px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;">Excluir</button>
@@ -925,9 +944,26 @@ async function salvarCliente(){
   }catch(e){toast('❌ '+e.message);}
 }
 
+let opcaoCaixaDel = 'total';
+
+function selOpcaoDel(opcao) {
+  opcaoCaixaDel = opcao;
+  ['total','parcial','nao'].forEach(o => {
+    const radio = document.getElementById('del-radio-'+o);
+    const opt = document.getElementById('del-opt-'+o);
+    const ativo = o === opcao;
+    radio.style.background = ativo ? 'var(--gold)' : 'transparent';
+    radio.style.borderColor = ativo ? 'var(--gold)' : 'var(--border)';
+    opt.style.borderColor = ativo ? 'var(--gold-dim)' : 'var(--border)';
+  });
+}
+
 function abrirDel(linha){
   cliDel=clientes.find(c=>c.linha===linha);if(!cliDel)return;
-  document.getElementById('del-info').innerHTML=`Tem certeza que deseja excluir <strong style="color:var(--text);">${cliDel.nome}</strong>?<br><br>Esta ação não pode ser desfeita.`;
+  document.getElementById('del-info').innerHTML=`Excluir <strong style="color:var(--text);">${cliDel.nome}</strong>?<br><span style="color:var(--text3);font-size:12px;">Esta ação não pode ser desfeita.</span>`;
+  document.getElementById('del-valor-total-label').textContent='Retorna ' + R(cliDel.valor) + ' ao caixa';
+  document.getElementById('del-valor-parcial').value='';
+  selOpcaoDel('total');
   openM('modal-del');
 }
 async function confirmarExclusao(){
@@ -935,7 +971,24 @@ async function confirmarExclusao(){
   toast('🗑️ Excluindo...');
   try{
     const r=await jsonp({action:'excluirCliente',linha:cliDel.linha});
-    if(r.ok){closeM('modal-del');setTimeout(async()=>{await reload();},2000);showOk(`🗑️ ${cliDel.nome} excluído.`);cliDel=null;}
+    if(r.ok){
+      closeM('modal-del');
+      
+      // Processa retorno ao caixa
+      if(opcaoCaixaDel==='total'){
+        jsonp({action:'movimentarCaixa',descricao:'Retorno exclusão: '+cliDel.nome,tipo:'Entrada',valor:cliDel.valor}).catch(()=>{});
+      } else if(opcaoCaixaDel==='parcial'){
+        const valParcial=Number(document.getElementById('del-valor-parcial').value||0);
+        if(valParcial>0){
+          jsonp({action:'movimentarCaixa',descricao:'Retorno parcial exclusão: '+cliDel.nome,tipo:'Entrada',valor:valParcial}).catch(()=>{});
+        }
+      }
+      // opcao 'nao' = não faz nada no caixa
+      
+      setTimeout(async()=>{await reload();},2000);
+      showOk(`🗑️ ${cliDel.nome} excluído.`);
+      cliDel=null;
+    }
     else toast('❌ '+(r.error||'Erro'));
   }catch(e){toast('❌ '+e.message);}
 }
