@@ -444,7 +444,7 @@ input[type=date]{color-scheme:dark;}
   <div class="modal-sheet" onclick="event.stopPropagation()">
     <div class="modal-handle"></div>
     <button class="modal-close" onclick="closeM('modal-hist')">✕</button>
-    <div class="modal-title">📜 Histórico do Caixa</div>
+    <div class="modal-title">💰 Caixa Real</div>
     <div id="hist-content">
       <div style="text-align:center;padding:30px;color:var(--text3);"><div style="width:24px;height:24px;border:2px solid var(--border);border-top:2px solid var(--gold);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 10px;"></div>Carregando...</div>
     </div>
@@ -462,7 +462,7 @@ input[type=date]{color-scheme:dark;}
 </div>
 
 <script>
-const API='https://script.google.com/macros/s/AKfycbxVKuhX0QBmT4Tfsg-rDk1JxF0tN6QB37lkUChYQtK5uh2FZm6w5adpnFaa164DMWA/exec';
+const API='https://script.google.com/macros/s/AKfycbwdKyiC0gxNeGUEM5-6jkN_RAYT0DpH3Ukl963lCz136s_LZuTIHgExHxlaTu7h9er3/exec';
 const JUROS=[{emp:250,quit:350,renov:100},{emp:350,quit:490,renov:140},{emp:400,quit:560,renov:160},{emp:500,quit:690,renov:190},{emp:800,quit:1100,renov:300},{emp:1000,quit:1390,renov:390}];
 const USERS={admin:{senha:'1234',nome:'Admin',perfil:'admin'},cobranca:{senha:'5678',nome:'Cobrança',perfil:'cobranca'}};
 
@@ -470,6 +470,7 @@ let user=null,clientes=[],prejuizos=[],pendencias=[],negociacoes=[],custos=[];
 let filtro='todos',cliPag=null,tipoPag=null,m21=false,negocPag=false;
 let cliDel=null,cliPrej=null,cliNegoc=null,modoEdit=false,catCusto='Anúncios';
 let bloqueioReload=false; // Bloqueia reload após atualização local
+let caixaReal=0;
 
 const R=v=>Number(v).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
 const D=d=>{if(!d)return'';return new Date(d+'T12:00:00').toLocaleDateString('pt-BR');};
@@ -544,12 +545,17 @@ async function init(){
 async function reload(){
   if(bloqueioReload){return;}
   try{
-    const d=await jsonp({action:'getDashboard'});
+    const [d, cx] = await Promise.all([
+      jsonp({action:'getDashboard'}),
+      jsonp({action:'getCaixaReal'})
+    ]);
     clientes=d.clientes||[];
     prejuizos=d.prejuizos||[];
     pendencias=d.pendencias||[];
     negociacoes=d.negociacoes||[];
-    renderDash(d);renderCli();renderPend();renderNegoc();renderPrej();
+    caixaReal = cx.saldo||0;
+    renderDash({...d, caixaMes: cx.saldo||0});
+    renderCli();renderPend();renderNegoc();renderPrej();
   }catch(e){
     toast('❌ Erro: '+e.message);
     document.getElementById('dashboard-content').innerHTML='<div class="empty"><div class="empty-icon">⚠️</div><div class="empty-text">Erro ao conectar</div></div>';
@@ -577,7 +583,7 @@ function renderDash(d){
     </div>
     <div class="stat-wide" onclick="abrirHistorico()" style="cursor:pointer;" title="Ver histórico do caixa">
       <div style="font-size:28px;">📈</div>
-      <div style="flex:1;"><div style="font-size:10px;font-weight:600;color:var(--text3);letter-spacing:1px;text-transform:uppercase;margin-bottom:3px;">Caixa do Mês</div><div style="font-family:'Playfair Display',serif;font-size:26px;font-weight:700;color:var(--gold2);">${R(caixaMes)}</div></div>
+      <div style="flex:1;"><div style="font-size:10px;font-weight:600;color:var(--text3);letter-spacing:1px;text-transform:uppercase;margin-bottom:3px;">Caixa Real</div><div style="font-family:'Playfair Display',serif;font-size:26px;font-weight:700;color:var(--gold2);">${R(caixaMes)}</div></div>
       <div style="font-size:11px;color:var(--text3);">📜 Histórico</div>
     </div>
     <div class="stat-grid">
@@ -1072,9 +1078,31 @@ async function abrirHistorico(){
   openM('modal-hist');
   document.getElementById('hist-content').innerHTML='<div style="text-align:center;padding:30px;color:var(--text3);"><div style="width:24px;height:24px;border:2px solid var(--border);border-top:2px solid var(--gold);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 10px;"></div>Carregando...</div>';
   try{
-    const d=await jsonp({action:'getHistorico'});
-    renderHistorico(d.historico||[]);
+    const cx=await jsonp({action:'getCaixaReal'});
+    renderMovimentosCaixa(cx.saldo||0, cx.movimentos||[]);
   }catch(e){document.getElementById('hist-content').innerHTML='<div class="empty"><div class="empty-text">Erro ao carregar</div></div>';}
+}
+
+function renderMovimentosCaixa(saldo, movimentos){
+  const corSaldo = saldo >= 0 ? 'var(--green)' : 'var(--red)';
+  let html = `<div style="background:linear-gradient(135deg,#1a2a4a,#141e2e);border:1px solid var(--gold-dim);border-radius:14px;padding:16px 18px;margin-bottom:16px;text-align:center;">
+    <div style="font-size:10px;font-weight:700;color:var(--text3);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:6px;">SALDO ATUAL</div>
+    <div style="font-family:'Playfair Display',serif;font-size:30px;font-weight:700;color:${corSaldo};">${R(saldo)}</div>
+  </div>`;
+  if(movimentos.length===0){html+='<div class="empty"><div class="empty-text">Nenhuma movimentação</div></div>';}
+  movimentos.forEach((m,i)=>{
+    const isEntrada = m.tipo==='Entrada';
+    const cor = isEntrada ? 'var(--green)' : 'var(--red)';
+    const sinal = isEntrada ? '+' : '-';
+    html+=`<div style="background:var(--card);border:1px solid var(--border);border-left:3px solid ${cor};border-radius:12px;padding:12px 14px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center;animation:fadeIn 0.3s ease ${i*0.02}s both;">
+      <div>
+        <div style="font-size:13px;font-weight:600;color:var(--text);">${m.descricao}</div>
+        <div style="font-size:11px;color:var(--text3);margin-top:2px;">${m.dataHora}</div>
+      </div>
+      <div style="font-size:15px;font-weight:700;color:${cor};">${sinal}${R(m.valor)}</div>
+    </div>`;
+  });
+  document.getElementById('hist-content').innerHTML=html;
 }
 
 function renderHistorico(hist){
