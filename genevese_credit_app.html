@@ -514,7 +514,7 @@ input[type=date]{color-scheme:dark;}
 </div>
 
 <script>
-const API='https://script.google.com/macros/s/AKfycbydYIYW6mSgbG9Ob1r5RfA2oU7V7geJ0jYo8Em41rbBw2SVvJJMdo9GKR5gExUnEzhW/exec';
+const API='https://script.google.com/macros/s/AKfycbzrHDi-Eu7KZ5yxQd0Jp3MCIzQzIzDBXiU99wjCb8wf2xcqIgj4kbfcd0OJzXqvL4jY/exec';
 const JUROS=[{emp:250,quit:350,renov:100},{emp:350,quit:490,renov:140},{emp:400,quit:560,renov:160},{emp:500,quit:690,renov:190},{emp:800,quit:1100,renov:300},{emp:1000,quit:1390,renov:390}];
 const USERS={admin:{senha:'1234',nome:'Admin',perfil:'admin'},cobranca:{senha:'5678',nome:'Cobrança',perfil:'cobranca'}};
 
@@ -1142,6 +1142,9 @@ async function confirmarPag(){
   document.querySelectorAll('.btn-pay').forEach(b=>{b.disabled=true;b.style.opacity='0.5';});
   setTimeout(()=>{document.querySelectorAll('.btn-pay').forEach(b=>{b.disabled=false;b.style.opacity='1';});},10000);
 
+  // Salva data original ANTES de qualquer atualização local
+  const dataEmprestimoOriginal = cliPag.dataEmprestimo;
+
   // Fecha modal IMEDIATAMENTE para impedir segundo clique
   closeM('modal-pag');
   // Reseta tipoPag para impedir reenvio
@@ -1166,12 +1169,13 @@ async function confirmarPag(){
   setTimeout(()=>{processandoPagamento=false;},15000);
 
   // Dispara para o servidor via JSONP (fire and forget — não trava a tela)
+  // dataEmprestimoOriginal é salvo ANTES da atualização local
   jsonp({
     action:'registrarPagamento',
     linha:cliPag.linha,
     nome:cliPag.nome,
     valor:cliPag.valor,
-    dataEmprestimo:cliPag.dataEmprestimo,
+    dataEmprestimo:dataEmprestimoOriginal,
     tipo:tipoFinal,
     multa:multaTotal,
     valorPago,
