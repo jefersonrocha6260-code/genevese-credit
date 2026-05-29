@@ -533,7 +533,7 @@ input[type=date]{color-scheme:dark;}
 </div>
 
 <script>
-const API='https://script.google.com/macros/s/AKfycbyqV86WZZiNYOWXOwkvKBSkt6J8y67TwAAtCrFYDcA3sDhKASGBS1r-HVoCp-kikMju/exec';
+const API='https://script.google.com/macros/s/AKfycbxyfmePLWr8uTOE9rBkRzHl808nbm1CnzYfq-qMFkCYzxxavaao_ZxWkshK5SCpn3jd/exec';
 const JUROS=[{emp:250,quit:350,renov:100},{emp:350,quit:490,renov:140},{emp:400,quit:560,renov:160},{emp:500,quit:690,renov:190},{emp:800,quit:1100,renov:300},{emp:1000,quit:1390,renov:390}];
 const USERS={admin:{senha:'1234',nome:'Admin',perfil:'admin'},cobranca:{senha:'5678',nome:'Cobrança',perfil:'cobranca'}};
 
@@ -543,6 +543,16 @@ let cliDel=null,cliPrej=null,cliNegoc=null,modoEdit=false,catCusto='Anúncios';
 let bloqueioReload=false; // Bloqueia reload após atualização local
 let caixaReal=0;
 let processandoPagamento=false; // Evita duplo envio
+let processandoAcao=false; // Trava global para qualquer ação
+
+function travarAcao(fn) {
+  return async function(...args) {
+    if(processandoAcao) { toast('⏳ Aguarde...'); return; }
+    processandoAcao = true;
+    try { await fn(...args); }
+    finally { setTimeout(()=>{ processandoAcao=false; }, 3000); }
+  };
+}
 
 const R=v=>Number(v).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
 const D=d=>{if(!d)return'';return new Date(d+'T12:00:00').toLocaleDateString('pt-BR');};
@@ -717,7 +727,7 @@ function renderCli(){
     if(filtro==='Hoje'){const v=addD(c.dataEmprestimo,7);v.setHours(0,0,0,0);const hj=new Date();hj.setHours(0,0,0,0);return c.status==='Ativo'&&v.getTime()===hj.getTime();}
     if(filtro==='Atraso')return c.status==='Ativo'&&diasA(c.dataEmprestimo)>0;
     if(filtro==='Quitado')return c.status==='Quitado';
-    if(c.status==='Pendente') return false; // Pendentes ficam só em Pendências
+    if(c.status==='Pendente') return false;
     return true;
   });
   if(lista.length===0){document.getElementById('lista-cli').innerHTML='<div class="empty"><div class="empty-icon">🔍</div><div class="empty-text">Nenhum cliente encontrado</div></div>';return;}
@@ -753,8 +763,9 @@ function renderCli(){
           </div>
         </div>
         <div class="cc-actions">
-          ${c.status==='Ativo'?`<button class="btn-sm btn-pay" onclick="abrirPag(${c.linha})">💰 Pagar</button>`:''}
-          ${isAdmin&&c.status==='Ativo'?`<button class="btn-sm btn-negoc" onclick="abrirNegoc(${c.linha})">🤝 Negociar</button><button class="btn-sm btn-prej" onclick="abrirPrej(${c.linha})">💸 Prejuízo</button>`:''}
+          ${c.status==='Ativo'?`<button class="btn-sm btn-pay" onclick="abrirPagSeguro(${c.linha})">💰 Pagar</button>`:''}
+          ${isAdmin&&c.status==='Ativo'?`<button class="btn-sm btn-negoc" onclick="abrirNegocSeguro(${c.linha})">🤝 Negociar</button><button class="btn-sm btn-prej" onclick="abrirPrejSeguro(${c.linha})">💸 Prejuízo</button>`:''}
+          ${c.status==='Quitado'?`<button class="btn-sm" onclick="reemprestar(${c.linha})" style="background:linear-gradient(135deg,#1a2a4a,#1e3355);color:var(--gold2);border-color:var(--gold-dim);">🔄 Reemprestar</button>`:''}
           ${isAdmin?`<button class="btn-sm btn-edit" onclick="abrirEdit(${c.linha})">✏️</button><button class="btn-sm btn-del" onclick="abrirDel(${c.linha})">🗑️</button>`:''}
         </div>
         ${j&&c.status==='Ativo'?`<div class="cc-vals">
@@ -763,6 +774,10 @@ function renderCli(){
           <div class="cv-item"><div class="cv-label">Renovar</div><div class="cv-value" style="color:var(--orange);">${R(j.renov)}</div></div>
           <div class="cv-div"></div>
           <div class="cv-item"><div class="cv-label">Quitar</div><div class="cv-value" style="color:var(--green);">${R(j.quit)}</div></div>
+        </div>`:''}
+        ${c.status==='Quitado'?`<div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--border);display:flex;justify-content:space-between;font-size:12px;">
+          <span style="color:var(--text3);">Emprestado: <strong style="color:var(--text);">${R(c.valor)}</strong></span>
+          <span style="color:${c.statusQuit&&c.statusQuit.includes('atraso')?'var(--red)':'var(--green)'};">${c.statusQuit||'Quitado'}</span>
         </div>`:''}
       </div>
     </div>`;
@@ -858,7 +873,8 @@ function abrirPagPend(idx){
 }
 
 async function confirmarPagPend(){
-  if(!pendAtual) return;
+  if(!pendAtual||processandoAcao) return;
+  processandoAcao=true;
   const valor=Number(document.getElementById('pag-pend-valor').value||0);
   if(!valor){toast('⚠️ Digite o valor pago');return;}
   toast('💾 Salvando...');
@@ -1095,7 +1111,8 @@ function abrirDel(linha){
   openM('modal-del');
 }
 async function confirmarExclusao(){
-  if(!cliDel)return;
+  if(!cliDel||processandoAcao)return;
+  processandoAcao=true;
   toast('🗑️ Excluindo...');
   try{
     const r=await jsonp({action:'excluirCliente',linha:cliDel.linha});
@@ -1129,12 +1146,13 @@ function abrirPrej(linha){
   openM('modal-prej');
 }
 async function confirmarPrejuizo(){
-  if(!cliPrej)return;
+  if(!cliPrej||processandoAcao)return;
+  processandoAcao=true;
   toast('💾 Salvando...');
   try{
     const obs=document.getElementById('prej-obs').value;
     const r=await jsonp({action:'marcarPrejuizo',linha:cliPrej.linha,obs});
-    if(r.ok){closeM('modal-prej');setTimeout(async()=>{await reload();},2000);showOk(`💸 ${cliPrej.nome} movido para Prejuízos.`);cliPrej=null;}
+    if(r.ok){setTimeout(()=>{processandoAcao=false;},3000);closeM('modal-prej');setTimeout(async()=>{await reload();},2000);showOk(`💸 ${cliPrej.nome} movido para Prejuízos.`);cliPrej=null;}
     else toast('❌ '+(r.error||'Erro'));
   }catch(e){toast('❌ '+e.message);}
 }
@@ -1154,16 +1172,41 @@ function calcNegoc(){
   else el.style.display='none';
 }
 async function confirmarNegociacao(){
-  if(!cliNegoc)return;
+  if(!cliNegoc||processandoAcao)return;
+  processandoAcao=true;
   const parcelas=Number(document.getElementById('negoc-parcelas').value);
   const valorParcela=Number(document.getElementById('negoc-val-parcela').value);
   if(!parcelas||!valorParcela){toast('⚠️ Preencha as parcelas e o valor');return;}
   toast('💾 Salvando...');
   try{
     const r=await jsonp({action:'cadastrarNegociacao',linha:cliNegoc.linha,nome:cliNegoc.nome,telefone:cliNegoc.telefone||'',valorOriginal:cliNegoc.valor,parcelas,valorParcela});
-    if(r.ok){closeM('modal-negoc');setTimeout(async()=>{await reload();},2000);showOk(`🤝 Negociação criada para ${cliNegoc.nome}!`);cliNegoc=null;}
+    if(r.ok){setTimeout(()=>{processandoAcao=false;},3000);closeM('modal-negoc');setTimeout(async()=>{await reload();},2000);showOk(`🤝 Negociação criada para ${cliNegoc.nome}!`);cliNegoc=null;}
     else toast('❌ '+(r.error||'Erro'));
   }catch(e){toast('❌ '+e.message);}
+}
+
+// Funções seguras com trava anti-duplo-clique
+function abrirPagSeguro(linha){ if(processandoAcao){toast('⏳ Aguarde...');return;} abrirPag(linha); }
+function abrirNegocSeguro(linha){ if(processandoAcao){toast('⏳ Aguarde...');return;} abrirNegoc(linha); }
+function abrirPrejSeguro(linha){ if(processandoAcao){toast('⏳ Aguarde...');return;} abrirPrej(linha); }
+
+// Reemprestar — abre cadastro com dados preenchidos
+function reemprestar(linha){
+  const c = clientes.find(c=>c.linha===linha);
+  if(!c) return;
+  modoEdit = false;
+  document.getElementById('modal-cad-title').textContent = '🔄 Reemprestar — ' + c.nome;
+  document.getElementById('btn-salvar').textContent = 'Confirmar Novo Empréstimo';
+  document.getElementById('edit-linha').value = '';
+  document.getElementById('cad-nome').value = c.nome;
+  document.getElementById('cad-cpf').value = c.cpf||'';
+  document.getElementById('cad-tel').value = c.telefone||'';
+  document.getElementById('cad-tel2').value = c.telefone2||'';
+  document.getElementById('cad-data').value = new Date().toISOString().split('T')[0];
+  document.getElementById('cad-valor').value = '';
+  document.getElementById('cad-valor-custom').style.display = 'none';
+  document.getElementById('cad-resumo').style.display = 'none';
+  openM('modal-cad');
 }
 
 function abrirPag(linha){
@@ -1222,9 +1265,9 @@ document.getElementById('valor-pago-input').addEventListener('input',calcT);
 
 async function confirmarPag(){
   if(!cliPag||!tipoPag)return;
-  // Bloqueia duplo disparo
-  if(processandoPagamento)return;
+  if(processandoPagamento||processandoAcao)return;
   processandoPagamento=true;
+  processandoAcao=true;
   const btnConf=document.getElementById('btn-confirmar-pag');
   if(btnConf){btnConf.disabled=true;btnConf.textContent='Salvando...';}
   
@@ -1250,7 +1293,11 @@ async function confirmarPag(){
   tipoPag=null;
   if(tipoPag==='Quitado'){
     const idx=clientes.findIndex(c=>c.linha===cliPag.linha);
-    if(idx>=0) clientes[idx].status='Quitado';
+    if(idx>=0){
+      clientes[idx].status='Quitado';
+      clientes[idx].statusQuit='Quitado em dia';
+      clientes[idx].dataQuit=new Date().toISOString().split('T')[0];
+    }
   } else if(isParcial){
     // Parcial — cliente vai para Pendências, some de Ativos
     const idx=clientes.findIndex(c=>c.linha===cliPag.linha);
@@ -1270,7 +1317,7 @@ async function confirmarPag(){
   setTimeout(()=>{bloqueioReload=false;},15000);
 
   // Libera flag após 15 segundos
-  setTimeout(()=>{processandoPagamento=false;},15000);
+  setTimeout(()=>{processandoPagamento=false; processandoAcao=false;},15000);
 
   // Dispara para o servidor via JSONP (fire and forget — não trava a tela)
   // dataEmprestimoOriginal é salvo ANTES da atualização local
