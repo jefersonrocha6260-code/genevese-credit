@@ -1251,7 +1251,12 @@ async function confirmarPag(){
   if(tipoPag==='Quitado'){
     const idx=clientes.findIndex(c=>c.linha===cliPag.linha);
     if(idx>=0) clientes[idx].status='Quitado';
+  } else if(isParcial){
+    // Parcial — cliente vai para Pendências, some de Ativos
+    const idx=clientes.findIndex(c=>c.linha===cliPag.linha);
+    if(idx>=0) clientes[idx].status='Pendente';
   } else {
+    // Renovado — atualiza data
     const idx=clientes.findIndex(c=>c.linha===cliPag.linha);
     if(idx>=0){
       clientes[idx].dataEmprestimo=toS(addD(cliPag.dataEmprestimo,7));
@@ -1279,7 +1284,7 @@ async function confirmarPag(){
     multa:multaTotal,
     valorPago,
     valorDevido:valorDevido+multaTotal,
-    isParcial
+    isParcial: isParcial ? 'true' : 'false'
   }).then(r=>{
     if(r&&r.ok) console.log('✅ Salvo no servidor');
     else console.log('⚠️ Resposta servidor:', r);
