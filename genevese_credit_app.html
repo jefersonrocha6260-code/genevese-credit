@@ -533,7 +533,7 @@ input[type=date]{color-scheme:dark;}
 </div>
 
 <script>
-const API='https://script.google.com/macros/s/AKfycbxhPRKh1DJ0GabSHwetWSYwlzXVxpiGTSvITwqPRBQ7e4SB_y_KFrfd0V7hkot3FDJH/exec';
+const API='https://script.google.com/macros/s/AKfycbx7XiLFiT85BWyjKVDMg0gyYMzjD9nXJqM1iHxKrTmKBWsJOlM3n5rNtOLx8y72AtvG/exec';
 const JUROS=[{emp:250,quit:350,renov:100},{emp:350,quit:490,renov:140},{emp:400,quit:560,renov:160},{emp:500,quit:690,renov:190},{emp:800,quit:1100,renov:300},{emp:1000,quit:1390,renov:390}];
 const USERS={admin:{senha:'1234',nome:'Admin',perfil:'admin'},cobranca:{senha:'5678',nome:'Cobrança',perfil:'cobranca'}};
 
@@ -815,10 +815,11 @@ function renderPend(){
       <div style="height:4px;background:var(--border);border-radius:2px;overflow:hidden;margin-bottom:10px;">
         <div style="height:100%;width:${pct}%;background:linear-gradient(90deg,var(--orange),var(--gold));border-radius:2px;transition:width 0.3s;"></div>
       </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:6px;">
         <button onclick="abrirPagPend(${i})" style="padding:9px;background:var(--gold-dim);border:1px solid var(--gold);border-radius:10px;color:var(--gold2);font-size:12px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;">💰 Registrar Pagamento</button>
         <button onclick="quitarPend(${p.linha},${p.linhaCliente})" style="padding:9px;background:var(--green-dim);border:1px solid var(--green);border-radius:10px;color:var(--green);font-size:12px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;">✅ Quitar Total</button>
       </div>
+      <button onclick="excluirPend(${p.linha})" style="width:100%;padding:8px;background:var(--red-dim);border:1px solid #e74c3c33;border-radius:10px;color:var(--red);font-size:11px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;">🗑️ Excluir Pendência</button>
     </div>`;
   });
   document.getElementById('lista-pend').innerHTML=html;
@@ -870,6 +871,16 @@ async function confirmarPagPend(){
       else showOk(`💰 ${R(valor)} registrado! Saldo: ${R(r.novoSaldo)}`);
       pendAtual=null;
     } else toast('❌ '+(r.error||'Erro'));
+  }catch(e){toast('❌ '+e.message);}
+}
+
+async function excluirPend(linha){
+  if(!confirm('Excluir esta pendência? O saldo não será devolvido ao caixa.')) return;
+  toast('🗑️ Excluindo...');
+  try{
+    const r=await jsonp({action:'excluirPendencia',linha});
+    if(r.ok){await reload();showOk('🗑️ Pendência excluída!');}
+    else toast('❌ '+(r.error||'Erro'));
   }catch(e){toast('❌ '+e.message);}
 }
 
