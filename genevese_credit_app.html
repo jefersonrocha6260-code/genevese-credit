@@ -223,7 +223,7 @@ input[type=date]{color-scheme:dark;}
         </div>
         <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;">
           <div class="topbar-badge" id="topbar-user">ADMIN</div>
-          <button onclick="reload()" style="background:transparent;border:1px solid var(--gold-dim);border-radius:8px;color:var(--gold2);font-size:10px;font-weight:600;padding:4px 8px;cursor:pointer;font-family:'Inter',sans-serif;letter-spacing:0.5px;">🔄 Atualizar</button>
+          <button onclick="forceReload(this)" style="background:transparent;border:1px solid var(--gold-dim);border-radius:8px;color:var(--gold2);font-size:10px;font-weight:600;padding:4px 8px;cursor:pointer;font-family:'Inter',sans-serif;letter-spacing:0.5px;">🔄 Atualizar</button>
         </div>
       </div>
     </div>
@@ -514,7 +514,7 @@ input[type=date]{color-scheme:dark;}
 </div>
 
 <script>
-const API='https://script.google.com/macros/s/AKfycbw9DAWyvGm0jedV2gcZL3JK1V_-PJn4gYGTtyv-fTBHleW6L09S9ABIFpcsN3QDWPzY/exec';
+const API='https://script.google.com/macros/s/AKfycbxOCzW4i_k-7y29_b0yrHSUQa9FLNUfXY4gAbveEfFKBcff0InMYZAMKTDcQaeNdblx/exec';
 const JUROS=[{emp:250,quit:350,renov:100},{emp:350,quit:490,renov:140},{emp:400,quit:560,renov:160},{emp:500,quit:690,renov:190},{emp:800,quit:1100,renov:300},{emp:1000,quit:1390,renov:390}];
 const USERS={admin:{senha:'1234',nome:'Admin',perfil:'admin'},cobranca:{senha:'5678',nome:'Cobrança',perfil:'cobranca'}};
 
@@ -523,6 +523,7 @@ let filtro='todos',cliPag=null,tipoPag=null,m21=false,negocPag=false;
 let cliDel=null,cliPrej=null,cliNegoc=null,modoEdit=false,catCusto='Anúncios';
 let bloqueioReload=false; // Bloqueia reload após atualização local
 let caixaReal=0;
+let processandoPagamento=false; // Evita duplo envio
 
 const R=v=>Number(v).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
 const D=d=>{if(!d)return'';return new Date(d+'T12:00:00').toLocaleDateString('pt-BR');};
@@ -592,6 +593,15 @@ async function init(){
   document.getElementById('topbar-date').textContent=new Date().toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
   document.getElementById('loader').style.display='none';
   await reload();
+}
+
+async function forceReload(btn) {
+  // Força reload ignorando o bloqueio
+  bloqueioReload = false;
+  processandoPagamento = false;
+  if(btn){btn.textContent='⏳...';btn.disabled=true;}
+  await reload();
+  if(btn){btn.textContent='🔄 Atualizar';btn.disabled=false;}
 }
 
 async function reload(){
@@ -1094,6 +1104,9 @@ document.getElementById('valor-pago-input').addEventListener('input',calcT);
 
 async function confirmarPag(){
   if(!cliPag||!tipoPag)return;
+  // Bloqueia duplo disparo
+  if(processandoPagamento)return;
+  processandoPagamento=true;
   const btnConf=document.getElementById('btn-confirmar-pag');
   if(btnConf){btnConf.disabled=true;btnConf.textContent='Salvando...';}
   
@@ -1106,8 +1119,14 @@ async function confirmarPag(){
   const tipoFinal=isParcial?'Renovado':tipoPag;
   const valorDevido=tipoPag==='Quitado'?(j?j.quit:0):(j?j.renov:0);
 
-  // Fecha modal e atualiza tela IMEDIATAMENTE
+  // Bloqueia todos os botões de pagar por 10 segundos
+  document.querySelectorAll('.btn-pay').forEach(b=>{b.disabled=true;b.style.opacity='0.5';});
+  setTimeout(()=>{document.querySelectorAll('.btn-pay').forEach(b=>{b.disabled=false;b.style.opacity='1';});},10000);
+
+  // Fecha modal IMEDIATAMENTE para impedir segundo clique
   closeM('modal-pag');
+  // Reseta tipoPag para impedir reenvio
+  tipoPag=null;
   if(tipoPag==='Quitado'){
     const idx=clientes.findIndex(c=>c.linha===cliPag.linha);
     if(idx>=0) clientes[idx].status='Quitado';
@@ -1123,6 +1142,9 @@ async function confirmarPag(){
   // Bloqueia reload por 15 segundos para não sobrescrever estado local
   bloqueioReload=true;
   setTimeout(()=>{bloqueioReload=false;},15000);
+
+  // Libera flag após 15 segundos
+  setTimeout(()=>{processandoPagamento=false;},15000);
 
   // Dispara para o servidor via JSONP (fire and forget — não trava a tela)
   jsonp({
