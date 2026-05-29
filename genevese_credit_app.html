@@ -1190,6 +1190,12 @@ async function confirmarPag(){
 }
 
 
+function selCat(cat,btn){
+  catCusto=cat;
+  document.querySelectorAll('.cat-chip').forEach(c=>c.classList.remove('active'));
+  btn.classList.add('active');
+}
+
 function abrirModalCusto(){
   catCusto='Anúncios';
   document.getElementById('custo-desc').value='';
