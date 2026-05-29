@@ -1370,12 +1370,34 @@ async function confirmarAcaoMov() {
     // 2. Se desfazer, volta o cliente
     if(acao === 'desfazer') {
       const nomeExtraido = mov.descricao.includes(': ') ? mov.descricao.split(': ').slice(1).join(': ') : (mov.nome||'');
+      
+      // Se não tem linhaCliente ou dataEmprestimo no movimento atual,
+      // busca no caixa o movimento de Entrada mais recente deste cliente
+      let linhaCliente = mov.linhaCliente||0;
+      let dataEmprestimo = mov.dataEmprestimo||'';
+      
+      if(!linhaCliente || !dataEmprestimo) {
+        try {
+          const cx = await jsonp({action:'getCaixaReal'});
+          const movEntrada = (cx.movimentos||[]).find(m => 
+            m.tipo==='Entrada' && 
+            m.descricao.includes(nomeExtraido) && 
+            m.linhaCliente > 0 &&
+            m.dataEmprestimo
+          );
+          if(movEntrada) {
+            linhaCliente = movEntrada.linhaCliente;
+            dataEmprestimo = movEntrada.dataEmprestimo;
+          }
+        } catch(e) {}
+      }
+      
       await jsonp({
         action:'desfazerHistorico',
         nome: nomeExtraido,
-        linhaCliente: mov.linhaCliente||0,
-        dataEmprestimo: mov.dataEmprestimo||'',
-        tipo: mov.tipo==='Entrada' ? 'Renovado' : 'Quitado'
+        linhaCliente: linhaCliente,
+        dataEmprestimo: dataEmprestimo,
+        tipo: 'Renovado'
       });
     }
     
