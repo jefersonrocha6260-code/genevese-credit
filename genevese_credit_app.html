@@ -533,7 +533,7 @@ input[type=date]{color-scheme:dark;}
 </div>
 
 <script>
-const API='https://script.google.com/macros/s/AKfycbx7XiLFiT85BWyjKVDMg0gyYMzjD9nXJqM1iHxKrTmKBWsJOlM3n5rNtOLx8y72AtvG/exec';
+const API='https://script.google.com/macros/s/AKfycbyqV86WZZiNYOWXOwkvKBSkt6J8y67TwAAtCrFYDcA3sDhKASGBS1r-HVoCp-kikMju/exec';
 const JUROS=[{emp:250,quit:350,renov:100},{emp:350,quit:490,renov:140},{emp:400,quit:560,renov:160},{emp:500,quit:690,renov:190},{emp:800,quit:1100,renov:300},{emp:1000,quit:1390,renov:390}];
 const USERS={admin:{senha:'1234',nome:'Admin',perfil:'admin'},cobranca:{senha:'5678',nome:'Cobrança',perfil:'cobranca'}};
 
@@ -791,7 +791,7 @@ function renderPend(){
   let html='';
   lista.forEach((p,i)=>{
     const pct=Math.min(100,Math.round((p.valorPago/p.valorDevido)*100));
-    const wppBtn=p.telefone?`<button class="btn-wpp-float" onclick="abrirWpp('${p.telefone}','','${p.nome}')">💬 WhatsApp</button>`:'';
+    let telPend=''; const wppBtn=p.telefone?`<button class="btn-wpp-float" onclick="abrirWpp('${p.telefone}','','${p.nome}')">💬 WhatsApp</button>`:'';
     html+=`<div class="pend-card" style="animation-delay:${i*0.05}s">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;">
         <div>
