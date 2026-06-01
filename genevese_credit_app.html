@@ -240,12 +240,13 @@ input[type=date]::-webkit-calendar-picker-indicator{filter:invert(.5);}
         <div class="topbar-title">Clientes</div>
         <button id="btn-novo" class="add-btn" onclick="abrirCad()">+ Novo</button>
       </div>
-      <div class="search-wrap">
-        <span class="search-icon">🔍</span>
-        <input id="busca" class="search-input" placeholder="Nome, CPF ou telefone..." oninput="buscarCli(this)">
-      </div>
+
     </div>
     <div class="page">
+      <div class="search-wrap" style="margin-bottom:10px;">
+        <span class="search-icon">🔍</span>
+        <input id="busca" class="search-input" placeholder="Buscar por nome...">
+      </div>
       <div class="chip-row">
         <button class="chip active" id="chip-todos" onclick="setF('todos',this)">Todos</button>
         <button class="chip" id="chip-ativo" onclick="setF('Ativo',this)">Ativos</button>
@@ -595,6 +596,39 @@ async function init(){
   document.getElementById('topbar-date').textContent=new Date().toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
   document.getElementById('loader').style.display='none';
   await reload();
+  // Busca por nome
+  document.getElementById('busca').addEventListener('input',function(){
+    const b=(this.value||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim();
+    if(!b){renderCli();return;}
+    const lista=(clientes||[]).filter(c=>c.nome&&(c.nome||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').includes(b));
+    document.getElementById('lista-cli').innerHTML=lista.length?lista.map((c,i)=>{
+      const j=getJ(c.valor);const d=c.status==='Ativo'?diasA(c.dataEmprestimo):0;
+      const venc=addD(c.dataEmprestimo||new Date().toISOString().split('T')[0],7);
+      const vH=new Date(venc);vH.setHours(0,0,0,0);const hj=new Date();hj.setHours(0,0,0,0);
+      let ac='var(--green)',bl='⏳ Em dia',bb='var(--gdim2)',bc='var(--green)';
+      if(c.status==='Quitado'){ac='#3498db';bl='✅ Quitado';bb='#3498db22';bc='#3498db';}
+      else if(d>0){ac='var(--red)';bl=`🚨 ${d}d atraso`;bb='var(--rdim)';bc='var(--red)';}
+      else if(vH.getTime()===hj.getTime()){ac='#f39c12';bl='⚠️ Vence hoje';bb='#f39c1222';bc='#f39c12';}
+      const isAdmin=user&&user.perfil==='admin';
+      return `<div class="cc" style="animation-delay:${i*.03}s">
+        <div class="cc-accent" style="background:${ac};border-radius:14px 0 0 14px;"></div>
+        <div class="cc-body">
+          <div class="cc-name">${c.nome}</div>
+          <div class="cc-meta">${c.telefone?`<span>📞 ${c.telefone}</span>`:''}</div>
+          <span class="cc-badge" style="background:${bb};color:${bc};border:1px solid ${bc}33;">${bl}</span>
+          ${c.status==='Ativo'?`<div style="font-size:11px;color:var(--t3);margin-top:3px;">Vence ${D(toS(venc))}</div>`:''}
+          <div class="cc-actions">
+            ${c.status==='Ativo'?`<button class="btn-sm btn-pay" onclick="if(!travar())abrirPag(${c.linha})">💰 Pagar</button>`:''}
+            ${isAdmin&&c.status==='Ativo'?`<button class="btn-sm btn-negoc" onclick="if(!travar())abrirNegoc(${c.linha})">🤝 Negociar</button><button class="btn-sm btn-prej" onclick="if(!travar())abrirPrej(${c.linha})">💸 Prejuízo</button>`:''}
+            ${c.status==='Quitado'?`<button class="btn-sm btn-quit-re" onclick="reemprestar(${c.linha})">🔄 Reemprestar</button>`:''}
+            ${isAdmin?`<button class="btn-sm btn-edit" onclick="abrirEdit(${c.linha})">✏️</button><button class="btn-sm btn-del" onclick="abrirDel(${c.linha})">🗑️</button>`:''}
+          </div>
+          ${c.status==='Ativo'&&j?`<div class="cc-vals"><div class="cv-item"><div class="cv-label">Emprestado</div><div class="cv-value">${R(c.valor)}</div></div><div class="cv-div"></div><div class="cv-item"><div class="cv-label">Renovar</div><div class="cv-value" style="color:var(--orange)">${R(j.renov)}</div></div><div class="cv-div"></div><div class="cv-item"><div class="cv-label">Quitar</div><div class="cv-value" style="color:var(--green)">${R(j.quit)}</div></div></div>`:''}
+          ${c.status==='Quitado'?`<div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--border);display:flex;justify-content:space-between;font-size:12px;"><span style="color:var(--t3)">Emprestado: <strong style="color:var(--text)">${R(c.valor)}</strong></span><span style="color:${(c.statusQuit||'').includes('atraso')?'var(--red)':'var(--green)'};">${c.statusQuit||'Quitado'}</span></div>`:''}
+        </div>
+      </div>`;
+    }).join(''):'<div class="empty"><div class="empty-icon">🔍</div><div class="empty-text">Nenhum resultado</div></div>';
+  });
 }
 
 async function reload(){
@@ -674,68 +708,9 @@ function navCli(f){
 }
 
 // ─── CLIENTES ────────────────────────────────────────────
-function norm(s){return(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');}
-
-function buscarCli(input){
-  const b=norm(input.value).trim();
-  if(!b){renderCli();return;}
-  const lista=(clientes||[]).filter(c=>{
-    if(!c.nome||c.status==='Pendente')return false;
-    return norm(c.nome).includes(b)||
-           (c.telefone||'').replace(/\D/g,'').includes(b.replace(/\D/g,''))||
-           (c.cpf||'').replace(/\D/g,'').includes(b.replace(/\D/g,''));
-  });
-  const el=document.getElementById('lista-cli');
-  if(!lista.length){el.innerHTML='<div class="empty"><div class="empty-icon">🔍</div><div class="empty-text">Nenhum cliente encontrado</div></div>';return;}
-  const isAdmin=user&&user.perfil==='admin';
-  const hj=new Date();hj.setHours(0,0,0,0);
-  let html='';
-  lista.forEach((c,i)=>{
-    const j=getJ(c.valor);
-    const d=c.status==='Ativo'?diasA(c.dataEmprestimo):0;
-    const venc=addD(c.dataEmprestimo||new Date().toISOString().split('T')[0],7);
-    const vH=new Date(venc);vH.setHours(0,0,0,0);
-    let ac='var(--green)',bl='⏳ Em dia',bb='var(--gdim2)',bc='var(--green)';
-    if(c.status==='Quitado'){ac='#3498db';bl='✅ Quitado';bb='#3498db22';bc='#3498db';}
-    else if(d>0){ac='var(--red)';bl=`🚨 ${d}d atraso`;bb='var(--rdim)';bc='var(--red)';}
-    else if(vH.getTime()===hj.getTime()){ac='#f39c12';bl='⚠️ Vence hoje';bb='#f39c1222';bc='#f39c12';}
-    const wppBtn=c.telefone?`<button class="btn-sm btn-wpp" onclick="abrirWpp('${c.telefone}','${c.telefone2||''}','${c.nome}')">💬</button>`:'';
-    html+=`<div class="cc" style="animation-delay:${i*.03}s">
-      <div class="cc-accent" style="background:${ac};border-radius:14px 0 0 14px;"></div>
-      <div class="cc-body">
-        <div class="cc-name">${c.nome}</div>
-        <div class="cc-meta">${c.telefone?`<span>📞 ${c.telefone}</span>`:''}${wppBtn}</div>
-        <span class="cc-badge" style="background:${bb};color:${bc};border:1px solid ${bc}33;">${bl}</span>
-        ${c.status==='Ativo'?`<div style="font-size:11px;color:var(--t3);margin-top:3px;">Vence ${D(toS(venc))}</div>`:''}
-        <div class="cc-actions">
-          ${c.status==='Ativo'?`<button class="btn-sm btn-pay" onclick="if(!travar())abrirPag(${c.linha})">💰 Pagar</button>`:''}
-          ${isAdmin&&c.status==='Ativo'?`<button class="btn-sm btn-negoc" onclick="if(!travar())abrirNegoc(${c.linha})">🤝 Negociar</button><button class="btn-sm btn-prej" onclick="if(!travar())abrirPrej(${c.linha})">💸 Prejuízo</button>`:''}
-          ${c.status==='Quitado'?`<button class="btn-sm btn-quit-re" onclick="reemprestar(${c.linha})">🔄 Reemprestar</button>`:''}
-          ${isAdmin?`<button class="btn-sm btn-edit" onclick="abrirEdit(${c.linha})">✏️</button><button class="btn-sm btn-del" onclick="abrirDel(${c.linha})">🗑️</button>`:''}
-        </div>
-        ${c.status==='Ativo'&&j?`<div class="cc-vals">
-          <div class="cv-item"><div class="cv-label">Emprestado</div><div class="cv-value">${R(c.valor)}</div></div>
-          <div class="cv-div"></div>
-          <div class="cv-item"><div class="cv-label">Renovar</div><div class="cv-value" style="color:var(--orange)">${R(j.renov)}</div></div>
-          <div class="cv-div"></div>
-          <div class="cv-item"><div class="cv-label">Quitar</div><div class="cv-value" style="color:var(--green)">${R(j.quit)}</div></div>
-        </div>`:''}
-        ${c.status==='Quitado'?`<div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--border);display:flex;justify-content:space-between;font-size:12px;">
-          <span style="color:var(--t3)">Emprestado: <strong style="color:var(--text)">${R(c.valor)}</strong></span>
-          <span style="color:${(c.statusQuit||'').includes('atraso')?'var(--red)':'var(--green)'};">${c.statusQuit||'Quitado'}</span>
-        </div>`:''}
-      </div>
-    </div>`;
-  });
-  el.innerHTML=html;
-}
-
 function setF(f,btn){filtro=f;document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));btn.classList.add('active');renderCli();}
 
 function renderCli(){
-  // Se há texto na busca, usa buscarCli
-  const campoB=document.getElementById('busca');
-  if(campoB&&campoB.value.trim()){buscarCli(campoB);return;}
   const hj=new Date();hj.setHours(0,0,0,0);
   const lista=(clientes||[]).filter(c=>{
     if(!c.nome||c.status==='Pendente')return false;
