@@ -1144,15 +1144,27 @@ async function pagarParcela(linha,pagas,total,nome,vp){
 function renderPrej(){
   const lista=prejuizos||[];
   if(!lista.length){document.getElementById('lista-prej').innerHTML='<div class="empty"><div class="empty-icon">💸</div><div class="empty-text">Nenhum prejuízo registrado</div></div>';return;}
-  const total=lista.reduce((s,p)=>s+p.quitar,0);
-  let html=`<div style="background:var(--rdim);border:1px solid var(--red);border-radius:14px;padding:14px 16px;margin-bottom:14px;text-align:center;"><div style="font-size:11px;font-weight:700;color:var(--red);letter-spacing:1px;margin-bottom:4px;">TOTAL EM PREJUÍZO</div><div style="font-family:'Playfair Display',serif;font-size:26px;font-weight:700;color:var(--red)">${R(total)}</div></div>`;
+  // Total apenas dos não recuperados
+  const total=lista.filter(p=>!p.dataRecuperacao).reduce((s,p)=>s+p.quitar,0);
+  const totalRec=lista.filter(p=>p.dataRecuperacao).reduce((s,p)=>s+p.valorRecuperado,0);
+  let html=`<div style="background:var(--rdim);border:1px solid var(--red);border-radius:14px;padding:14px 16px;margin-bottom:10px;text-align:center;">
+    <div style="font-size:11px;font-weight:700;color:var(--red);letter-spacing:1px;margin-bottom:4px;">TOTAL EM ABERTO</div>
+    <div style="font-family:'Playfair Display',serif;font-size:26px;font-weight:700;color:var(--red)">${R(total)}</div>
+  </div>`;
+  if(totalRec>0){
+    html+=`<div style="background:#2ecc7118;border:1px solid #2ecc7133;border-radius:14px;padding:12px 16px;margin-bottom:14px;text-align:center;">
+      <div style="font-size:11px;font-weight:700;color:var(--green);letter-spacing:1px;margin-bottom:4px;">TOTAL RECUPERADO</div>
+      <div style="font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:var(--green)">${R(totalRec)}</div>
+    </div>`;
+  }
   lista.forEach((p,i)=>{
     const tel=String(p.telefone||'').replace(/\D/g,'');
-    html+=`<div class="prej-card" style="animation-delay:${i*.05}s">
+    const recuperado=!!p.dataRecuperacao;
+    html+=`<div class="prej-card" style="animation-delay:${i*.05}s;${recuperado?'opacity:0.7;border-left-color:#2ecc71;':''}">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;">
         <div>
           <div style="font-weight:600;font-size:15px;color:var(--text)">${p.nome}</div>
-          <div style="font-size:12px;color:var(--t3);margin-top:2px;">${p.data}</div>
+          <div style="font-size:12px;color:var(--t3);margin-top:2px;">Prejudicado em ${p.data}</div>
           ${tel?`<button style="margin-top:6px;padding:5px 10px;border-radius:8px;font-size:10px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;border:1px solid #25D36644;background:#25D36618;color:var(--wpp);" onclick="abrirWpp('${tel}','','${p.nome}')">💬 WhatsApp</button>`:''}
           ${p.obs?`<div style="font-size:11px;color:var(--t3);margin-top:3px;font-style:italic">${p.obs}</div>`:''}
         </div>
@@ -1161,7 +1173,13 @@ function renderPrej(){
           <div style="font-size:11px;color:var(--t3)">${p.diasAtr}d atraso</div>
         </div>
       </div>
-      <button onclick="abrirRecuperar(${i})" style="width:100%;margin-top:10px;padding:10px;background:#2ecc7118;border:1px solid #2ecc7144;border-radius:10px;color:var(--green);font-size:12px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;">💚 Recuperado</button>
+      ${recuperado
+        ?`<div style="margin-top:10px;padding:8px 12px;background:#2ecc7118;border:1px solid #2ecc7133;border-radius:10px;display:flex;justify-content:space-between;align-items:center;">
+            <span style="font-size:12px;font-weight:700;color:var(--green);">✅ Recuperado em ${p.dataRecuperacao}</span>
+            <span style="font-size:12px;font-weight:700;color:var(--green);">${R(p.valorRecuperado)}</span>
+          </div>`
+        :`<button onclick="abrirRecuperar(${i})" style="width:100%;margin-top:10px;padding:10px;background:#2ecc7118;border:1px solid #2ecc7144;border-radius:10px;color:var(--green);font-size:12px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;">💚 Recuperado</button>`
+      }
     </div>`;
   });
   document.getElementById('lista-prej').innerHTML=html;
