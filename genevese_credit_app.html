@@ -733,8 +733,10 @@ function buscarCli(input){
 function setF(f,btn){filtro=f;document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));btn.classList.add('active');renderCli();}
 
 function renderCli(){
+  const busca=document.getElementById('busca');
+  if(busca&&busca.value.trim()){buscarCli(busca);return;}
   const hj=new Date();hj.setHours(0,0,0,0);
-  const buscaRaw=document.getElementById('busca').value.toLowerCase().trim();
+  const buscaRaw='';
   const lista=(clientes||[]).filter(c=>{
     if(!c.nome)return false;
     if(c.status==='Pendente')return false;
