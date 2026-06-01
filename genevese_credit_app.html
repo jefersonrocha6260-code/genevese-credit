@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Genevese Credit">
@@ -10,228 +10,230 @@
 <title>Genevese Credit</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#080c14;--bg2:#0d1420;--card:#0f1825;--card2:#141e2e;--border:#1e2d42;--border2:#243347;--gold:#c9a84c;--gold2:#e8c96d;--gold-dim:#c9a84c22;--text:#e8edf5;--text2:#8a9ab5;--text3:#5a6a85;--green:#2ecc71;--green-dim:#2ecc7122;--red:#e74c3c;--red-dim:#e74c3c22;--orange:#e67e22;--orange-dim:#e67e2222;--purple:#9b59b6;--purple-dim:#9b59b622;--wpp:#25D366;--wpp-dim:#25D36622;}
+:root{--bg:#080c14;--bg2:#0d1420;--card:#0f1825;--card2:#141e2e;--border:#1e2d42;--gold:#c9a84c;--gold2:#e8c96d;--gdim:#c9a84c22;--text:#e8edf5;--t2:#8a9ab5;--t3:#5a6a85;--green:#2ecc71;--gdim2:#2ecc7122;--red:#e74c3c;--rdim:#e74c3c22;--orange:#e67e22;--odim:#e67e2222;--purple:#9b59b6;--pdim:#9b59b622;--wpp:#25D366;}
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
 body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;max-width:480px;margin:0 auto;overflow-x:hidden;}
 @keyframes spin{to{transform:rotate(360deg);}}
 @keyframes fadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
-@keyframes pulse-gold{0%,100%{box-shadow:0 0 20px #c9a84c22;}50%{box-shadow:0 0 50px #c9a84c55;}}
-@keyframes load-bar{from{width:0;}to{width:100%;}}
-@keyframes screen-in{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+@keyframes pulse{0%,100%{box-shadow:0 0 20px #c9a84c22;}50%{box-shadow:0 0 50px #c9a84c55;}}
+@keyframes loadbar{from{width:0}to{width:100%}}
+@keyframes scrin{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
 
+/* LOADER */
 #loader{position:fixed;inset:0;z-index:9999;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;}
-.loader-emblem{width:80px;height:80px;border-radius:20px;background:linear-gradient(135deg,#1a2a4a,#0d1420);border:1px solid var(--gold);display:flex;align-items:center;justify-content:center;font-size:36px;animation:pulse-gold 2s ease infinite;}
-.loader-title{font-family:'Playfair Display',serif;color:var(--gold2);font-size:22px;font-weight:700;}
-.loader-sub{color:var(--text3);font-size:11px;letter-spacing:2px;text-transform:uppercase;}
-.loader-bar{width:120px;height:2px;background:var(--border);border-radius:1px;overflow:hidden;}
-.loader-bar-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--gold2));animation:load-bar 1.5s ease forwards;}
+.lem{width:80px;height:80px;border-radius:20px;background:linear-gradient(135deg,#1a2a4a,#0d1420);border:1px solid var(--gold);display:flex;align-items:center;justify-content:center;font-size:36px;animation:pulse 2s infinite;}
+.ltit{font-family:'Playfair Display',serif;color:var(--gold2);font-size:22px;font-weight:700;}
+.lsub{color:var(--t3);font-size:11px;letter-spacing:2px;text-transform:uppercase;}
+.lbar{width:120px;height:2px;background:var(--border);border-radius:1px;overflow:hidden;}
+.lbar-f{height:100%;background:linear-gradient(90deg,var(--gold),var(--gold2));animation:loadbar 1.5s ease forwards;}
 
+/* SCREENS */
 .screen{display:none;min-height:100vh;padding-bottom:90px;}
-.screen.active{display:block;animation:screen-in 0.3s ease;}
+.screen.active{display:block;animation:scrin .3s ease;}
 
-#login-screen{background:radial-gradient(ellipse at top,#0d1e3a 0%,var(--bg) 70%);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 24px;min-height:100vh;}
-.login-emblem{width:88px;height:88px;border-radius:22px;background:linear-gradient(135deg,#1a2a4a,#0d1420);border:1px solid var(--gold);display:flex;align-items:center;justify-content:center;font-size:38px;margin-bottom:24px;animation:pulse-gold 3s ease infinite;}
-.login-brand{font-family:'Playfair Display',serif;color:var(--gold2);font-size:28px;font-weight:700;}
-.login-tagline{color:var(--text3);font-size:11px;letter-spacing:2px;text-transform:uppercase;margin:6px 0 36px;}
-.login-card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:28px 24px;width:100%;max-width:360px;position:relative;overflow:hidden;}
-.login-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);}
-.fl{font-size:10px;font-weight:600;color:var(--text3);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:8px;display:block;}
-.fi{width:100%;padding:13px 16px;background:var(--bg2);border:1px solid var(--border);border-radius:12px;color:var(--text);font-size:14px;font-family:'Inter',sans-serif;outline:none;transition:border 0.2s;margin-bottom:14px;}
+/* LOGIN */
+#login-screen{background:radial-gradient(ellipse at top,#0d1e3a,var(--bg) 70%);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 24px;min-height:100vh;}
+.l-brand{font-family:'Playfair Display',serif;color:var(--gold2);font-size:28px;font-weight:700;}
+.l-tag{color:var(--t3);font-size:11px;letter-spacing:2px;text-transform:uppercase;margin:6px 0 36px;}
+.l-card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:28px 24px;width:100%;max-width:360px;position:relative;overflow:hidden;}
+.l-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);}
+.fl{font-size:10px;font-weight:600;color:var(--t3);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:8px;display:block;}
+.fi{width:100%;padding:13px 16px;background:var(--bg2);border:1px solid var(--border);border-radius:12px;color:var(--text);font-size:14px;font-family:'Inter',sans-serif;outline:none;transition:border .2s;margin-bottom:14px;}
 .fi:focus{border-color:var(--gold);}
 .fs{width:100%;padding:13px 16px;background:var(--bg2);border:1px solid var(--border);border-radius:12px;color:var(--text);font-size:14px;font-family:'Inter',sans-serif;outline:none;appearance:none;margin-bottom:14px;}
 .fs option{background:var(--bg2);}
-.btn-gold{width:100%;padding:15px;background:linear-gradient(135deg,#b8943e,#c9a84c,#dfc06a);border:none;border-radius:12px;color:#0d1420;font-size:14px;font-weight:700;font-family:'Inter',sans-serif;cursor:pointer;letter-spacing:1px;text-transform:uppercase;box-shadow:0 8px 24px #c9a84c33;transition:all 0.2s;}
-.btn-gold:active{transform:scale(0.98);}
-.btn-gold:disabled{background:var(--border);color:var(--text3);box-shadow:none;cursor:not-allowed;}
-.login-hint{color:var(--text3);font-size:11px;text-align:center;margin-top:14px;}
-.login-error{color:#e74c3c;font-size:12px;text-align:center;margin:-6px 0 10px;}
+.btn-gold{width:100%;padding:15px;background:linear-gradient(135deg,#b8943e,#c9a84c,#dfc06a);border:none;border-radius:12px;color:#0d1420;font-size:14px;font-weight:700;font-family:'Inter',sans-serif;cursor:pointer;letter-spacing:1px;text-transform:uppercase;box-shadow:0 8px 24px #c9a84c33;transition:all .2s;}
+.btn-gold:active{transform:scale(.98);}
+.btn-gold:disabled{background:var(--border);color:var(--t3);box-shadow:none;cursor:not-allowed;}
+.l-hint{color:var(--t3);font-size:11px;text-align:center;margin-top:14px;}
+.l-err{color:var(--red);font-size:12px;text-align:center;margin:-6px 0 10px;}
 
-.topbar{background:linear-gradient(180deg,#0a1222 0%,var(--bg) 100%);padding:24px 20px 36px;border-bottom:1px solid var(--border);position:relative;}
-.topbar::after{content:'';position:absolute;bottom:0;left:20px;right:20px;height:1px;background:linear-gradient(90deg,transparent,var(--gold-dim),transparent);}
+/* TOPBAR */
+.topbar{background:linear-gradient(180deg,#0a1222,var(--bg));padding:24px 20px 36px;border-bottom:1px solid var(--border);position:relative;}
+.topbar::after{content:'';position:absolute;bottom:0;left:20px;right:20px;height:1px;background:linear-gradient(90deg,transparent,var(--gdim),transparent);}
 .topbar-row{display:flex;justify-content:space-between;align-items:flex-start;}
-.topbar-greeting{color:var(--text3);font-size:11px;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;}
 .topbar-title{font-family:'Playfair Display',serif;color:var(--text);font-size:26px;font-weight:700;}
-.topbar-date{color:var(--text3);font-size:11px;margin-top:4px;}
-.topbar-badge{background:linear-gradient(135deg,#1a2a4a,#1e3355);color:var(--gold2);font-size:10px;font-weight:700;padding:6px 12px;border-radius:20px;border:1px solid var(--gold-dim);letter-spacing:1px;text-transform:uppercase;margin-top:4px;}
+.topbar-date{color:var(--t3);font-size:11px;margin-top:4px;}
+.topbar-badge{background:linear-gradient(135deg,#1a2a4a,#1e3355);color:var(--gold2);font-size:10px;font-weight:700;padding:6px 12px;border-radius:20px;border:1px solid var(--gdim);letter-spacing:1px;text-transform:uppercase;}
 
+/* NAV */
 .bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:var(--bg2);border-top:1px solid var(--border);display:flex;z-index:100;box-shadow:0 -8px 32px #00000066;overflow-x:auto;}
-.nav-btn{flex:1;min-width:56px;padding:8px 0 14px;background:none;border:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;}
-.nav-icon{font-size:18px;transition:transform 0.2s;}
-.nav-btn.active .nav-icon{transform:scale(1.1);}
-.nav-label{font-size:9px;font-weight:600;color:var(--text3);letter-spacing:0.3px;text-transform:uppercase;transition:color 0.2s;white-space:nowrap;}
+.nav-btn{flex:1;min-width:52px;padding:8px 0 14px;background:none;border:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;}
+.nav-icon{font-size:18px;}
+.nav-label{font-size:9px;font-weight:600;color:var(--t3);letter-spacing:.3px;text-transform:uppercase;white-space:nowrap;}
 .nav-btn.active .nav-label{color:var(--gold2);}
-.nav-line{width:16px;height:2px;border-radius:1px;background:transparent;transition:background 0.2s;}
+.nav-line{width:16px;height:2px;border-radius:1px;background:transparent;}
 .nav-btn.active .nav-line{background:linear-gradient(90deg,var(--gold),var(--gold2));}
 
+/* PAGE */
 .page{padding:0 16px;margin-top:-16px;}
+
+/* CARDS STAT */
 .stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;}
-.stat-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:16px;position:relative;overflow:hidden;animation:fadeIn 0.4s ease both;}
-.stat-card.gold{border-color:#c9a84c33;}
-.stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold-dim),transparent);}
-.stat-card.gold::before{background:linear-gradient(90deg,transparent,var(--gold),transparent);}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:16px;position:relative;overflow:hidden;cursor:pointer;transition:border-color .2s;}
+.stat-card:hover{border-color:var(--gold);}
+.stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gdim),transparent);}
 .stat-icon{font-size:18px;margin-bottom:8px;display:block;}
 .stat-value{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;margin-bottom:3px;}
-.stat-label{font-size:10px;font-weight:600;color:var(--text3);letter-spacing:1px;text-transform:uppercase;}
-.stat-wide{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:16px 18px;margin-bottom:10px;display:flex;align-items:center;gap:14px;position:relative;overflow:hidden;animation:fadeIn 0.4s ease both;}
+.stat-label{font-size:10px;font-weight:600;color:var(--t3);letter-spacing:1px;text-transform:uppercase;}
+.stat-wide{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:16px 18px;margin-bottom:10px;display:flex;align-items:center;gap:14px;cursor:pointer;position:relative;overflow:hidden;}
 .stat-wide::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);}
 
-.sec-title{font-size:10px;font-weight:700;color:var(--text3);letter-spacing:2px;text-transform:uppercase;margin:16px 0 10px;display:flex;align-items:center;gap:8px;}
-.sec-title::after{content:'';flex:1;height:1px;background:var(--border);}
-
-.client-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:8px;position:relative;overflow:hidden;animation:fadeIn 0.3s ease both;}
-.cc-accent{position:absolute;left:0;top:0;bottom:0;width:3px;border-radius:14px 0 0 14px;}
+/* CLIENT CARDS */
+.cc{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:8px;position:relative;overflow:hidden;animation:fadeIn .3s ease both;}
+.cc-accent{position:absolute;left:0;top:0;bottom:0;width:3px;}
 .cc-body{padding-left:10px;}
 .cc-name{font-weight:600;font-size:15px;color:var(--text);margin-bottom:2px;}
-.cc-meta{font-size:12px;color:var(--text3);margin-bottom:8px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
-.cc-badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;}
-.cc-actions{display:flex;gap:5px;margin-top:10px;flex-wrap:wrap;}
+.cc-meta{font-size:12px;color:var(--t3);margin-bottom:6px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.cc-badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;margin-bottom:4px;}
+.cc-actions{display:flex;gap:5px;flex-wrap:wrap;margin-top:8px;}
 .cc-vals{display:flex;margin-top:10px;padding-top:10px;border-top:1px solid var(--border);}
 .cv-item{flex:1;text-align:center;}
-.cv-label{font-size:9px;font-weight:700;color:var(--text3);letter-spacing:1px;text-transform:uppercase;margin-bottom:2px;}
+.cv-label{font-size:9px;font-weight:700;color:var(--t3);letter-spacing:1px;text-transform:uppercase;margin-bottom:2px;}
 .cv-value{font-size:12px;font-weight:700;}
 .cv-div{width:1px;background:var(--border);}
-.btn-sm{padding:6px 10px;border-radius:8px;font-size:10px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;border:1px solid;transition:all 0.15s;white-space:nowrap;}
-.btn-pay{background:linear-gradient(135deg,#1a2a4a,#1e3355);color:var(--gold2);border-color:var(--gold-dim);}
+
+/* BUTTONS */
+.btn-sm{padding:6px 10px;border-radius:8px;font-size:10px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;border:1px solid;transition:all .15s;white-space:nowrap;}
+.btn-pay{background:linear-gradient(135deg,#1a2a4a,#1e3355);color:var(--gold2);border-color:var(--gdim);}
 .btn-wpp{background:#25D36618;color:var(--wpp);border-color:#25D36644;}
-.btn-edit{background:transparent;color:var(--text2);border-color:var(--border);}
+.btn-edit{background:transparent;color:var(--t2);border-color:var(--border);}
 .btn-del{background:transparent;color:var(--red);border-color:#e74c3c33;}
 .btn-prej{background:#e74c3c11;color:var(--red);border-color:#e74c3c44;}
 .btn-negoc{background:#9b59b611;color:var(--purple);border-color:#9b59b644;}
+.btn-quit-re{background:linear-gradient(135deg,#1a2a4a,#1e3355);color:var(--gold2);border-color:var(--gdim);}
 
+/* SEARCH */
 .search-wrap{position:relative;margin-top:14px;}
-.search-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--text3);font-size:14px;pointer-events:none;}
 .search-input{width:100%;padding:12px 16px 12px 40px;background:#ffffff08;border:1px solid var(--border);border-radius:12px;color:var(--text);font-size:14px;font-family:'Inter',sans-serif;outline:none;}
-.search-input::placeholder{color:var(--text3);}
+.search-input::placeholder{color:var(--t3);}
+.search-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--t3);font-size:14px;pointer-events:none;}
 
+/* CHIPS */
 .chip-row{display:flex;gap:8px;padding:14px 0 4px;overflow-x:auto;}
 .chip-row::-webkit-scrollbar{display:none;}
-.chip{padding:6px 14px;border-radius:20px;border:1px solid var(--border);font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap;font-family:'Inter',sans-serif;background:transparent;color:var(--text3);transition:all 0.2s;}
-.chip.active{background:var(--gold-dim);border-color:var(--gold);color:var(--gold2);}
+.chip{padding:6px 14px;border-radius:20px;border:1px solid var(--border);font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap;font-family:'Inter',sans-serif;background:transparent;color:var(--t3);}
+.chip.active{background:var(--gdim);border-color:var(--gold);color:var(--gold2);}
+.add-btn{background:linear-gradient(135deg,#b8943e,#c9a84c);color:#0d1420;border:none;border-radius:10px;padding:8px 14px;font-size:11px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;letter-spacing:.5px;text-transform:uppercase;}
 
-.add-btn{background:linear-gradient(135deg,#b8943e,#c9a84c);color:#0d1420;border:none;border-radius:10px;padding:8px 14px;font-size:11px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;letter-spacing:0.5px;text-transform:uppercase;transition:all 0.2s;box-shadow:0 4px 16px #c9a84c22;}
-
-.modal-overlay{position:fixed;inset:0;z-index:500;background:#000000cc;display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.3s;backdrop-filter:blur(4px);}
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;z-index:500;background:#000000cc;display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:opacity .3s;backdrop-filter:blur(4px);}
 .modal-overlay.open{opacity:1;pointer-events:all;}
-.modal-sheet{background:var(--bg2);border:1px solid var(--border);border-bottom:none;border-radius:24px 24px 0 0;width:100%;max-width:480px;padding:24px 20px 44px;max-height:92vh;overflow-y:auto;transform:translateY(100%);transition:transform 0.35s cubic-bezier(.4,0,.2,1);position:relative;}
+.modal-sheet{background:var(--bg2);border:1px solid var(--border);border-bottom:none;border-radius:24px 24px 0 0;width:100%;max-width:480px;padding:24px 20px 44px;max-height:92vh;overflow-y:auto;transform:translateY(100%);transition:transform .35s cubic-bezier(.4,0,.2,1);position:relative;}
 .modal-sheet::before{content:'';position:absolute;top:0;left:20%;right:20%;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);}
 .modal-overlay.open .modal-sheet{transform:translateY(0);}
-.modal-handle{width:36px;height:3px;background:var(--border2);border-radius:2px;margin:0 auto 20px;}
-.modal-close{float:right;background:var(--card);border:1px solid var(--border);border-radius:50%;width:32px;height:32px;cursor:pointer;font-size:14px;color:var(--text3);display:flex;align-items:center;justify-content:center;}
+.modal-handle{width:36px;height:3px;background:var(--border);border-radius:2px;margin:0 auto 20px;}
+.modal-close{float:right;background:var(--card);border:1px solid var(--border);border-radius:50%;width:32px;height:32px;cursor:pointer;font-size:14px;color:var(--t3);display:flex;align-items:center;justify-content:center;}
 .modal-title{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:var(--text);margin-bottom:20px;}
 
+/* PAY OPTS */
 .pay-opts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;}
-.pay-opt{padding:16px 12px;border-radius:14px;border:1px solid var(--border);background:var(--card);cursor:pointer;text-align:center;transition:all 0.2s;}
-.pay-opt.sel-renov{border-color:var(--orange);background:var(--orange-dim);}
-.pay-opt.sel-quit{border-color:var(--green);background:var(--green-dim);}
-.pay-opt.sel-parcial{border-color:var(--gold);background:var(--gold-dim);}
+.pay-opt{padding:16px 12px;border-radius:14px;border:1px solid var(--border);background:var(--card);cursor:pointer;text-align:center;}
+.pay-opt.sel-r{border-color:var(--orange);background:var(--odim);}
+.pay-opt.sel-q{border-color:var(--green);background:var(--gdim2);}
+.pay-opt.sel-p{border-color:var(--gold);background:var(--gdim);}
 .po-icon{font-size:22px;margin-bottom:6px;display:block;}
-.po-label{font-size:10px;font-weight:700;color:var(--text3);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;}
+.po-label{font-size:10px;font-weight:700;color:var(--t3);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;}
 .po-value{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;}
 
-.toggle-row{display:flex;align-items:center;justify-content:space-between;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:13px 16px;margin-bottom:10px;transition:border-color 0.2s;}
-.toggle-row.on-row{border-color:var(--gold-dim);background:#c9a84c08;}
-.toggle-sw{width:46px;height:26px;border-radius:13px;background:var(--border2);border:none;cursor:pointer;position:relative;transition:background 0.2s;flex-shrink:0;}
-.toggle-sw.on{background:var(--gold);}
-.toggle-knob{position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:left 0.2s;box-shadow:0 1px 4px #00000044;}
-.toggle-sw.on .toggle-knob{left:23px;}
+/* TOGGLE */
+.tog-row{display:flex;align-items:center;justify-content:space-between;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:13px 16px;margin-bottom:10px;}
+.tog-row.on{border-color:var(--gdim);}
+.tog-sw{width:46px;height:26px;border-radius:13px;background:var(--border);border:none;cursor:pointer;position:relative;flex-shrink:0;}
+.tog-sw.on{background:var(--gold);}
+.tog-knob{position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:left .2s;}
+.tog-sw.on .tog-knob{left:23px;}
 
-.summary-box{background:linear-gradient(135deg,#1a2a4a,#141e2e);border:1px solid var(--gold-dim);border-radius:14px;padding:16px 18px;margin-bottom:14px;position:relative;overflow:hidden;}
+/* SUMMARY */
+.summary-box{background:linear-gradient(135deg,#1a2a4a,#141e2e);border:1px solid var(--gdim);border-radius:14px;padding:16px 18px;margin-bottom:14px;position:relative;overflow:hidden;}
 .summary-box::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);}
-.summary-label{font-size:10px;font-weight:700;color:var(--text3);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:6px;}
-.summary-value{font-family:'Playfair Display',serif;font-size:28px;font-weight:700;color:var(--gold2);}
+.sum-label{font-size:10px;font-weight:700;color:var(--t3);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:6px;}
+.sum-value{font-family:'Playfair Display',serif;font-size:28px;font-weight:700;color:var(--gold2);}
 
-.negoc-box{background:linear-gradient(135deg,#1a2a4a,#141e2e);border:1px solid var(--gold-dim);border-radius:12px;padding:14px 16px;margin-bottom:10px;}
+/* OUTROS */
 .info-box{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px 16px;margin-bottom:14px;}
-.atraso-ref{background:#e74c3c11;border:1px solid #e74c3c22;border-radius:10px;padding:10px 14px;margin-bottom:10px;}
-.atraso-card{background:var(--card);border:1px solid var(--border);border-left:3px solid var(--red);border-radius:14px;padding:14px 16px;margin-bottom:8px;animation:fadeIn 0.3s ease both;}
-
-#toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:var(--card2);border:1px solid var(--border);color:var(--text);padding:12px 20px;border-radius:12px;font-size:13px;font-weight:500;z-index:9000;opacity:0;transition:opacity 0.3s;max-width:90%;text-align:center;box-shadow:0 8px 32px #00000066;}
-#toast.show{opacity:1;}
-
-.success-banner{background:var(--green-dim);border:1px solid #2ecc7133;border-radius:12px;padding:12px 16px;color:var(--green);font-size:13px;font-weight:600;margin-bottom:12px;display:none;}
-.success-banner.show{display:block;}
+.sec-title{font-size:10px;font-weight:700;color:var(--t3);letter-spacing:2px;text-transform:uppercase;margin:16px 0 10px;display:flex;align-items:center;gap:8px;}
+.sec-title::after{content:'';flex:1;height:1px;background:var(--border);}
 .empty{text-align:center;padding:50px 20px;}
-.empty-icon{font-size:36px;margin-bottom:10px;opacity:0.4;}
-.empty-text{font-size:14px;color:var(--text3);}
-
-.prej-card{background:var(--card);border:1px solid var(--border);border-left:3px solid var(--red);border-radius:14px;padding:14px 16px;margin-bottom:8px;animation:fadeIn 0.3s ease both;}
-.negoc-card{background:var(--card);border:1px solid var(--border);border-left:3px solid var(--purple);border-radius:14px;padding:14px 16px;margin-bottom:8px;animation:fadeIn 0.3s ease both;}
-.pend-card{background:var(--card);border:1px solid var(--border);border-left:3px solid var(--orange);border-radius:14px;padding:14px 16px;margin-bottom:8px;animation:fadeIn 0.3s ease both;}
-.custo-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:12px 16px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;animation:fadeIn 0.3s ease both;}
-
-.parcelas-bar{height:6px;background:var(--border);border-radius:3px;overflow:hidden;margin-top:8px;}
-.parcelas-fill{height:100%;background:linear-gradient(90deg,var(--purple),#b07ecf);border-radius:3px;transition:width 0.3s;}
-
-input[type=date]::-webkit-calendar-picker-indicator{filter:invert(0.5);}
+.empty-icon{font-size:36px;margin-bottom:10px;opacity:.4;}
+.empty-text{font-size:14px;color:var(--t3);}
+.pend-card{background:var(--card);border:1px solid var(--border);border-left:3px solid var(--orange);border-radius:14px;padding:14px 16px;margin-bottom:8px;animation:fadeIn .3s ease both;}
+.prej-card{background:var(--card);border:1px solid var(--border);border-left:3px solid var(--red);border-radius:14px;padding:14px 16px;margin-bottom:8px;animation:fadeIn .3s ease both;}
+.negoc-card{background:var(--card);border:1px solid var(--border);border-left:3px solid var(--purple);border-radius:14px;padding:14px 16px;margin-bottom:8px;animation:fadeIn .3s ease both;}
+.custo-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:12px 16px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;animation:fadeIn .3s ease both;}
+.parc-bar{height:6px;background:var(--border);border-radius:3px;overflow:hidden;margin-top:8px;}
+.parc-fill{height:100%;background:linear-gradient(90deg,var(--purple),#b07ecf);border-radius:3px;}
+.success-banner{background:var(--gdim2);border:1px solid #2ecc7133;border-radius:12px;padding:12px 16px;color:var(--green);font-size:13px;font-weight:600;margin-bottom:12px;display:none;}
+.success-banner.show{display:block;}
+.cat-chip{padding:8px 14px;border-radius:20px;border:1px solid var(--border);font-size:12px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;background:transparent;color:var(--t3);}
+.cat-chip.active{background:var(--gdim);border-color:var(--gold);color:var(--gold2);}
+.atraso-ref{background:#e74c3c11;border:1px solid #e74c3c22;border-radius:10px;padding:10px 14px;margin-bottom:10px;}
+.negoc-box{background:linear-gradient(135deg,#1a2a4a,#141e2e);border:1px solid var(--gdim);border-radius:12px;padding:14px 16px;margin-bottom:10px;}
+#toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:var(--card2);border:1px solid var(--border);color:var(--text);padding:12px 20px;border-radius:12px;font-size:13px;font-weight:500;z-index:9000;opacity:0;transition:opacity .3s;max-width:90%;text-align:center;box-shadow:0 8px 32px #00000066;}
+#toast.show{opacity:1;}
+#overlay-reload{position:fixed;inset:0;z-index:8000;background:#080c14cc;display:none;flex-direction:column;align-items:center;justify-content:center;gap:16px;backdrop-filter:blur(4px);}
+#overlay-reload.show{display:flex;}
 input[type=date]{color-scheme:dark;}
-.divider-line{width:1px;background:var(--border);}
-
-.cat-chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;}
-.cat-chip{padding:8px 14px;border-radius:20px;border:1px solid var(--border);font-size:12px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;background:transparent;color:var(--text3);transition:all 0.2s;}
-.cat-chip.active{background:var(--gold-dim);border-color:var(--gold);color:var(--gold2);}
-
-/* WPP BTN especial */
-.btn-wpp-float{
-  display:inline-flex;align-items:center;gap:4px;
-  padding:6px 10px;border-radius:8px;font-size:10px;font-weight:700;
-  cursor:pointer;font-family:'Inter',sans-serif;
-  border:1px solid #25D36644;
-  background:#25D36618;color:#25D366;
-  transition:all 0.15s;white-space:nowrap;
-  text-decoration:none;
-}
+input[type=date]::-webkit-calendar-picker-indicator{filter:invert(.5);}
 </style>
 </head>
 <body>
 
 <div id="loader">
-  <div class="loader-emblem">🚗</div>
-  <div class="loader-title">Genevese Credit</div>
-  <div class="loader-sub">Sistema de Gestão</div>
-  <div class="loader-bar"><div class="loader-bar-fill"></div></div>
+  <div class="lem">🚗</div>
+  <div class="ltit">Genevese Credit</div>
+  <div class="lsub">Sistema de Gestão</div>
+  <div class="lbar"><div class="lbar-f"></div></div>
 </div>
 <div id="toast"></div>
+<div id="overlay-reload">
+  <div style="width:40px;height:40px;border:3px solid #1e2d42;border-top:3px solid #c9a84c;border-radius:50%;animation:spin .8s linear infinite;"></div>
+  <div style="font-size:14px;font-weight:600;color:#e8c96d;">Atualizando...</div>
+</div>
 
 <!-- LOGIN -->
 <div id="login-screen" class="screen active" style="display:flex;">
-  <div class="login-emblem">🚗</div>
-  <div class="login-brand">Genevese Credit</div>
-  <div class="login-tagline">Gestão de Empréstimos</div>
-  <div class="login-card">
-    <label class="fl">Perfil de Acesso</label>
+  <div class="lem" style="margin-bottom:24px;">🚗</div>
+  <div class="l-brand">Genevese Credit</div>
+  <div class="l-tag">Gestão de Empréstimos</div>
+  <div class="l-card">
+    <label class="fl">Perfil</label>
     <select id="login-perfil" class="fs">
       <option value="admin">👑 Administrador</option>
       <option value="cobranca">💰 Equipe de Cobrança</option>
     </select>
     <label class="fl">Senha</label>
     <input id="login-senha" type="password" class="fi" placeholder="••••••••">
-    <p id="login-error" class="login-error"></p>
+    <p id="login-err" class="l-err"></p>
     <button class="btn-gold" onclick="fazerLogin()">Acessar Sistema</button>
-    <p class="login-hint">Admin: 1234 &nbsp;•&nbsp; Cobrança: 5678</p>
+    <p class="l-hint">Admin: 1234 · Cobrança: 5678</p>
   </div>
 </div>
 
 <!-- APP -->
 <div id="app" style="display:none;">
+
+  <!-- DASHBOARD -->
   <div id="screen-dashboard" class="screen active">
     <div class="topbar">
       <div class="topbar-row">
         <div>
-          <div class="topbar-greeting">Bem-vindo de volta</div>
+          <div style="color:var(--t3);font-size:11px;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;">Bem-vindo de volta</div>
           <div class="topbar-title">Dashboard</div>
           <div class="topbar-date" id="topbar-date"></div>
         </div>
-        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;">
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px;">
           <div class="topbar-badge" id="topbar-user">ADMIN</div>
-          <button onclick="forceReload(this)" style="background:transparent;border:1px solid var(--gold-dim);border-radius:8px;color:var(--gold2);font-size:10px;font-weight:600;padding:4px 8px;cursor:pointer;font-family:'Inter',sans-serif;letter-spacing:0.5px;">🔄 Atualizar</button>
+          <button onclick="forceReload(this)" style="background:transparent;border:1px solid var(--gdim);border-radius:8px;color:var(--gold2);font-size:10px;font-weight:600;padding:4px 8px;cursor:pointer;font-family:'Inter',sans-serif;">🔄 Atualizar</button>
         </div>
       </div>
     </div>
-    <div class="page" id="dashboard-content" style="padding-top:20px;">
-      <div style="text-align:center;padding:40px;color:var(--text3);"><div style="width:24px;height:24px;border:2px solid var(--border);border-top:2px solid var(--gold);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 12px;"></div>Carregando...</div>
+    <div class="page" id="dash-content" style="padding-top:20px;">
+      <div style="text-align:center;padding:40px;color:var(--t3);"><div style="width:24px;height:24px;border:2px solid var(--border);border-top:2px solid var(--gold);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 12px;"></div>Carregando...</div>
     </div>
   </div>
 
+  <!-- CLIENTES -->
   <div id="screen-clientes" class="screen">
     <div class="topbar">
       <div class="topbar-row">
@@ -240,7 +242,7 @@ input[type=date]{color-scheme:dark;}
       </div>
       <div class="search-wrap">
         <span class="search-icon">🔍</span>
-        <input id="busca" class="search-input" placeholder="Buscar cliente..." oninput="renderCli()">
+        <input id="busca" class="search-input" placeholder="Nome, CPF ou telefone..." oninput="renderCli()">
       </div>
     </div>
     <div class="page">
@@ -249,28 +251,32 @@ input[type=date]{color-scheme:dark;}
         <button class="chip" id="chip-ativo" onclick="setF('Ativo',this)">Ativos</button>
         <button class="chip" id="chip-hoje" onclick="setF('Hoje',this)">⚠️ Vence Hoje</button>
         <button class="chip" id="chip-atraso" onclick="setF('Atraso',this)">🚨 Em Atraso</button>
-        <button class="chip" id="chip-quitado" onclick="setF('Quitado',this)">Quitados</button>
+        <button class="chip" id="chip-quitado" onclick="setF('Quitado',this)">✅ Quitados</button>
       </div>
       <div id="success-banner" class="success-banner"></div>
       <div id="lista-cli" style="padding-top:8px;"></div>
     </div>
   </div>
 
+  <!-- PENDÊNCIAS -->
   <div id="screen-pendencias" class="screen">
     <div class="topbar"><div class="topbar-title">Pendências</div></div>
     <div class="page" style="padding-top:20px;"><div id="lista-pend"></div></div>
   </div>
 
+  <!-- NEGOCIAÇÕES -->
   <div id="screen-negociacoes" class="screen">
     <div class="topbar"><div class="topbar-title">Negociações</div></div>
     <div class="page" style="padding-top:20px;"><div id="lista-negoc"></div></div>
   </div>
 
+  <!-- PREJUÍZOS -->
   <div id="screen-prejuizos" class="screen">
     <div class="topbar"><div class="topbar-title">Prejuízos</div></div>
     <div class="page" style="padding-top:20px;"><div id="lista-prej"></div></div>
   </div>
 
+  <!-- CUSTOS -->
   <div id="screen-custos" class="screen">
     <div class="topbar">
       <div class="topbar-row">
@@ -292,130 +298,163 @@ input[type=date]{color-scheme:dark;}
   </nav>
 </div>
 
-<!-- MODAIS -->
+<!-- MODAL CADASTRO -->
 <div id="modal-cad" class="modal-overlay" onclick="closeM('modal-cad')">
   <div class="modal-sheet" onclick="event.stopPropagation()">
     <div class="modal-handle"></div>
     <button class="modal-close" onclick="closeM('modal-cad')">✕</button>
     <div class="modal-title" id="modal-cad-title">Novo Cliente</div>
     <input type="hidden" id="edit-linha">
-    <label class="fl">Nome Completo <span style="color:var(--red);">*</span></label><input id="cad-nome" class="fi" placeholder="Nome do motorista">
-    <label class="fl">CPF <span style="color:var(--red);">*</span></label><input id="cad-cpf" class="fi" placeholder="000.000.000-00">
-    <label class="fl">Telefone Principal <span style="color:var(--red);">*</span></label><input id="cad-tel" class="fi" placeholder="(00) 00000-0000" type="tel">
-    <label class="fl">Telefone Adicional <span style="color:var(--text3);font-size:10px;">(opcional)</span></label><input id="cad-tel2" class="fi" placeholder="(00) 00000-0000" type="tel">
+    <label class="fl">Nome <span style="color:var(--red)">*</span></label><input id="cad-nome" class="fi" placeholder="Nome completo">
+    <label class="fl">CPF</label><input id="cad-cpf" class="fi" placeholder="000.000.000-00">
+    <label class="fl">Telefone Principal <span style="color:var(--red)">*</span></label><input id="cad-tel" class="fi" placeholder="(00) 00000-0000" type="tel">
+    <label class="fl">Telefone Adicional</label><input id="cad-tel2" class="fi" placeholder="(00) 00000-0000" type="tel">
     <label class="fl">Data do Empréstimo</label><input id="cad-data" class="fi" type="date">
     <label class="fl">Valor Emprestado</label>
     <select id="cad-valor" class="fs" onchange="updResumo()">
-      <option value="">Selecione o valor...</option>
+      <option value="">Selecione...</option>
       <option value="250">R$ 250 → quitar R$ 350</option>
       <option value="350">R$ 350 → quitar R$ 490</option>
       <option value="400">R$ 400 → quitar R$ 560</option>
       <option value="500">R$ 500 → quitar R$ 690</option>
       <option value="800">R$ 800 → quitar R$ 1.100</option>
       <option value="1000">R$ 1.000 → quitar R$ 1.390</option>
-      <option value="custom">💡 Valor personalizado...</option>
+      <option value="custom">💡 Valor personalizado</option>
     </select>
-    <div id="cad-valor-custom" style="display:none;">
-      <label class="fl">Valor personalizado (R$)</label>
-      <input id="cad-valor-num" class="fi" type="number" placeholder="Digite o valor..." oninput="updResumo()">
+    <div id="cad-custom-box" style="display:none;">
+      <label class="fl">Valor (R$)</label>
+      <input id="cad-valor-num" class="fi" type="number" placeholder="Digite o valor" oninput="updResumo()">
     </div>
-    <div id="cad-resumo" style="display:none;background:var(--card);border:1px solid var(--gold-dim);border-radius:12px;padding:14px 16px;margin-bottom:14px;">
+    <div id="cad-resumo" style="display:none;background:var(--card);border:1px solid var(--gdim);border-radius:12px;padding:14px;margin-bottom:14px;">
       <div style="font-size:10px;font-weight:700;color:var(--gold2);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;">Resumo</div>
-      <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;"><span style="color:var(--text3);">Renovar:</span><span id="res-renov" style="font-weight:700;color:var(--orange);"></span></div>
-      <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;"><span style="color:var(--text3);">Quitar:</span><span id="res-quit" style="font-weight:700;color:var(--green);"></span></div>
-      <div style="display:flex;justify-content:space-between;font-size:13px;"><span style="color:var(--text3);">Vencimento:</span><span id="res-venc" style="font-weight:700;color:var(--text);"></span></div>
+      <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;"><span style="color:var(--t3)">Renovar:</span><span id="res-renov" style="font-weight:700;color:var(--orange)"></span></div>
+      <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;"><span style="color:var(--t3)">Quitar:</span><span id="res-quit" style="font-weight:700;color:var(--green)"></span></div>
+      <div style="display:flex;justify-content:space-between;font-size:13px;"><span style="color:var(--t3)">Vencimento:</span><span id="res-venc" style="font-weight:700"></span></div>
     </div>
     <button class="btn-gold" id="btn-salvar" onclick="salvarCliente()">Cadastrar Cliente</button>
   </div>
 </div>
 
+<!-- MODAL PAGAMENTO -->
 <div id="modal-pag" class="modal-overlay" onclick="closeM('modal-pag')">
   <div class="modal-sheet" onclick="event.stopPropagation()">
     <div class="modal-handle"></div>
     <button class="modal-close" onclick="closeM('modal-pag')">✕</button>
     <div class="modal-title">Registrar Pagamento</div>
     <div id="pag-info" class="info-box" style="margin-bottom:14px;"></div>
-    <div id="atraso-ref" style="display:none;" class="atraso-ref"></div>
+    <div id="pag-atraso" style="display:none;" class="atraso-ref"></div>
     <div class="pay-opts">
-      <div class="pay-opt" id="opt-renov" onclick="selT('Renovado')"><span class="po-icon">🔄</span><div class="po-label">Renovar</div><div class="po-value" id="pov-renov" style="color:var(--orange);"></div></div>
-      <div class="pay-opt" id="opt-quit" onclick="selT('Quitado')"><span class="po-icon">✅</span><div class="po-label">Quitar</div><div class="po-value" id="pov-quit" style="color:var(--green);"></div></div>
-      <div class="pay-opt" id="opt-parcial" onclick="selT('Parcial')" style="grid-column:1/-1;"><span class="po-icon">💛</span><div class="po-label">Pagamento Parcial</div><div style="font-size:12px;color:var(--text3);">Cliente pagou menos — registra pendência</div></div>
+      <div class="pay-opt" id="opt-r" onclick="selTipo('Renovado')"><span class="po-icon">🔄</span><div class="po-label">Renovar</div><div class="po-value" id="pov-r" style="color:var(--orange)"></div></div>
+      <div class="pay-opt" id="opt-q" onclick="selTipo('Quitado')"><span class="po-icon">✅</span><div class="po-label">Quitar</div><div class="po-value" id="pov-q" style="color:var(--green)"></div></div>
+      <div class="pay-opt" id="opt-p" onclick="selTipo('Parcial')" style="grid-column:1/-1;"><span class="po-icon">💛</span><div class="po-label">Pagamento Parcial</div><div style="font-size:12px;color:var(--t3)">Cliente pagou menos — registra pendência</div></div>
     </div>
     <div id="pag-extras" style="display:none;">
-      <div style="margin-bottom:10px;">
-        <label class="fl">Valor pago</label>
-        <input id="valor-pago-input" class="fi" type="number" placeholder="0,00" oninput="calcT()" style="margin-bottom:0;">
-        <div style="font-size:11px;color:var(--text3);margin-top:4px;" id="valor-ref-hint"></div>
+      <label class="fl">Valor pago</label>
+      <input id="vp-input" class="fi" type="number" placeholder="0,00" oninput="calcTotal()" style="margin-bottom:4px;">
+      <div style="font-size:11px;color:var(--t3);margin-bottom:10px;" id="vp-hint"></div>
+      <div class="tog-row" id="tog-21h-row">
+        <div><div style="font-size:13px;font-weight:600">Pagou após 21h?</div><div style="font-size:11px;color:var(--t3);margin-top:1px">+ R$ 30,00</div></div>
+        <button class="tog-sw" id="tog-21h" onclick="tog21h()"><div class="tog-knob"></div></button>
       </div>
-      <div class="toggle-row" id="tog-row-21h">
-        <div><div style="font-size:13px;font-weight:600;color:var(--text);">Pagou após as 21h?</div><div style="font-size:11px;color:var(--text3);margin-top:1px;">Acrescenta R$ 30,00</div></div>
-        <button class="toggle-sw" id="tog-btn-21h" onclick="togM21()"><div class="toggle-knob"></div></button>
+      <div class="tog-row" id="tog-neg-row">
+        <div><div style="font-size:13px;font-weight:600">Houve negociação?</div><div style="font-size:11px;color:var(--t3);margin-top:1px">Valor extra acordado</div></div>
+        <button class="tog-sw" id="tog-neg" onclick="togNeg()"><div class="tog-knob"></div></button>
       </div>
-      <div class="toggle-row" id="tog-row-negoc">
-        <div><div style="font-size:13px;font-weight:600;color:var(--text);">Houve negociação?</div><div style="font-size:11px;color:var(--text3);margin-top:1px;">Cobranças extras ou desconto</div></div>
-        <button class="toggle-sw" id="tog-btn-negoc" onclick="togNegoc()"><div class="toggle-knob"></div></button>
-      </div>
-      <div id="negoc-campo" style="display:none;">
+      <div id="neg-campo" style="display:none;">
         <div class="negoc-box">
-          <div style="font-size:10px;font-weight:700;color:var(--gold2);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;">💰 Valor da Negociação</div>
-          <input id="negoc-valor" class="fi" type="number" placeholder="Digite o valor negociado..." style="margin-bottom:0;" oninput="calcT()">
-          <div style="font-size:11px;color:var(--text3);margin-top:6px;">Será somado ao total final</div>
+          <div style="font-size:10px;font-weight:700;color:var(--gold2);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;">💰 Valor Negociado</div>
+          <input id="neg-valor" class="fi" type="number" placeholder="0,00" oninput="calcTotal()" style="margin-bottom:0;">
         </div>
       </div>
       <div class="summary-box">
-        <div class="summary-label">Total no Caixa</div>
-        <div class="summary-value" id="pag-total"></div>
-        <div id="pag-breakdown" style="font-size:11px;color:var(--text3);margin-top:4px;"></div>
+        <div class="sum-label">Total no Caixa</div>
+        <div class="sum-value" id="pag-total"></div>
+        <div id="pag-break" style="font-size:11px;color:var(--t3);margin-top:4px;"></div>
       </div>
-      <button class="btn-gold" id="btn-confirmar-pag" onclick="confirmarPag()">Confirmar Pagamento</button>
+      <button class="btn-gold" id="btn-conf-pag" onclick="confirmarPag()">Confirmar Pagamento</button>
     </div>
   </div>
 </div>
 
+<!-- MODAL EXCLUIR -->
+<div id="modal-del" class="modal-overlay" onclick="closeM('modal-del')">
+  <div class="modal-sheet" onclick="event.stopPropagation()" style="padding-bottom:32px;">
+    <div class="modal-handle"></div>
+    <div class="modal-title" style="color:var(--red)">Excluir Cliente</div>
+    <div id="del-info" style="font-size:14px;color:var(--t2);margin-bottom:14px;line-height:1.6;"></div>
+    <div style="margin-bottom:14px;">
+      <div style="font-size:10px;font-weight:700;color:var(--t3);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:8px;">Retornar valor ao caixa?</div>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <label onclick="selDelOpt('total')" id="del-opt-total" style="display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px 14px;cursor:pointer;">
+          <div id="del-r-total" style="width:18px;height:18px;border-radius:50%;border:2px solid var(--border);flex-shrink:0;"></div>
+          <div><div style="font-size:13px;font-weight:600">Retornar valor total</div><div id="del-total-label" style="font-size:11px;color:var(--t3);margin-top:1px;"></div></div>
+        </label>
+        <label onclick="selDelOpt('parcial')" id="del-opt-parcial" style="display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px 14px;cursor:pointer;">
+          <div id="del-r-parcial" style="width:18px;height:18px;border-radius:50%;border:2px solid var(--border);flex-shrink:0;"></div>
+          <div style="flex:1;"><div style="font-size:13px;font-weight:600">Valor específico</div>
+            <input id="del-val-parc" type="number" onclick="event.stopPropagation();selDelOpt('parcial')" placeholder="Digite o valor..." style="width:100%;margin-top:6px;padding:8px 10px;background:var(--bg2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:13px;font-family:'Inter',sans-serif;outline:none;">
+          </div>
+        </label>
+        <label onclick="selDelOpt('nao')" id="del-opt-nao" style="display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px 14px;cursor:pointer;">
+          <div id="del-r-nao" style="width:18px;height:18px;border-radius:50%;border:2px solid var(--border);flex-shrink:0;"></div>
+          <div><div style="font-size:13px;font-weight:600">Não retornar</div><div style="font-size:11px;color:var(--t3);margin-top:1px;">Ex: cliente já pagou algo</div></div>
+        </label>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+      <button onclick="closeM('modal-del')" style="padding:13px;background:var(--card);border:1px solid var(--border);border-radius:12px;color:var(--t2);font-size:13px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;">Cancelar</button>
+      <button onclick="confirmarExclusao()" style="padding:13px;background:var(--rdim);border:1px solid var(--red);border-radius:12px;color:var(--red);font-size:13px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;">Excluir</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL PREJUÍZO -->
 <div id="modal-prej" class="modal-overlay" onclick="closeM('modal-prej')">
   <div class="modal-sheet" onclick="event.stopPropagation()" style="padding-bottom:32px;">
     <div class="modal-handle"></div>
     <button class="modal-close" onclick="closeM('modal-prej')">✕</button>
-    <div class="modal-title" style="color:var(--red);">⚠️ Marcar Prejuízo</div>
-    <div id="prej-info" style="font-size:14px;color:var(--text2);margin-bottom:16px;line-height:1.6;"></div>
+    <div class="modal-title" style="color:var(--red)">⚠️ Marcar Prejuízo</div>
+    <div id="prej-info" style="font-size:14px;color:var(--t2);margin-bottom:16px;line-height:1.6;"></div>
     <label class="fl">Observação (opcional)</label>
-    <input id="prej-obs" class="fi" placeholder="Ex: Não foi encontrado, mudou de cidade...">
+    <input id="prej-obs" class="fi" placeholder="Ex: Não encontrado, mudou de cidade...">
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-      <button onclick="closeM('modal-prej')" style="padding:13px;background:var(--card);border:1px solid var(--border);border-radius:12px;color:var(--text2);font-size:13px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;">Cancelar</button>
-      <button onclick="confirmarPrejuizo()" style="padding:13px;background:var(--red-dim);border:1px solid var(--red);border-radius:12px;color:var(--red);font-size:13px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;">Confirmar</button>
+      <button onclick="closeM('modal-prej')" style="padding:13px;background:var(--card);border:1px solid var(--border);border-radius:12px;color:var(--t2);font-size:13px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;">Cancelar</button>
+      <button onclick="confirmarPrejuizo()" style="padding:13px;background:var(--rdim);border:1px solid var(--red);border-radius:12px;color:var(--red);font-size:13px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;">Confirmar</button>
     </div>
   </div>
 </div>
 
+<!-- MODAL NEGOCIAÇÃO -->
 <div id="modal-negoc" class="modal-overlay" onclick="closeM('modal-negoc')">
   <div class="modal-sheet" onclick="event.stopPropagation()">
     <div class="modal-handle"></div>
     <button class="modal-close" onclick="closeM('modal-negoc')">✕</button>
-    <div class="modal-title" style="color:var(--purple);">🤝 Criar Negociação</div>
-    <div id="negoc-cli-info" class="info-box" style="margin-bottom:14px;"></div>
+    <div class="modal-title" style="color:var(--purple)">🤝 Criar Negociação</div>
+    <div id="negoc-info" class="info-box" style="margin-bottom:14px;"></div>
     <label class="fl">Número de Parcelas</label>
-    <input id="negoc-parcelas" class="fi" type="number" placeholder="Ex: 10" oninput="calcNegoc()">
+    <input id="negoc-parc" class="fi" type="number" placeholder="Ex: 10" oninput="calcNegoc()">
     <label class="fl">Valor de Cada Parcela</label>
-    <input id="negoc-val-parcela" class="fi" type="number" placeholder="Ex: 150,00" oninput="calcNegoc()">
-    <div id="negoc-resumo" style="display:none;background:var(--card);border:1px solid var(--purple);border-radius:12px;padding:14px 16px;margin-bottom:14px;">
-      <div style="font-size:10px;font-weight:700;color:var(--purple);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;">RESUMO</div>
-      <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;"><span style="color:var(--text3);">Total negociado:</span><span id="negoc-total-res" style="font-weight:700;color:var(--purple);"></span></div>
-      <div style="display:flex;justify-content:space-between;font-size:13px;"><span style="color:var(--text3);">Parcelas:</span><span id="negoc-parc-res" style="font-weight:700;color:var(--text);"></span></div>
+    <input id="negoc-vp" class="fi" type="number" placeholder="Ex: 150,00" oninput="calcNegoc()">
+    <div id="negoc-resumo" style="display:none;background:var(--card);border:1px solid var(--purple);border-radius:12px;padding:14px;margin-bottom:14px;">
+      <div style="font-size:10px;font-weight:700;color:var(--purple);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;">Resumo</div>
+      <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;"><span style="color:var(--t3)">Total:</span><span id="negoc-total" style="font-weight:700;color:var(--purple)"></span></div>
+      <div style="display:flex;justify-content:space-between;font-size:13px;"><span style="color:var(--t3)">Parcelas:</span><span id="negoc-parc-res" style="font-weight:700"></span></div>
     </div>
-    <button class="btn-gold" onclick="confirmarNegociacao()" style="background:linear-gradient(135deg,#7b2d8b,#9b59b6);">Criar Negociação</button>
+    <button class="btn-gold" onclick="confirmarNegociacao()" style="background:linear-gradient(135deg,#7b2d8b,#9b59b6)">Criar Negociação</button>
   </div>
 </div>
 
+<!-- MODAL CUSTO -->
 <div id="modal-custo" class="modal-overlay" onclick="closeM('modal-custo')">
   <div class="modal-sheet" onclick="event.stopPropagation()">
     <div class="modal-handle"></div>
     <button class="modal-close" onclick="closeM('modal-custo')">✕</button>
     <div class="modal-title">💳 Lançar Custo</div>
     <label class="fl">Categoria</label>
-    <div class="cat-chips">
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;" id="cat-chips">
       <button class="cat-chip active" onclick="selCat('Anúncios',this)">📢 Anúncios</button>
       <button class="cat-chip" onclick="selCat('Saque',this)">💵 Saque</button>
-      <button class="cat-chip" onclick="selCat('Recargas Chip',this)">📱 Recargas Chip</button>
+      <button class="cat-chip" onclick="selCat('Recargas Chip',this)">📱 Recargas</button>
       <button class="cat-chip" onclick="selCat('Outros',this)">📦 Outros</button>
     </div>
     <label class="fl">Descrição (opcional)</label>
@@ -426,166 +465,98 @@ input[type=date]{color-scheme:dark;}
   </div>
 </div>
 
-<div id="modal-del" class="modal-overlay" onclick="closeM('modal-del')">
-  <div class="modal-sheet" onclick="event.stopPropagation()" style="padding-bottom:32px;">
-    <div class="modal-handle"></div>
-    <div class="modal-title" style="color:var(--red);">Excluir Cliente</div>
-    <div id="del-info" style="font-size:14px;color:var(--text2);margin-bottom:14px;line-height:1.6;"></div>
-    
-    <div style="font-size:10px;font-weight:700;color:var(--text3);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:8px;">Retornar valor ao caixa?</div>
-    <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px;">
-      <label onclick="selOpcaoDel('total')" id="del-opt-total" style="display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px 14px;cursor:pointer;transition:all 0.2s;">
-        <div id="del-radio-total" style="width:18px;height:18px;border-radius:50%;border:2px solid var(--border);flex-shrink:0;"></div>
-        <div><div style="font-size:13px;font-weight:600;color:var(--text);">Retornar valor total emprestado</div><div id="del-valor-total-label" style="font-size:11px;color:var(--text3);margin-top:1px;"></div></div>
-      </label>
-      <label onclick="selOpcaoDel('parcial')" id="del-opt-parcial" style="display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px 14px;cursor:pointer;transition:all 0.2s;">
-        <div id="del-radio-parcial" style="width:18px;height:18px;border-radius:50%;border:2px solid var(--border);flex-shrink:0;"></div>
-        <div style="flex:1;"><div style="font-size:13px;font-weight:600;color:var(--text);">Retornar valor específico</div>
-          <input id="del-valor-parcial" type="number" onclick="event.stopPropagation();selOpcaoDel('parcial')" placeholder="Digite o valor..." style="width:100%;margin-top:6px;padding:8px 10px;background:var(--bg2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:13px;font-family:'Inter',sans-serif;outline:none;">
-        </div>
-      </label>
-      <label onclick="selOpcaoDel('nao')" id="del-opt-nao" style="display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px 14px;cursor:pointer;transition:all 0.2s;">
-        <div id="del-radio-nao" style="width:18px;height:18px;border-radius:50%;border:2px solid var(--border);flex-shrink:0;"></div>
-        <div><div style="font-size:13px;font-weight:600;color:var(--text);">Não retornar ao caixa</div><div style="font-size:11px;color:var(--text3);margin-top:1px;">Ex: cliente já pagou parcialmente</div></div>
-      </label>
-    </div>
-
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-      <button onclick="closeM('modal-del')" style="padding:13px;background:var(--card);border:1px solid var(--border);border-radius:12px;color:var(--text2);font-size:13px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;">Cancelar</button>
-      <button onclick="confirmarExclusao()" style="padding:13px;background:var(--red-dim);border:1px solid var(--red);border-radius:12px;color:var(--red);font-size:13px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;">Excluir</button>
-    </div>
-  </div>
-</div>
-
-
-<!-- MODAL HISTÓRICO -->
-<div id="modal-hist" class="modal-overlay" onclick="closeM('modal-hist')">
+<!-- MODAL CAIXA REAL -->
+<div id="modal-caixa" class="modal-overlay" onclick="closeM('modal-caixa')">
   <div class="modal-sheet" onclick="event.stopPropagation()">
     <div class="modal-handle"></div>
-    <button class="modal-close" onclick="closeM('modal-hist')">✕</button>
+    <button class="modal-close" onclick="closeM('modal-caixa')">✕</button>
     <div class="modal-title">💰 Caixa Real</div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;">
       <button onclick="abrirMovCaixa('suprimento')" style="padding:12px;background:#2ecc7122;border:1px solid var(--green);border-radius:12px;color:var(--green);font-size:12px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;">➕ Suprimento</button>
-      <button onclick="abrirMovCaixa('sangria')" style="padding:12px;background:var(--red-dim);border:1px solid var(--red);border-radius:12px;color:var(--red);font-size:12px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;">➖ Sangria</button>
+      <button onclick="abrirMovCaixa('sangria')" style="padding:12px;background:var(--rdim);border:1px solid var(--red);border-radius:12px;color:var(--red);font-size:12px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;">➖ Sangria</button>
     </div>
-    <div id="hist-content">
-      <div style="text-align:center;padding:30px;color:var(--text3);"><div style="width:24px;height:24px;border:2px solid var(--border);border-top:2px solid var(--gold);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 10px;"></div>Carregando...</div>
-    </div>
+    <div id="caixa-content"><div style="text-align:center;padding:30px;color:var(--t3);">Carregando...</div></div>
   </div>
 </div>
 
-<!-- MODAL SANGRIA/SUPRIMENTO -->
-<div id="modal-mov-caixa" class="modal-overlay" onclick="closeM('modal-mov-caixa')">
+<!-- MODAL SUPRIMENTO/SANGRIA -->
+<div id="modal-mov-cx" class="modal-overlay" onclick="closeM('modal-mov-cx')">
   <div class="modal-sheet" onclick="event.stopPropagation()" style="padding-bottom:32px;">
     <div class="modal-handle"></div>
-    <button class="modal-close" onclick="closeM('modal-mov-caixa')">✕</button>
-    <div class="modal-title" id="mov-caixa-title">Suprimento</div>
-    <input type="hidden" id="mov-caixa-tipo">
+    <button class="modal-close" onclick="closeM('modal-mov-cx')">✕</button>
+    <div class="modal-title" id="mov-cx-title">Suprimento</div>
+    <input type="hidden" id="mov-cx-tipo">
     <label class="fl">Valor (R$)</label>
-    <input id="mov-caixa-valor" class="fi" type="number" placeholder="0,00">
+    <input id="mov-cx-valor" class="fi" type="number" placeholder="0,00">
     <label class="fl">Observação</label>
-    <input id="mov-caixa-obs" class="fi" placeholder="Ex: Reforço de caixa, retirada pessoal...">
-    <button class="btn-gold" id="btn-mov-caixa" onclick="confirmarMovCaixa()">Confirmar</button>
+    <input id="mov-cx-obs" class="fi" placeholder="Ex: Reforço de caixa...">
+    <button class="btn-gold" id="btn-mov-cx" onclick="confirmarMovCx()">Confirmar</button>
   </div>
 </div>
 
-<!-- MODAL AÇÃO MOVIMENTAÇÃO -->
-<div id="modal-acao-mov" class="modal-overlay" onclick="closeM('modal-acao-mov')">
+<!-- MODAL DESFAZER CAIXA -->
+<div id="modal-desfazer" class="modal-overlay" onclick="closeM('modal-desfazer')">
   <div class="modal-sheet" onclick="event.stopPropagation()" style="padding-bottom:32px;">
     <div class="modal-handle"></div>
-    <button class="modal-close" onclick="closeM('modal-acao-mov')">✕</button>
-    <div class="modal-title" id="acao-mov-title">Excluir Movimentação</div>
-    <div id="acao-mov-info" style="font-size:13px;color:var(--text2);margin-bottom:20px;line-height:1.7;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px;"></div>
+    <div class="modal-title" id="desfazer-title">Ação</div>
+    <div id="desfazer-info" class="info-box" style="margin-bottom:16px;"></div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-      <button onclick="closeM('modal-acao-mov')" style="padding:13px;background:var(--card);border:1px solid var(--border);border-radius:12px;color:var(--text2);font-size:13px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;">Cancelar</button>
-      <button id="btn-confirmar-acao-mov" onclick="confirmarAcaoMov()" style="padding:13px;background:var(--red-dim);border:1px solid var(--red);border-radius:12px;color:var(--red);font-size:13px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;">Confirmar</button>
+      <button onclick="closeM('modal-desfazer')" style="padding:13px;background:var(--card);border:1px solid var(--border);border-radius:12px;color:var(--t2);font-size:13px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;">Cancelar</button>
+      <button id="btn-conf-desfazer" onclick="confirmarDesfazer()" style="padding:13px;border-radius:12px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;border:1px solid var(--red);background:var(--rdim);color:var(--red);">Confirmar</button>
     </div>
   </div>
 </div>
 
-<!-- MODAL PAGAMENTO PENDÊNCIA -->
+<!-- MODAL PAG PENDÊNCIA -->
 <div id="modal-pag-pend" class="modal-overlay" onclick="closeM('modal-pag-pend')">
   <div class="modal-sheet" onclick="event.stopPropagation()">
     <div class="modal-handle"></div>
     <button class="modal-close" onclick="closeM('modal-pag-pend')">✕</button>
-    <div class="modal-title" style="color:var(--orange);">💰 Pagamento de Pendência</div>
+    <div class="modal-title" style="color:var(--orange)">💰 Pagamento de Pendência</div>
     <div id="pag-pend-info" class="info-box" style="margin-bottom:14px;"></div>
     <label class="fl">Valor Pago Agora</label>
-    <input id="pag-pend-valor" class="fi" type="number" placeholder="0,00">
-    <div id="pag-pend-resumo" style="background:var(--card);border:1px solid var(--gold-dim);border-radius:12px;padding:14px;margin-bottom:14px;display:none;">
-      <div style="display:flex;justify-content:space-between;font-size:13px;">
-        <span style="color:var(--text3);">Novo saldo devedor:</span>
-        <span id="pag-pend-novo-saldo" style="font-weight:700;color:var(--orange);"></span>
-      </div>
+    <input id="pag-pend-val" class="fi" type="number" placeholder="0,00" oninput="calcPagPend()">
+    <div id="pag-pend-novo" style="display:none;background:var(--card);border:1px solid var(--gdim);border-radius:12px;padding:14px;margin-bottom:14px;">
+      <div style="display:flex;justify-content:space-between;font-size:13px;"><span style="color:var(--t3)">Novo saldo devedor:</span><span id="pag-pend-saldo" style="font-weight:700;color:var(--orange)"></span></div>
     </div>
     <button class="btn-gold" onclick="confirmarPagPend()">Confirmar Pagamento</button>
   </div>
 </div>
 
-<!-- MODAL WHATSAPP ESCOLHER NÚMERO -->
+<!-- MODAL WPP -->
 <div id="modal-wpp" class="modal-overlay" onclick="closeM('modal-wpp')">
   <div class="modal-sheet" onclick="event.stopPropagation()" style="padding-bottom:32px;">
     <div class="modal-handle"></div>
-    <div class="modal-title" style="color:var(--wpp);">💬 Entrar em Contato</div>
-    <div id="wpp-nome" style="font-size:14px;color:var(--text2);margin-bottom:16px;"></div>
+    <div class="modal-title" style="color:var(--wpp)">💬 Entrar em Contato</div>
+    <div id="wpp-nome" style="font-size:14px;color:var(--t2);margin-bottom:16px;"></div>
     <div id="wpp-opcoes"></div>
   </div>
 </div>
-
 <script>
-const API='https://script.google.com/macros/s/AKfycbxyfmePLWr8uTOE9rBkRzHl808nbm1CnzYfq-qMFkCYzxxavaao_ZxWkshK5SCpn3jd/exec';
+const API='https://script.google.com/macros/s/AKfycbzV3cGaCaqZ1ljiuBpImMveQJHG2a7w7NPhalMzQFoGkTaJXgl-2VXNOBN_zoUq7I93/exec';
 const JUROS=[{emp:250,quit:350,renov:100},{emp:350,quit:490,renov:140},{emp:400,quit:560,renov:160},{emp:500,quit:690,renov:190},{emp:800,quit:1100,renov:300},{emp:1000,quit:1390,renov:390}];
-const USERS={admin:{senha:'1234',nome:'Admin',perfil:'admin'},cobranca:{senha:'5678',nome:'Cobrança',perfil:'cobranca'}};
+const USERS={admin:{senha:'1234',nome:'Admin'},cobranca:{senha:'5678',nome:'Cobrança'}};
 
-let user=null,clientes=[],prejuizos=[],pendencias=[],negociacoes=[],custos=[];
-let filtro='todos',cliPag=null,tipoPag=null,m21=false,negocPag=false;
+// Estado global
+let user=null,clientes=[],pendencias=[],negociacoes=[],prejuizos=[];
+let filtro='todos',cliPag=null,tipoPag=null,m21=false,negPag=false;
 let cliDel=null,cliPrej=null,cliNegoc=null,modoEdit=false,catCusto='Anúncios';
-let bloqueioReload=false; // Bloqueia reload após atualização local
-let caixaReal=0;
-let processandoPagamento=false; // Evita duplo envio
-let processandoAcao=false; // Trava global para qualquer ação
+let pendAtual=null,movDesfazer=null,tipoDesfazer=null;
+let bloqueioReload=false,processando=false,delOpcao='total';
+let movCacheArr=[];
 
-function travarAcao(fn) {
-  return async function(...args) {
-    if(processandoAcao) { toast('⏳ Aguarde...'); return; }
-    processandoAcao = true;
-    try { await fn(...args); }
-    finally { setTimeout(()=>{ processandoAcao=false; }, 3000); }
-  };
-}
-
+// Utils
 const R=v=>Number(v).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
-const D=d=>{if(!d)return'';return new Date(d+'T12:00:00').toLocaleDateString('pt-BR');};
+const D=s=>{if(!s)return'';const d=new Date(s+'T12:00:00');return d.toLocaleDateString('pt-BR');};
 const addD=(s,n)=>{const d=new Date(s+'T12:00:00');d.setDate(d.getDate()+n);return d;};
 const toS=d=>{const y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,'0'),dd=String(d.getDate()).padStart(2,'0');return`${y}-${m}-${dd}`;};
 const diasA=de=>{if(!de)return 0;const v=addD(de,7);v.setHours(0,0,0,0);const h=new Date();h.setHours(0,0,0,0);return Math.max(0,Math.floor((h-v)/86400000));};
 const getJ=v=>JUROS.find(j=>j.emp===Number(v));
 const toast=(m,d=3000)=>{const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),d);};
-
-// Link WhatsApp
-function abrirWpp(tel, tel2, nome) {
-  if(tel2 && tel2.trim() !== '') {
-    // Tem telefone adicional — pergunta qual usar
-    document.getElementById('wpp-nome').textContent='Com qual número deseja falar com ' + (nome||'o cliente') + '?';
-    const opts = document.getElementById('wpp-opcoes');
-    const n1 = tel.replace(/\D/g,'');
-    const n2 = tel2.replace(/\D/g,'');
-    const l1 = n1.startsWith('55')?`https://wa.me/${n1}`:`https://wa.me/55${n1}`;
-    const l2 = n2.startsWith('55')?`https://wa.me/${n2}`:`https://wa.me/55${n2}`;
-    opts.innerHTML = `
-      <button onclick="window.open('${l1}','_blank');closeM('modal-wpp');" style="width:100%;padding:14px;background:var(--wpp-dim);border:1px solid var(--wpp);border-radius:12px;color:var(--wpp);font-size:14px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;margin-bottom:10px;">
-        📱 Principal: ${tel}
-      </button>
-      <button onclick="window.open('${l2}','_blank');closeM('modal-wpp');" style="width:100%;padding:14px;background:var(--wpp-dim);border:1px solid var(--wpp);border-radius:12px;color:var(--wpp);font-size:14px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;">
-        📱 Adicional: ${tel2}
-      </button>`;
-    openM('modal-wpp');
-  } else {
-    const numero = tel.replace(/\D/g,'');
-    const link = numero.startsWith('55')?`https://wa.me/${numero}`:`https://wa.me/55${numero}`;
-    window.open(link,'_blank');
-  }
-}
+const showOk=m=>{const e=document.getElementById('success-banner');e.textContent=m;e.classList.add('show');setTimeout(()=>e.classList.remove('show'),4000);};
+const openM=id=>document.getElementById(id).classList.add('open');
+const closeM=id=>document.getElementById(id).classList.remove('open');
+const travar=()=>{if(processando){toast('⏳ Aguarde...');return true;}processando=true;setTimeout(()=>processando=false,4000);return false;};
 
 function jsonp(p){
   return new Promise((res,rej)=>{
@@ -599,6 +570,7 @@ function jsonp(p){
   });
 }
 
+// ─── AUTH ────────────────────────────────────────────────
 function fazerLogin(){
   const p=document.getElementById('login-perfil').value;
   const s=document.getElementById('login-senha').value;
@@ -610,65 +582,42 @@ function fazerLogin(){
     document.getElementById('topbar-user').textContent=u.nome.toUpperCase();
     if(p==='cobranca')document.getElementById('btn-novo').style.display='none';
     init();
-  }else{
-    document.getElementById('login-error').textContent='❌ Senha incorreta';
-    setTimeout(()=>document.getElementById('login-error').textContent='',2000);
+  } else {
+    document.getElementById('login-err').textContent='❌ Senha incorreta';
+    setTimeout(()=>document.getElementById('login-err').textContent='',2000);
   }
 }
 document.getElementById('login-senha').addEventListener('keydown',e=>{if(e.key==='Enter')fazerLogin();});
 function fazerLogout(){user=null;document.getElementById('app').style.display='none';document.getElementById('login-screen').style.display='flex';document.getElementById('login-senha').value='';}
 
+// ─── INIT ────────────────────────────────────────────────
 async function init(){
   document.getElementById('topbar-date').textContent=new Date().toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
   document.getElementById('loader').style.display='none';
   await reload();
 }
 
-async function forceReload(btn) {
-  // Força reload ignorando o bloqueio
-  bloqueioReload = false;
-  processandoPagamento = false;
-  
-  // Mostra overlay de carregamento
-  const overlay = document.createElement('div');
-  overlay.id = 'reload-overlay';
-  overlay.style.cssText = 'position:fixed;inset:0;z-index:8000;background:#080c14cc;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;backdrop-filter:blur(4px);';
-  overlay.innerHTML = `
-    <div style="width:40px;height:40px;border:3px solid #1e2d42;border-top:3px solid #c9a84c;border-radius:50%;animation:spin 0.8s linear infinite;"></div>
-    <div style="font-size:14px;font-weight:600;color:#e8c96d;">Atualizando...</div>
-    <div style="font-size:11px;color:#5a6a85;">Buscando dados mais recentes</div>
-  `;
-  document.body.appendChild(overlay);
-  
-  if(btn){btn.textContent='⏳';btn.disabled=true;}
-  
-  try {
-    await reload();
-  } finally {
-    // Remove overlay
-    const el = document.getElementById('reload-overlay');
-    if(el) el.remove();
-    if(btn){btn.textContent='🔄 Atualizar';btn.disabled=false;}
+async function reload(){
+  if(bloqueioReload)return;
+  try{
+    const d=await jsonp({action:'getDashboard'});
+    clientes=d.clientes||[];pendencias=d.pendencias||[];
+    negociacoes=d.negociacoes||[];prejuizos=d.prejuizos||[];
+    renderDash(d);renderCli();renderPend();renderNegoc();renderPrej();
+  }catch(e){
+    toast('❌ '+e.message);
+    document.getElementById('dash-content').innerHTML='<div class="empty"><div class="empty-icon">⚠️</div><div class="empty-text">Erro ao conectar</div></div>';
   }
 }
 
-async function reload(){
-  if(bloqueioReload){return;}
-  try{
-    const [d, cx] = await Promise.all([
-      jsonp({action:'getDashboard'}),
-      jsonp({action:'getCaixaReal'})
-    ]);
-    clientes=d.clientes||[];
-    prejuizos=d.prejuizos||[];
-    pendencias=d.pendencias||[];
-    negociacoes=d.negociacoes||[];
-    caixaReal = cx.saldo||0;
-    renderDash({...d, caixaMes: cx.saldo||0});
-    renderCli();renderPend();renderNegoc();renderPrej();
-  }catch(e){
-    toast('❌ Erro: '+e.message);
-    document.getElementById('dashboard-content').innerHTML='<div class="empty"><div class="empty-icon">⚠️</div><div class="empty-text">Erro ao conectar</div></div>';
+async function forceReload(btn){
+  bloqueioReload=false;processando=false;
+  const ov=document.getElementById('overlay-reload');
+  ov.classList.add('show');
+  if(btn){btn.textContent='⏳';btn.disabled=true;}
+  try{await reload();}finally{
+    ov.classList.remove('show');
+    if(btn){btn.textContent='🔄 Atualizar';btn.disabled=false;}
   }
 }
 
@@ -680,25 +629,22 @@ function showS(id,btn){
   if(id==='custos')carregarCustos();
 }
 
+// ─── DASHBOARD ───────────────────────────────────────────
 function renderDash(d){
-  if(!d)return;
   const{totalNaRua=0,ativos=0,emAtraso=0,venceHoje=0,caixaMes=0,totalPrejuizo=0,totalPendencias=0,totalCustosMes=0,projecaoSemana=0,projecaoMes=0}=d;
-  const hj=new Date();hj.setHours(0,0,0,0);
-  const cA=(clientes||[]).filter(c=>c.status==='Ativo'&&diasA(c.dataEmprestimo)>0);
-  const cH=(clientes||[]).filter(c=>{if(c.status!=='Ativo')return false;const v=addD(c.dataEmprestimo,7);v.setHours(0,0,0,0);return v.getTime()===hj.getTime();});
   let html=`
     <div class="stat-grid">
-      <div class="stat-card gold"><span class="stat-icon">💰</span><div class="stat-value" style="color:var(--gold2);font-size:18px;">${R(totalNaRua)}</div><div class="stat-label">Na Rua</div></div>
+      <div class="stat-card" style="border-color:#c9a84c33;"><span class="stat-icon">💰</span><div class="stat-value" style="color:var(--gold2);font-size:18px;">${R(totalNaRua)}</div><div class="stat-label">Na Rua</div></div>
       <div class="stat-card"><span class="stat-icon">💼</span><div class="stat-value" style="color:var(--green);">${ativos}</div><div class="stat-label">Ativos</div></div>
     </div>
-    <div class="stat-wide" onclick="abrirHistorico()" style="cursor:pointer;" title="Ver histórico do caixa">
+    <div class="stat-wide" onclick="abrirCaixa()">
       <div style="font-size:28px;">📈</div>
-      <div style="flex:1;"><div style="font-size:10px;font-weight:600;color:var(--text3);letter-spacing:1px;text-transform:uppercase;margin-bottom:3px;">Caixa Real</div><div style="font-family:'Playfair Display',serif;font-size:26px;font-weight:700;color:var(--gold2);">${R(caixaMes)}</div></div>
-      <div style="font-size:11px;color:var(--text3);">📜 Histórico</div>
+      <div style="flex:1;"><div style="font-size:10px;font-weight:600;color:var(--t3);letter-spacing:1px;text-transform:uppercase;margin-bottom:3px;">Caixa Real</div><div style="font-family:'Playfair Display',serif;font-size:26px;font-weight:700;color:var(--gold2);">${R(caixaMes)}</div></div>
+      <div style="font-size:11px;color:var(--t3);">📜 Ver</div>
     </div>
     <div class="stat-grid">
-      <div class="stat-card" onclick="navParaClientes('Hoje')" style="cursor:pointer;" title="Ver clientes que vencem hoje"><span class="stat-icon">⚠️</span><div class="stat-value" style="color:#f39c12;">${venceHoje}</div><div class="stat-label">Vence Hoje ↗</div></div>
-      <div class="stat-card" onclick="navParaClientes('Atraso')" style="cursor:pointer;" title="Ver clientes em atraso"><span class="stat-icon">🚨</span><div class="stat-value" style="color:var(--red);">${emAtraso}</div><div class="stat-label">Em Atraso ↗</div></div>
+      <div class="stat-card" onclick="navCli('Hoje')" style="cursor:pointer;"><span class="stat-icon">⚠️</span><div class="stat-value" style="color:#f39c12;">${venceHoje}</div><div class="stat-label">Vence Hoje ↗</div></div>
+      <div class="stat-card" onclick="navCli('Atraso')" style="cursor:pointer;"><span class="stat-icon">🚨</span><div class="stat-value" style="color:var(--red);">${emAtraso}</div><div class="stat-label">Em Atraso ↗</div></div>
     </div>
     <div class="stat-grid">
       <div class="stat-card" onclick="showS('pendencias',document.querySelectorAll('.nav-btn')[2])" style="cursor:pointer;"><span class="stat-icon">⏳</span><div class="stat-value" style="color:var(--orange);font-size:18px;">${R(totalPendencias)}</div><div class="stat-label">Pendências ↗</div></div>
@@ -710,74 +656,85 @@ function renderDash(d){
     </div>
     <div class="sec-title">Projeção de Renovações</div>
     <div class="stat-grid">
-      <div class="stat-card" style="border-color:#00c47a33;"><span class="stat-icon">📅</span><div class="stat-value" style="color:#2ecc71;font-size:18px;">${R(projecaoSemana)}</div><div class="stat-label">Esta Semana</div></div>
-      <div class="stat-card" style="border-color:#00c47a33;"><span class="stat-icon">📆</span><div class="stat-value" style="color:#2ecc71;font-size:18px;">${R(projecaoMes)}</div><div class="stat-label">Este Mês</div></div>
+      <div class="stat-card" style="border-color:#2ecc7133;"><span class="stat-icon">📅</span><div class="stat-value" style="color:var(--green);font-size:18px;">${R(projecaoSemana)}</div><div class="stat-label">Esta Semana</div></div>
+      <div class="stat-card" style="border-color:#2ecc7133;"><span class="stat-icon">📆</span><div class="stat-value" style="color:var(--green);font-size:18px;">${R(projecaoMes)}</div><div class="stat-label">Este Mês</div></div>
     </div>`;
-
-    document.getElementById('dashboard-content').innerHTML=html;
+  document.getElementById('dash-content').innerHTML=html;
 }
 
+function navCli(f){
+  filtro=f;
+  const navBtn=document.querySelectorAll('.nav-btn')[1];
+  showS('clientes',navBtn);
+  document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
+  const map={'todos':'chip-todos','Ativo':'chip-ativo','Hoje':'chip-hoje','Atraso':'chip-atraso','Quitado':'chip-quitado'};
+  const el=document.getElementById(map[f]);
+  if(el)el.classList.add('active');
+  renderCli();
+}
+
+// ─── CLIENTES ────────────────────────────────────────────
+function setF(f,btn){filtro=f;document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));btn.classList.add('active');renderCli();}
+
 function renderCli(){
-  const busca=document.getElementById('busca').value.toLowerCase();
+  const busca=document.getElementById('busca').value.toLowerCase().replace(/\D/g,'') ||
+              document.getElementById('busca').value.toLowerCase();
   const hj=new Date();hj.setHours(0,0,0,0);
   const lista=(clientes||[]).filter(c=>{
     if(!c.nome)return false;
-    if(busca&&!c.nome.toLowerCase().includes(busca)&&!(c.cpf||'').includes(busca))return false;
+    // Busca por nome, cpf ou telefone
+    if(busca){
+      const nomOk=c.nome.toLowerCase().includes(document.getElementById('busca').value.toLowerCase());
+      const telOk=(c.telefone||'').replace(/\D/g,'').includes(busca.replace(/\D/g,''));
+      const cpfOk=(c.cpf||'').replace(/\D/g,'').includes(busca.replace(/\D/g,''));
+      if(!nomOk&&!telOk&&!cpfOk)return false;
+    }
+    if(c.status==='Pendente')return false; // Pendentes ficam só em Pendências
     if(filtro==='Ativo')return c.status==='Ativo'&&diasA(c.dataEmprestimo)===0;
-    if(filtro==='Hoje'){const v=addD(c.dataEmprestimo,7);v.setHours(0,0,0,0);const hj=new Date();hj.setHours(0,0,0,0);return c.status==='Ativo'&&v.getTime()===hj.getTime();}
+    if(filtro==='Hoje'){const v=addD(c.dataEmprestimo,7);v.setHours(0,0,0,0);return c.status==='Ativo'&&v.getTime()===hj.getTime();}
     if(filtro==='Atraso')return c.status==='Ativo'&&diasA(c.dataEmprestimo)>0;
     if(filtro==='Quitado')return c.status==='Quitado';
-    if(c.status==='Pendente') return false;
-    return true;
+    return c.status!=='Pendente';
   });
-  if(lista.length===0){document.getElementById('lista-cli').innerHTML='<div class="empty"><div class="empty-icon">🔍</div><div class="empty-text">Nenhum cliente encontrado</div></div>';return;}
+  if(!lista.length){document.getElementById('lista-cli').innerHTML='<div class="empty"><div class="empty-icon">🔍</div><div class="empty-text">Nenhum cliente encontrado</div></div>';return;}
   const isAdmin=user&&user.perfil==='admin';
   let html='';
   lista.forEach((c,i)=>{
-    const j=getJ(c.valor);const d=c.status==='Ativo'?diasA(c.dataEmprestimo):0;
+    const j=getJ(c.valor);
+    const d=c.status==='Ativo'?diasA(c.dataEmprestimo):0;
     const venc=addD(c.dataEmprestimo,7);const vH=new Date(venc);vH.setHours(0,0,0,0);
-    let ac='var(--green)',bl='⏳ Em dia',bb='var(--green-dim)',bc='var(--green)';
+    let ac='var(--green)',bl='⏳ Em dia',bb='var(--gdim2)',bc='var(--green)';
     if(c.status==='Quitado'){ac='#3498db';bl='✅ Quitado';bb='#3498db22';bc='#3498db';}
-    else if(c.status==='Renovado'){ac='var(--orange)';bl='🔄 Renovado';bb='var(--orange-dim)';bc='var(--orange)';}
-    else if(d>0){ac='var(--red)';bl=`🚨 ${d}d atraso`;bb='var(--red-dim)';bc='var(--red)';}
+    else if(d>0){ac='var(--red)';bl=`🚨 ${d}d atraso`;bb='var(--rdim)';bc='var(--red)';}
     else if(vH.getTime()===hj.getTime()){ac='#f39c12';bl='⚠️ Vence hoje';bb='#f39c1222';bc='#f39c12';}
-
-    // Botão WhatsApp inline
-    const wppBtn = c.telefone
-      ? `<button class="btn-wpp-float" onclick="abrirWpp('${c.telefone}','${c.telefone2||''}','${c.nome}')">💬 WhatsApp</button>`
-      : '';
-
-    html+=`<div class="client-card" style="animation-delay:${i*0.04}s">
-      <div class="cc-accent" style="background:${ac};"></div>
+    const wppBtn=c.telefone?`<button class="btn-sm btn-wpp" onclick="abrirWpp('${c.telefone}','${c.telefone2||''}','${c.nome}')">💬</button>`:'';
+    html+=`<div class="cc" style="animation-delay:${i*.03}s">
+      <div class="cc-accent" style="background:${ac};border-radius:14px 0 0 14px;"></div>
       <div class="cc-body">
-        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;">
-          <div style="flex:1;">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px;">
+          <div>
             <div class="cc-name">${c.nome}</div>
-            <div class="cc-meta">
-              ${c.cpf?`<span style="font-size:11px;color:var(--text3);">CPF: ${c.cpf}</span>`:''}
-              ${c.telefone?`<span>📞 ${c.telefone}</span>`:''}
-              ${wppBtn}
-            </div>
-            <div style="margin-bottom:4px;"><span class="cc-badge" style="background:${bb};color:${bc};border:1px solid ${bc}33;">${bl}</span></div>
-            <div style="font-size:11px;color:var(--text3);">Vence ${D(toS(venc))}</div>
+            <div class="cc-meta">${c.telefone?`<span>📞 ${c.telefone}</span>`:''}${wppBtn}</div>
+            <span class="cc-badge" style="background:${bb};color:${bc};border:1px solid ${bc}33;">${bl}</span>
+            ${c.status==='Ativo'?`<div style="font-size:11px;color:var(--t3);margin-top:3px;">Vence ${D(toS(venc))}</div>`:''}
           </div>
         </div>
         <div class="cc-actions">
-          ${c.status==='Ativo'?`<button class="btn-sm btn-pay" onclick="abrirPagSeguro(${c.linha})">💰 Pagar</button>`:''}
-          ${isAdmin&&c.status==='Ativo'?`<button class="btn-sm btn-negoc" onclick="abrirNegocSeguro(${c.linha})">🤝 Negociar</button><button class="btn-sm btn-prej" onclick="abrirPrejSeguro(${c.linha})">💸 Prejuízo</button>`:''}
-          ${c.status==='Quitado'?`<button class="btn-sm" onclick="reemprestar(${c.linha})" style="background:linear-gradient(135deg,#1a2a4a,#1e3355);color:var(--gold2);border-color:var(--gold-dim);">🔄 Reemprestar</button>`:''}
+          ${c.status==='Ativo'?`<button class="btn-sm btn-pay" onclick="if(!travar())abrirPag(${c.linha})">💰 Pagar</button>`:''}
+          ${isAdmin&&c.status==='Ativo'?`<button class="btn-sm btn-negoc" onclick="if(!travar())abrirNegoc(${c.linha})">🤝 Negociar</button><button class="btn-sm btn-prej" onclick="if(!travar())abrirPrej(${c.linha})">💸 Prejuízo</button>`:''}
+          ${c.status==='Quitado'?`<button class="btn-sm btn-quit-re" onclick="reemprestar(${c.linha})">🔄 Reemprestar</button>`:''}
           ${isAdmin?`<button class="btn-sm btn-edit" onclick="abrirEdit(${c.linha})">✏️</button><button class="btn-sm btn-del" onclick="abrirDel(${c.linha})">🗑️</button>`:''}
         </div>
-        ${j&&c.status==='Ativo'?`<div class="cc-vals">
-          <div class="cv-item"><div class="cv-label">Emprestado</div><div class="cv-value" style="color:var(--text);">${R(c.valor)}</div></div>
+        ${c.status==='Ativo'&&j?`<div class="cc-vals">
+          <div class="cv-item"><div class="cv-label">Emprestado</div><div class="cv-value">${R(c.valor)}</div></div>
           <div class="cv-div"></div>
-          <div class="cv-item"><div class="cv-label">Renovar</div><div class="cv-value" style="color:var(--orange);">${R(j.renov)}</div></div>
+          <div class="cv-item"><div class="cv-label">Renovar</div><div class="cv-value" style="color:var(--orange)">${R(j.renov)}</div></div>
           <div class="cv-div"></div>
-          <div class="cv-item"><div class="cv-label">Quitar</div><div class="cv-value" style="color:var(--green);">${R(j.quit)}</div></div>
+          <div class="cv-item"><div class="cv-label">Quitar</div><div class="cv-value" style="color:var(--green)">${R(j.quit)}</div></div>
         </div>`:''}
         ${c.status==='Quitado'?`<div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--border);display:flex;justify-content:space-between;font-size:12px;">
-          <span style="color:var(--text3);">Emprestado: <strong style="color:var(--text);">${R(c.valor)}</strong></span>
-          <span style="color:${c.statusQuit&&c.statusQuit.includes('atraso')?'var(--red)':'var(--green)'};">${c.statusQuit||'Quitado'}</span>
+          <span style="color:var(--t3)">Emprestado: <strong style="color:var(--text)">${R(c.valor)}</strong></span>
+          <span style="color:${(c.statusQuit||'').includes('atraso')?'var(--red)':'var(--green)'};">${c.statusQuit||'Quitado'}</span>
         </div>`:''}
       </div>
     </div>`;
@@ -785,240 +742,16 @@ function renderCli(){
   document.getElementById('lista-cli').innerHTML=html;
 }
 
-function setF(f,btn){filtro=f;document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));if(btn)btn.classList.add('active');renderCli();}
-
-function navParaClientes(filtroNav) {
-  // Navega para clientes com filtro específico
-  filtro = filtroNav;
-  const navBtn = document.querySelectorAll('.nav-btn')[1]; // botão Clientes
-  showS('clientes', navBtn);
-  // Ativa o chip correto
-  document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
-  const chipMap = {'todos':'chip-todos','Ativo':'chip-ativo','Hoje':'chip-hoje','Atraso':'chip-atraso','Quitado':'chip-quitado'};
-  const chipEl = document.getElementById(chipMap[filtroNav]);
-  if(chipEl) chipEl.classList.add('active');
-  renderCli();
-}
-
-function renderPend(){
-  const lista=pendencias||[];
-  if(lista.length===0){document.getElementById('lista-pend').innerHTML='<div class="empty"><div class="empty-icon">✅</div><div class="empty-text">Nenhuma pendência ativa</div></div>';return;}
-  let html='';
-  lista.forEach((p,i)=>{
-    const pct=Math.min(100,Math.round((p.valorPago/p.valorDevido)*100));
-    let telPend=''; const wppBtn=p.telefone?`<button class="btn-wpp-float" onclick="abrirWpp('${p.telefone}','','${p.nome}')">💬 WhatsApp</button>`:'';
-    html+=`<div class="pend-card" style="animation-delay:${i*0.05}s">
-      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;">
-        <div>
-          <div style="font-weight:600;font-size:15px;color:var(--text);">${p.nome}</div>
-          <div style="font-size:12px;color:var(--text3);margin-top:2px;">${p.tipo} • ${p.data}</div>
-          ${wppBtn?`<div style="margin-top:6px;">${wppBtn}</div>`:''}
-        </div>
-        <div style="text-align:right;">
-          <div style="font-size:16px;font-weight:700;color:var(--orange);">${R(p.saldo)}</div>
-          <div style="font-size:11px;color:var(--text3);">saldo devedor</div>
-        </div>
-      </div>
-      <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text3);margin-bottom:4px;">
-        ${p.valorEmprestado?`<span>Emprestado: <strong style="color:var(--text);">${R(p.valorEmprestado)}</strong></span>`:'<span></span>'}
-        <span>Devido: <strong style="color:var(--orange);">${R(p.valorDevido)}</strong></span>
-      </div>
-      <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text3);margin-bottom:6px;">
-        <span>Pago: <strong style="color:var(--green);">${R(p.valorPago)}</strong></span>
-        <span>Saldo: <strong style="color:var(--red);">${R(p.saldo)}</strong></span>
-      </div>
-      <div style="height:4px;background:var(--border);border-radius:2px;overflow:hidden;margin-bottom:10px;">
-        <div style="height:100%;width:${pct}%;background:linear-gradient(90deg,var(--orange),var(--gold));border-radius:2px;transition:width 0.3s;"></div>
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:6px;">
-        <button onclick="abrirPagPend(${i})" style="padding:9px;background:var(--gold-dim);border:1px solid var(--gold);border-radius:10px;color:var(--gold2);font-size:12px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;">💰 Registrar Pagamento</button>
-        <button onclick="quitarPend(${p.linha},${p.linhaCliente})" style="padding:9px;background:var(--green-dim);border:1px solid var(--green);border-radius:10px;color:var(--green);font-size:12px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;">✅ Quitar Total</button>
-      </div>
-      <button onclick="excluirPend(${p.linha})" style="width:100%;padding:8px;background:var(--red-dim);border:1px solid #e74c3c33;border-radius:10px;color:var(--red);font-size:11px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;">🗑️ Excluir Pendência</button>
-    </div>`;
-  });
-  document.getElementById('lista-pend').innerHTML=html;
-}
-
-let pendAtual = null;
-
-function abrirPagPend(idx){
-  pendAtual = (pendencias||[])[idx];
-  if(!pendAtual) return;
-  document.getElementById('pag-pend-info').innerHTML=`
-    <div style="font-weight:700;font-size:15px;margin-bottom:8px;">${pendAtual.nome}</div>
-    <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;">
-      <span style="color:var(--text3);">Emprestado</span>
-      <span style="font-weight:600;">${R(pendAtual.valorEmprestado||0)}</span>
-    </div>
-    <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;">
-      <span style="color:var(--text3);">Saldo devedor</span>
-      <span style="font-weight:700;color:var(--orange);">${R(pendAtual.saldo)}</span>
-    </div>
-    <div style="display:flex;justify-content:space-between;font-size:13px;">
-      <span style="color:var(--text3);">Já pago</span>
-      <span style="font-weight:600;color:var(--green);">${R(pendAtual.valorPago)}</span>
-    </div>`;
-  document.getElementById('pag-pend-valor').value='';
-  document.getElementById('pag-pend-resumo').style.display='none';
-  document.getElementById('pag-pend-valor').oninput=function(){
-    const v=Number(this.value)||0;
-    const novoSaldo=Math.max(0,pendAtual.saldo-v);
-    const el=document.getElementById('pag-pend-resumo');
-    el.style.display='block';
-    document.getElementById('pag-pend-novo-saldo').textContent=R(novoSaldo);
-    document.getElementById('pag-pend-novo-saldo').style.color=novoSaldo===0?'var(--green)':'var(--orange)';
-  };
-  openM('modal-pag-pend');
-}
-
-async function confirmarPagPend(){
-  if(!pendAtual||processandoAcao) return;
-  processandoAcao=true;
-  const valor=Number(document.getElementById('pag-pend-valor').value||0);
-  if(!valor){toast('⚠️ Digite o valor pago');return;}
-  toast('💾 Salvando...');
-  try{
-    const r=await jsonp({action:'pagarPendencia',linha:pendAtual.linha,valorPago:valor,linhaCliente:pendAtual.linhaCliente||0});
-    if(r.ok){
-      closeM('modal-pag-pend');
-      await reload();
-      if(r.quitado) showOk('✅ Pendência quitada! Cliente movido para Quitados.');
-      else showOk(`💰 ${R(valor)} registrado! Saldo: ${R(r.novoSaldo)}`);
-      pendAtual=null;
-    } else toast('❌ '+(r.error||'Erro'));
-  }catch(e){toast('❌ '+e.message);}
-}
-
-async function excluirPend(linha){
-  if(!confirm('Excluir esta pendência? O saldo não será devolvido ao caixa.')) return;
-  toast('🗑️ Excluindo...');
-  try{
-    const r=await jsonp({action:'excluirPendencia',linha});
-    if(r.ok){await reload();showOk('🗑️ Pendência excluída!');}
-    else toast('❌ '+(r.error||'Erro'));
-  }catch(e){toast('❌ '+e.message);}
-}
-
-async function quitarPend(linha, linhaCliente){
-  toast('💾 Salvando...');
-  try{
-    const r=await jsonp({action:'pagarPendencia',linha,valorPago:99999999,linhaCliente:linhaCliente||0});
-    if(r.ok){await reload();showOk('✅ Pendência quitada! Cliente movido para Quitados.');}
-    else toast('❌ '+(r.error||'Erro'));
-  }catch(e){toast('❌ '+e.message);}
-}
-
-function renderNegoc(){
-  const lista=negociacoes||[];
-  if(lista.length===0){document.getElementById('lista-negoc').innerHTML='<div class="empty"><div class="empty-icon">🤝</div><div class="empty-text">Nenhuma negociação ativa</div></div>';return;}
-  let html='';
-  lista.forEach((n,i)=>{
-    const pct=Math.round((n.parcelasPagas/n.parcelas)*100);
-    const restantes=n.parcelas-n.parcelasPagas;
-    html+=`<div class="negoc-card" style="animation-delay:${i*0.05}s">
-      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;">
-        <div>
-          <div style="font-weight:600;font-size:15px;color:var(--text);">${n.nome}</div>
-          <div style="font-size:12px;color:var(--text3);margin-top:2px;">Desde ${n.data}</div>
-          ${n.telefone?`<button class="btn-wpp-float" style="margin-top:6px;" onclick="abrirWpp('${n.telefone}')">💬 WhatsApp</button>`:''}
-        </div>
-        <span style="background:var(--purple-dim);color:var(--purple);border:1px solid #9b59b633;border-radius:20px;padding:3px 10px;font-size:11px;font-weight:600;">${n.status}</span>
-      </div>
-      <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:8px;">
-        <span style="color:var(--text3);">${n.parcelasPagas}/${n.parcelas} pagas</span>
-        <span style="font-weight:700;color:var(--purple);">${R(n.valorParcela)}/parcela</span>
-      </div>
-      <div class="parcelas-bar"><div class="parcelas-fill" style="width:${pct}%;"></div></div>
-      <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text3);margin-top:6px;margin-bottom:10px;">
-        <span>Total: ${R(n.totalNegociado)}</span>
-        <span>${restantes} restante(s)</span>
-      </div>
-      ${restantes>0?`<button onclick="pagarParcela(${n.linha},${n.parcelasPagas},${n.parcelas})" style="width:100%;padding:9px;background:var(--purple-dim);border:1px solid var(--purple);border-radius:10px;color:var(--purple);font-size:12px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;">💜 Registrar Parcela ${n.parcelasPagas+1}</button>`:'<div style="text-align:center;font-size:13px;color:var(--green);font-weight:700;">✅ Quitado!</div>'}
-    </div>`;
-  });
-  document.getElementById('lista-negoc').innerHTML=html;
-}
-
-async function pagarParcela(linha,pagas,total){
-  toast('💾 Salvando...');
-  try{
-    const r=await jsonp({action:'pagarParcelaNegociacao',linha,parcelasPagas:pagas,totalParcelas:total});
-    if(r.ok){await reload();showOk(r.quitado?'✅ Negociação quitada!':'✅ Parcela registrada!');}
-    else toast('❌ '+(r.error||'Erro'));
-  }catch(e){toast('❌ '+e.message);}
-}
-
-function renderPrej(){
-  const lista=prejuizos||[];
-  if(lista.length===0){document.getElementById('lista-prej').innerHTML='<div class="empty"><div class="empty-icon">💸</div><div class="empty-text">Nenhum prejuízo registrado</div></div>';return;}
-  const total=lista.reduce((s,p)=>s+p.quitar,0);
-  let html=`<div style="background:var(--red-dim);border:1px solid var(--red);border-radius:14px;padding:14px 16px;margin-bottom:14px;text-align:center;">
-    <div style="font-size:11px;font-weight:700;color:var(--red);letter-spacing:1px;margin-bottom:4px;">TOTAL EM PREJUÍZO</div>
-    <div style="font-family:'Playfair Display',serif;font-size:26px;font-weight:700;color:var(--red);">${R(total)}</div>
-  </div>`;
-  lista.forEach((p,i)=>{
-    html+=`<div class="prej-card" style="animation-delay:${i*0.05}s">
-      <div style="display:flex;justify-content:space-between;align-items:flex-start;">
-        <div>
-          <div style="font-weight:600;font-size:15px;color:var(--text);">${p.nome}</div>
-          <div style="font-size:12px;color:var(--text3);margin-top:2px;">${p.data}</div>
-          ${p.telefone?`<button class="btn-wpp-float" style="margin-top:6px;" onclick="abrirWpp('${p.telefone}')">💬 WhatsApp</button>`:''}
-          ${p.obs?`<div style="font-size:11px;color:var(--text3);margin-top:4px;font-style:italic;">${p.obs}</div>`:''}
-        </div>
-        <div style="text-align:right;">
-          <div style="font-size:14px;font-weight:700;color:var(--red);">${R(p.quitar)}</div>
-          <div style="font-size:11px;color:var(--text3);">${p.diasAtraso}d atraso</div>
-        </div>
-      </div>
-    </div>`;
-  });
-  document.getElementById('lista-prej').innerHTML=html;
-}
-
-async function carregarCustos(){
-  document.getElementById('lista-custos').innerHTML='<div style="text-align:center;padding:30px;color:var(--text3);"><div style="width:24px;height:24px;border:2px solid var(--border);border-top:2px solid var(--gold);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 10px;"></div>Carregando...</div>';
-  try{
-    const d=await jsonp({action:'getPlanilha2'});
-    custos=d.custos||[];
-    renderCustos();
-  }catch(e){toast('❌ Erro ao carregar custos');}
-}
-
-function renderCustos(){
-  if(custos.length===0){document.getElementById('lista-custos').innerHTML='<div class="empty"><div class="empty-icon">💳</div><div class="empty-text">Nenhum custo lançado</div></div>';return;}
-  const hj=new Date();
-  const totalMes=custos.filter(c=>{const d=new Date(c.data+'T12:00:00');return d.getMonth()===hj.getMonth()&&d.getFullYear()===hj.getFullYear();}).reduce((s,c)=>s+c.valor,0);
-  const total=custos.reduce((s,c)=>s+c.valor,0);
-  let html=`<div class="stat-grid" style="margin-bottom:14px;">
-    <div class="stat-card"><span class="stat-icon">📅</span><div class="stat-value" style="color:var(--red);font-size:18px;">${R(totalMes)}</div><div class="stat-label">Este Mês</div></div>
-    <div class="stat-card"><span class="stat-icon">📊</span><div class="stat-value" style="color:var(--orange);font-size:18px;">${R(total)}</div><div class="stat-label">Total Geral</div></div>
-  </div>`;
-  [...custos].reverse().forEach((c,i)=>{
-    const catIcon={'Anúncios':'📢','Saque':'💵','Recargas Chip':'📱','Outros':'📦'}[c.categoria]||'📦';
-    html+=`<div class="custo-card" style="animation-delay:${i*0.03}s">
-      <div style="display:flex;align-items:center;gap:10px;">
-        <div style="font-size:20px;">${catIcon}</div>
-        <div><div style="font-weight:600;font-size:14px;color:var(--text);">${c.categoria}</div><div style="font-size:12px;color:var(--text3);">${c.descricao||'—'} • ${c.data}</div></div>
-      </div>
-      <div style="font-family:'Playfair Display',serif;font-size:16px;font-weight:700;color:var(--red);">-${R(c.valor)}</div>
-    </div>`;
-  });
-  document.getElementById('lista-custos').innerHTML=html;
-}
-
+// ─── CADASTRO ────────────────────────────────────────────
 function abrirCad(){
   modoEdit=false;
   document.getElementById('modal-cad-title').textContent='Novo Cliente';
   document.getElementById('btn-salvar').textContent='Cadastrar Cliente';
   document.getElementById('edit-linha').value='';
+  ['cad-nome','cad-cpf','cad-tel','cad-tel2'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('cad-data').value=new Date().toISOString().split('T')[0];
-  document.getElementById('cad-nome').value='';
-  document.getElementById('cad-cpf').value='';
-  document.getElementById('cad-tel').value='';
-  document.getElementById('cad-tel2').value='';
   document.getElementById('cad-valor').value='';
-  document.getElementById('cad-valor-custom').style.display='none';
+  document.getElementById('cad-custom-box').style.display='none';
   document.getElementById('cad-resumo').style.display='none';
   openM('modal-cad');
 }
@@ -1033,585 +766,599 @@ function abrirEdit(linha){
   document.getElementById('cad-cpf').value=c.cpf||'';
   document.getElementById('cad-tel').value=c.telefone||'';
   document.getElementById('cad-tel2').value=c.telefone2||'';
-  document.getElementById('cad-data').value=c.dataEmprestimo||new Date().toISOString().split('T')[0];
-  document.getElementById('cad-valor').value=JUROS.find(j=>j.emp===c.valor)?c.valor:'custom';
-  if(!JUROS.find(j=>j.emp===c.valor)){
-    document.getElementById('cad-valor-custom').style.display='block';
-    document.getElementById('cad-valor-num').value=c.valor;
-  }
+  document.getElementById('cad-data').value=c.dataEmprestimo||'';
+  const j=JUROS.find(j=>j.emp===c.valor);
+  document.getElementById('cad-valor').value=j?c.valor:'custom';
+  if(!j){document.getElementById('cad-custom-box').style.display='block';document.getElementById('cad-valor-num').value=c.valor;}
   updResumo();openM('modal-cad');
+}
+
+function reemprestar(linha){
+  const c=clientes.find(c=>c.linha===linha);if(!c)return;
+  modoEdit=false;
+  document.getElementById('modal-cad-title').textContent='🔄 Reemprestar — '+c.nome;
+  document.getElementById('btn-salvar').textContent='Confirmar Novo Empréstimo';
+  document.getElementById('edit-linha').value='';
+  document.getElementById('cad-nome').value=c.nome;
+  document.getElementById('cad-cpf').value=c.cpf||'';
+  document.getElementById('cad-tel').value=c.telefone||'';
+  document.getElementById('cad-tel2').value=c.telefone2||'';
+  document.getElementById('cad-data').value=new Date().toISOString().split('T')[0];
+  document.getElementById('cad-valor').value='';
+  document.getElementById('cad-custom-box').style.display='none';
+  document.getElementById('cad-resumo').style.display='none';
+  openM('modal-cad');
 }
 
 function updResumo(){
   const sel=document.getElementById('cad-valor').value;
   const d=document.getElementById('cad-data').value;
-  const el=document.getElementById('cad-resumo');
-  const customBox=document.getElementById('cad-valor-custom');
-  if(sel==='custom'){customBox.style.display='block';}
-  else{customBox.style.display='none';}
+  document.getElementById('cad-custom-box').style.display=sel==='custom'?'block':'none';
   const v=sel==='custom'?Number(document.getElementById('cad-valor-num').value||0):Number(sel);
+  const el=document.getElementById('cad-resumo');
   if(!v){el.style.display='none';return;}
-  const j=getJ(v);
   el.style.display='block';
-  if(j){
-    document.getElementById('res-renov').textContent=R(j.renov);
-    document.getElementById('res-quit').textContent=R(j.quit);
-  } else {
-    // Valor personalizado — calcula 40% juros
-    document.getElementById('res-renov').textContent=R(Math.round(v*0.4));
-    document.getElementById('res-quit').textContent=R(Math.round(v*1.4));
-  }
+  const j=getJ(v);
+  document.getElementById('res-renov').textContent=j?R(j.renov):R(Math.round(v*.4));
+  document.getElementById('res-quit').textContent=j?R(j.quit):R(Math.round(v*1.4));
   if(d)document.getElementById('res-venc').textContent=D(toS(addD(d,7)));
 }
 
 async function salvarCliente(){
+  if(travar())return;
   const nome=document.getElementById('cad-nome').value.trim();
   const cpf=document.getElementById('cad-cpf').value.trim();
   const tel=document.getElementById('cad-tel').value.trim();
   const tel2=document.getElementById('cad-tel2').value.trim();
   const data=document.getElementById('cad-data').value;
   const sel=document.getElementById('cad-valor').value;
-  const valorNum=sel==='custom'?Number(document.getElementById('cad-valor-num').value||0):Number(sel);
+  const v=sel==='custom'?Number(document.getElementById('cad-valor-num').value||0):Number(sel);
   const linha=document.getElementById('edit-linha').value;
-  if(!nome||!cpf||!tel||!data||!valorNum){toast('⚠️ Nome, CPF, telefone e valor são obrigatórios');return;}
+  if(!nome||!tel||!data||!v){toast('⚠️ Nome, telefone, data e valor são obrigatórios');processando=false;return;}
   toast('💾 Salvando...');
   try{
     let r;
-    if(modoEdit){
-      const c=clientes.find(c=>c.linha===Number(linha));
-      r=await jsonp({action:'editarCliente',linha:Number(linha),nome,cpf,telefone:tel||'',telefone2:tel2||'',dataEmprestimo:data,valor:valorNum,status:c?c.status:'Ativo'});
-    }else{
-      r=await jsonp({action:'cadastrarCliente',nome,cpf,telefone:tel||'',telefone2:tel2||'',dataEmprestimo:data,valor:valorNum});
-    }
-    if(r.ok){closeM('modal-cad');await reload();showOk(modoEdit?`✅ ${nome} atualizado!`:`✅ ${nome} cadastrado!`);}
+    if(modoEdit){r=await jsonp({action:'editarCliente',linha,nome,cpf,telefone:tel,telefone2:tel2,dataEmprestimo:data,valor:v});}
+    else{r=await jsonp({action:'cadastrarCliente',nome,cpf,telefone:tel,telefone2:tel2,dataEmprestimo:data,valor:v});}
+    if(r.ok){closeM('modal-cad');bloqueioReload=false;await reload();showOk(modoEdit?`✅ ${nome} atualizado!`:`✅ ${nome} cadastrado!`);}
     else toast('❌ '+(r.error||'Erro'));
   }catch(e){toast('❌ '+e.message);}
+  processando=false;
 }
 
-let opcaoCaixaDel = 'total';
-
-function selOpcaoDel(opcao) {
-  opcaoCaixaDel = opcao;
-  ['total','parcial','nao'].forEach(o => {
-    const radio = document.getElementById('del-radio-'+o);
-    const opt = document.getElementById('del-opt-'+o);
-    const ativo = o === opcao;
-    radio.style.background = ativo ? 'var(--gold)' : 'transparent';
-    radio.style.borderColor = ativo ? 'var(--gold)' : 'var(--border)';
-    opt.style.borderColor = ativo ? 'var(--gold-dim)' : 'var(--border)';
+// ─── EXCLUSÃO ────────────────────────────────────────────
+let delOpcao='total';
+function selDelOpt(opt){
+  delOpcao=opt;
+  ['total','parcial','nao'].forEach(o=>{
+    const r=document.getElementById('del-r-'+o);
+    const l=document.getElementById('del-opt-'+o);
+    r.style.background=o===opt?'var(--gold)':'transparent';
+    r.style.borderColor=o===opt?'var(--gold)':'var(--border)';
+    l.style.borderColor=o===opt?'var(--gdim)':'var(--border)';
   });
 }
 
 function abrirDel(linha){
   cliDel=clientes.find(c=>c.linha===linha);if(!cliDel)return;
-  document.getElementById('del-info').innerHTML=`Excluir <strong style="color:var(--text);">${cliDel.nome}</strong>?<br><span style="color:var(--text3);font-size:12px;">Esta ação não pode ser desfeita.</span>`;
-  document.getElementById('del-valor-total-label').textContent='Retorna ' + R(cliDel.valor) + ' ao caixa';
-  document.getElementById('del-valor-parcial').value='';
-  selOpcaoDel('total');
-  openM('modal-del');
-}
-async function confirmarExclusao(){
-  if(!cliDel||processandoAcao)return;
-  processandoAcao=true;
-  toast('🗑️ Excluindo...');
-  try{
-    const r=await jsonp({action:'excluirCliente',linha:cliDel.linha});
-    if(r.ok){
-      closeM('modal-del');
-      
-      // Processa retorno ao caixa
-      if(opcaoCaixaDel==='total'){
-        jsonp({action:'movimentarCaixa',descricao:'Retorno exclusão: '+cliDel.nome,tipo:'Entrada',valor:cliDel.valor}).catch(()=>{});
-      } else if(opcaoCaixaDel==='parcial'){
-        const valParcial=Number(document.getElementById('del-valor-parcial').value||0);
-        if(valParcial>0){
-          jsonp({action:'movimentarCaixa',descricao:'Retorno parcial exclusão: '+cliDel.nome,tipo:'Entrada',valor:valParcial}).catch(()=>{});
-        }
-      }
-      // opcao 'nao' = não faz nada no caixa
-      
-      setTimeout(async()=>{await reload();},2000);
-      showOk(`🗑️ ${cliDel.nome} excluído.`);
-      cliDel=null;
-    }
-    else toast('❌ '+(r.error||'Erro'));
-  }catch(e){toast('❌ '+e.message);}
+  document.getElementById('del-info').innerHTML=`Excluir <strong style="color:var(--text)">${cliDel.nome}</strong>?<br><span style="font-size:12px;color:var(--t3)">Esta ação não pode ser desfeita.</span>`;
+  document.getElementById('del-total-label').textContent='Retorna '+R(cliDel.valor)+' ao caixa';
+  document.getElementById('del-val-parc').value='';
+  selDelOpt('total');openM('modal-del');
 }
 
+async function confirmarExclusao(){
+  if(!cliDel||travar())return;
+  toast('🗑️ Excluindo...');
+  try{
+    const r=await jsonp({action:'excluirCliente',linha:cliDel.linha,opcaoCaixa:delOpcao,valorRetorno:document.getElementById('del-val-parc').value||0});
+    if(r.ok){
+      closeM('modal-del');
+      // Atualiza localmente
+      clientes=clientes.filter(c=>c.linha!==cliDel.linha);
+      renderCli();
+      bloqueioReload=false;await reload();
+      showOk(`🗑️ ${cliDel.nome} excluído.`);cliDel=null;
+    }else toast('❌ '+(r.error||'Erro'));
+  }catch(e){toast('❌ '+e.message);}
+  processando=false;
+}
+
+// ─── PREJUÍZO ────────────────────────────────────────────
 function abrirPrej(linha){
   cliPrej=clientes.find(c=>c.linha===linha);if(!cliPrej)return;
   const j=getJ(cliPrej.valor);const d=diasA(cliPrej.dataEmprestimo);
-  document.getElementById('prej-info').innerHTML=`Marcar <strong style="color:var(--text);">${cliPrej.nome}</strong> como prejuízo?<br><br>Valor emprestado: <strong>${R(cliPrej.valor)}</strong><br>Para quitar: <strong style="color:var(--red);">${R(j?j.quit:0)}</strong><br>Dias em atraso: <strong>${d}</strong>`;
-  document.getElementById('prej-obs').value='';
-  openM('modal-prej');
-}
-async function confirmarPrejuizo(){
-  if(!cliPrej||processandoAcao)return;
-  processandoAcao=true;
-  toast('💾 Salvando...');
-  try{
-    const obs=document.getElementById('prej-obs').value;
-    const r=await jsonp({action:'marcarPrejuizo',linha:cliPrej.linha,obs});
-    if(r.ok){setTimeout(()=>{processandoAcao=false;},3000);closeM('modal-prej');setTimeout(async()=>{await reload();},2000);showOk(`💸 ${cliPrej.nome} movido para Prejuízos.`);cliPrej=null;}
-    else toast('❌ '+(r.error||'Erro'));
-  }catch(e){toast('❌ '+e.message);}
+  document.getElementById('prej-info').innerHTML=`Marcar <strong style="color:var(--text)">${cliPrej.nome}</strong> como prejuízo?<br><br>Emprestado: <strong>${R(cliPrej.valor)}</strong><br>Para quitar: <strong style="color:var(--red)">${R(j?j.quit:0)}</strong><br>Dias em atraso: <strong>${d}</strong>`;
+  document.getElementById('prej-obs').value='';openM('modal-prej');
 }
 
+async function confirmarPrejuizo(){
+  if(!cliPrej||travar())return;
+  toast('💾 Salvando...');
+  try{
+    const r=await jsonp({action:'marcarPrejuizo',linha:cliPrej.linha,obs:document.getElementById('prej-obs').value});
+    if(r.ok){closeM('modal-prej');bloqueioReload=false;await reload();showOk(`💸 ${cliPrej.nome} movido para Prejuízos.`);cliPrej=null;}
+    else toast('❌ '+(r.error||'Erro'));
+  }catch(e){toast('❌ '+e.message);}
+  processando=false;
+}
+
+// ─── NEGOCIAÇÃO ──────────────────────────────────────────
 function abrirNegoc(linha){
   cliNegoc=clientes.find(c=>c.linha===linha);if(!cliNegoc)return;
   const j=getJ(cliNegoc.valor);
-  document.getElementById('negoc-cli-info').innerHTML=`<div style="font-weight:700;font-size:15px;margin-bottom:6px;">${cliNegoc.nome}</div><div style="font-size:13px;color:var(--text3);">Valor original para quitar: <strong style="color:var(--text);">${R(j?j.quit:0)}</strong></div>`;
-  document.getElementById('negoc-parcelas').value='';document.getElementById('negoc-val-parcela').value='';document.getElementById('negoc-resumo').style.display='none';
+  document.getElementById('negoc-info').innerHTML=`<div style="font-weight:600;font-size:15px;margin-bottom:6px;">${cliNegoc.nome}</div><div style="font-size:13px;color:var(--t3)">Valor para quitar: <strong style="color:var(--text)">${R(j?j.quit:0)}</strong></div>`;
+  document.getElementById('negoc-parc').value='';document.getElementById('negoc-vp').value='';document.getElementById('negoc-resumo').style.display='none';
   openM('modal-negoc');
 }
+
 function calcNegoc(){
-  const p=Number(document.getElementById('negoc-parcelas').value)||0;
-  const v=Number(document.getElementById('negoc-val-parcela').value)||0;
+  const p=Number(document.getElementById('negoc-parc').value)||0;
+  const v=Number(document.getElementById('negoc-vp').value)||0;
   const el=document.getElementById('negoc-resumo');
-  if(p>0&&v>0){el.style.display='block';document.getElementById('negoc-total-res').textContent=R(p*v);document.getElementById('negoc-parc-res').textContent=`${p}x de ${R(v)}`;}
+  if(p>0&&v>0){el.style.display='block';document.getElementById('negoc-total').textContent=R(p*v);document.getElementById('negoc-parc-res').textContent=`${p}x de ${R(v)}`;}
   else el.style.display='none';
 }
+
 async function confirmarNegociacao(){
-  if(!cliNegoc||processandoAcao)return;
-  processandoAcao=true;
-  const parcelas=Number(document.getElementById('negoc-parcelas').value);
-  const valorParcela=Number(document.getElementById('negoc-val-parcela').value);
-  if(!parcelas||!valorParcela){toast('⚠️ Preencha as parcelas e o valor');return;}
+  if(!cliNegoc||travar())return;
+  const parcelas=Number(document.getElementById('negoc-parc').value);
+  const vp=Number(document.getElementById('negoc-vp').value);
+  if(!parcelas||!vp){toast('⚠️ Preencha parcelas e valor');processando=false;return;}
   toast('💾 Salvando...');
   try{
-    const r=await jsonp({action:'cadastrarNegociacao',linha:cliNegoc.linha,nome:cliNegoc.nome,telefone:cliNegoc.telefone||'',valorOriginal:cliNegoc.valor,parcelas,valorParcela});
-    if(r.ok){setTimeout(()=>{processandoAcao=false;},3000);closeM('modal-negoc');setTimeout(async()=>{await reload();},2000);showOk(`🤝 Negociação criada para ${cliNegoc.nome}!`);cliNegoc=null;}
+    const r=await jsonp({action:'cadastrarNegociacao',linha:cliNegoc.linha,nome:cliNegoc.nome,telefone:cliNegoc.telefone||'',valorOriginal:cliNegoc.valor,parcelas,valorParcela:vp});
+    if(r.ok){closeM('modal-negoc');bloqueioReload=false;await reload();showOk(`🤝 Negociação criada!`);cliNegoc=null;}
     else toast('❌ '+(r.error||'Erro'));
   }catch(e){toast('❌ '+e.message);}
+  processando=false;
 }
 
-// Funções seguras com trava anti-duplo-clique
-function abrirPagSeguro(linha){ if(processandoAcao){toast('⏳ Aguarde...');return;} abrirPag(linha); }
-function abrirNegocSeguro(linha){ if(processandoAcao){toast('⏳ Aguarde...');return;} abrirNegoc(linha); }
-function abrirPrejSeguro(linha){ if(processandoAcao){toast('⏳ Aguarde...');return;} abrirPrej(linha); }
-
-// Reemprestar — abre cadastro com dados preenchidos
-function reemprestar(linha){
-  const c = clientes.find(c=>c.linha===linha);
-  if(!c) return;
-  modoEdit = false;
-  document.getElementById('modal-cad-title').textContent = '🔄 Reemprestar — ' + c.nome;
-  document.getElementById('btn-salvar').textContent = 'Confirmar Novo Empréstimo';
-  document.getElementById('edit-linha').value = '';
-  document.getElementById('cad-nome').value = c.nome;
-  document.getElementById('cad-cpf').value = c.cpf||'';
-  document.getElementById('cad-tel').value = c.telefone||'';
-  document.getElementById('cad-tel2').value = c.telefone2||'';
-  document.getElementById('cad-data').value = new Date().toISOString().split('T')[0];
-  document.getElementById('cad-valor').value = '';
-  document.getElementById('cad-valor-custom').style.display = 'none';
-  document.getElementById('cad-resumo').style.display = 'none';
-  openM('modal-cad');
-}
-
+// ─── PAGAMENTO ───────────────────────────────────────────
 function abrirPag(linha){
   cliPag=clientes.find(c=>c.linha===linha);if(!cliPag)return;
-  tipoPag=null;m21=false;negocPag=false;
+  tipoPag=null;m21=false;negPag=false;
   const j=getJ(cliPag.valor);const d=diasA(cliPag.dataEmprestimo);const v=addD(cliPag.dataEmprestimo,7);
-  document.getElementById('pov-renov').textContent=j?R(j.renov):'-';
-  document.getElementById('pov-quit').textContent=j?R(j.quit):'-';
-  document.getElementById('opt-renov').className='pay-opt';
-  document.getElementById('opt-quit').className='pay-opt';
-  document.getElementById('opt-parcial').className='pay-opt';
+  document.getElementById('pov-r').textContent=j?R(j.renov):'-';
+  document.getElementById('pov-q').textContent=j?R(j.quit):'-';
+  ['opt-r','opt-q','opt-p'].forEach(id=>document.getElementById(id).className='pay-opt');
   document.getElementById('pag-extras').style.display='none';
-  document.getElementById('tog-btn-21h').classList.remove('on');
-  document.getElementById('tog-row-21h').classList.remove('on-row');
-  document.getElementById('tog-btn-negoc').classList.remove('on');
-  document.getElementById('tog-row-negoc').classList.remove('on-row');
-  document.getElementById('negoc-campo').style.display='none';
-  document.getElementById('negoc-valor').value='';
-  const aRef=document.getElementById('atraso-ref');
-  if(d>0){aRef.style.display='block';aRef.innerHTML=`<div style="font-size:11px;font-weight:700;color:var(--red);margin-bottom:3px;">📋 REFERÊNCIA DE ATRASO</div><div style="font-size:13px;color:var(--text2);">${d} dia(s) • Multa referência: <strong style="color:var(--red);">${R(d*50)}</strong></div>`;}
-  else aRef.style.display='none';
-  document.getElementById('pag-info').innerHTML=`<div style="font-weight:700;font-size:16px;margin-bottom:8px;">${cliPag.nome}</div><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;"><span style="color:var(--text3);">Emprestado</span><span style="font-weight:600;">${R(cliPag.valor)}</span></div><div style="display:flex;justify-content:space-between;font-size:13px;"><span style="color:var(--text3);">Vencimento</span><span style="font-weight:600;">${D(toS(v))}</span></div>${d>0?`<div style="background:var(--red-dim);border-radius:8px;padding:6px 12px;margin-top:8px;color:var(--red);font-weight:600;font-size:12px;">🚨 ${d} dia(s) em atraso</div>`:''}`;
-  openM('modal-pag');
+  document.getElementById('tog-21h').classList.remove('on');document.getElementById('tog-21h-row').classList.remove('on');
+  document.getElementById('tog-neg').classList.remove('on');document.getElementById('tog-neg-row').classList.remove('on');
+  document.getElementById('neg-campo').style.display='none';document.getElementById('neg-valor').value='';
+  const ar=document.getElementById('pag-atraso');
+  if(d>0){ar.style.display='block';ar.innerHTML=`<div style="font-size:11px;font-weight:700;color:var(--red);margin-bottom:3px;">📋 REFERÊNCIA DE ATRASO</div><div style="font-size:13px;color:var(--t2)">${d} dia(s) · Multa ref: <strong style="color:var(--red)">${R(d*50)}</strong></div>`;}
+  else ar.style.display='none';
+  document.getElementById('pag-info').innerHTML=`<div style="font-weight:700;font-size:16px;margin-bottom:8px;">${cliPag.nome}</div><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;"><span style="color:var(--t3)">Emprestado</span><span style="font-weight:600">${R(cliPag.valor)}</span></div><div style="display:flex;justify-content:space-between;font-size:13px;"><span style="color:var(--t3)">Vencimento</span><span style="font-weight:600">${D(toS(v))}</span></div>${d>0?`<div style="background:var(--rdim);border-radius:8px;padding:6px 12px;margin-top:8px;color:var(--red);font-weight:600;font-size:12px;">🚨 ${d} dia(s) em atraso</div>`:''}`;
+  openM('modal-pag');processando=false;
 }
 
-function selT(t){
+function selTipo(t){
   tipoPag=t;
-  document.getElementById('opt-renov').className='pay-opt'+(t==='Renovado'?' sel-renov':'');
-  document.getElementById('opt-quit').className='pay-opt'+(t==='Quitado'?' sel-quit':'');
-  document.getElementById('opt-parcial').className='pay-opt'+(t==='Parcial'?' sel-parcial':'');
+  document.getElementById('opt-r').className='pay-opt'+(t==='Renovado'?' sel-r':'');
+  document.getElementById('opt-q').className='pay-opt'+(t==='Quitado'?' sel-q':'');
+  document.getElementById('opt-p').className='pay-opt'+(t==='Parcial'?' sel-p':'');
   document.getElementById('pag-extras').style.display='block';
   const j=getJ(cliPag.valor);
-  let valorRef=t==='Quitado'?(j?j.quit:0):(j?j.renov:0);
-  document.getElementById('valor-pago-input').value=valorRef||'';
-  document.getElementById('valor-ref-hint').textContent=t==='Parcial'?'Digite o valor que o cliente conseguiu pagar':`Valor padrão: ${R(valorRef)} — edite se necessário`;
-  calcT();
+  const vRef=t==='Quitado'?(j?j.quit:0):(j?j.renov:0);
+  document.getElementById('vp-input').value=vRef||'';
+  document.getElementById('vp-hint').textContent=t==='Parcial'?'Digite o valor que o cliente pagou':`Padrão: ${R(vRef)} — edite se necessário`;
+  calcTotal();
 }
 
-function togM21(){m21=!m21;document.getElementById('tog-btn-21h').classList.toggle('on',m21);document.getElementById('tog-row-21h').classList.toggle('on-row',m21);calcT();}
-function togNegoc(){negocPag=!negocPag;document.getElementById('tog-btn-negoc').classList.toggle('on',negocPag);document.getElementById('tog-row-negoc').classList.toggle('on-row',negocPag);document.getElementById('negoc-campo').style.display=negocPag?'block':'none';if(!negocPag)document.getElementById('negoc-valor').value='';calcT();}
+function tog21h(){m21=!m21;document.getElementById('tog-21h').classList.toggle('on',m21);document.getElementById('tog-21h-row').classList.toggle('on',m21);calcTotal();}
+function togNeg(){negPag=!negPag;document.getElementById('tog-neg').classList.toggle('on',negPag);document.getElementById('tog-neg-row').classList.toggle('on',negPag);document.getElementById('neg-campo').style.display=negPag?'block':'none';if(!negPag)document.getElementById('neg-valor').value='';calcTotal();}
 
-function calcT(){
+function calcTotal(){
   if(!cliPag||!tipoPag)return;
-  const valorPago=Number(document.getElementById('valor-pago-input').value)||0;
-  const multa21=m21?30:0;
-  const negocVal=negocPag?Number(document.getElementById('negoc-valor').value)||0:0;
-  const total=valorPago+multa21+negocVal;
+  const vp=Number(document.getElementById('vp-input').value)||0;
+  const m=m21?30:0;const nv=negPag?Number(document.getElementById('neg-valor').value)||0:0;
+  const total=vp+m+nv;
   document.getElementById('pag-total').textContent=R(total);
-  let bd=`<span style="color:var(--text3);">Pagamento: ${R(valorPago)}</span>`;
-  if(multa21>0)bd+=` <span style="color:var(--gold2);">+ 21h: ${R(multa21)}</span>`;
-  if(negocVal>0)bd+=` <span style="color:var(--green);">+ Negoc: ${R(negocVal)}</span>`;
-  document.getElementById('pag-breakdown').innerHTML=bd;
+  let bd=`<span style="color:var(--t3)">Pagamento: ${R(vp)}</span>`;
+  if(m>0)bd+=` <span style="color:var(--gold2)">+ 21h: ${R(m)}</span>`;
+  if(nv>0)bd+=` <span style="color:var(--green)">+ Negoc: ${R(nv)}</span>`;
+  document.getElementById('pag-break').innerHTML=bd;
 }
-document.getElementById('negoc-valor').addEventListener('input',calcT);
-document.getElementById('valor-pago-input').addEventListener('input',calcT);
 
 async function confirmarPag(){
   if(!cliPag||!tipoPag)return;
-  if(processandoPagamento||processandoAcao)return;
-  processandoPagamento=true;
-  processandoAcao=true;
-  const btnConf=document.getElementById('btn-confirmar-pag');
-  if(btnConf){btnConf.disabled=true;btnConf.textContent='Salvando...';}
-  
+  if(processando)return;
+  processando=true;
+  const btn=document.getElementById('btn-conf-pag');
+  if(btn){btn.disabled=true;btn.textContent='Salvando...';}
+
+  const dataEmprestimoOriginal=cliPag.dataEmprestimo;
   const j=getJ(cliPag.valor);
-  const valorPago=Number(document.getElementById('valor-pago-input').value)||0;
-  const multa21=m21?30:0;
-  const negocVal=negocPag?Number(document.getElementById('negoc-valor').value)||0:0;
-  const multaTotal=multa21+negocVal;
+  const vp=Number(document.getElementById('vp-input').value)||0;
+  const multa=(m21?30:0)+(negPag?Number(document.getElementById('neg-valor').value)||0:0);
   const isParcial=tipoPag==='Parcial';
-  const tipoFinal=isParcial?'Renovado':tipoPag;
+  const tipoFinal=isParcial?'Parcial':tipoPag;
   const valorDevido=tipoPag==='Quitado'?(j?j.quit:0):(j?j.renov:0);
 
-  // Bloqueia todos os botões de pagar por 10 segundos
-  document.querySelectorAll('.btn-pay').forEach(b=>{b.disabled=true;b.style.opacity='0.5';});
-  setTimeout(()=>{document.querySelectorAll('.btn-pay').forEach(b=>{b.disabled=false;b.style.opacity='1';});},10000);
-
-  // Salva data original ANTES de qualquer atualização local
-  const dataEmprestimoOriginal = cliPag.dataEmprestimo;
-
-  // Fecha modal IMEDIATAMENTE para impedir segundo clique
-  closeM('modal-pag');
-  // Reseta tipoPag para impedir reenvio
-  tipoPag=null;
-  if(tipoPag==='Quitado'){
-    const idx=clientes.findIndex(c=>c.linha===cliPag.linha);
-    if(idx>=0){
-      clientes[idx].status='Quitado';
-      clientes[idx].statusQuit='Quitado em dia';
-      clientes[idx].dataQuit=new Date().toISOString().split('T')[0];
-    }
-  } else if(isParcial){
-    // Parcial — cliente vai para Pendências, some de Ativos
-    const idx=clientes.findIndex(c=>c.linha===cliPag.linha);
-    if(idx>=0) clientes[idx].status='Pendente';
-  } else {
-    // Renovado — atualiza data
-    const idx=clientes.findIndex(c=>c.linha===cliPag.linha);
-    if(idx>=0){
-      clientes[idx].dataEmprestimo=toS(addD(cliPag.dataEmprestimo,7));
-    }
+  // Atualiza localmente IMEDIATO
+  closeM('modal-pag');tipoPag=null;
+  const idx=clientes.findIndex(c=>c.linha===cliPag.linha);
+  if(idx>=0){
+    if(tipoFinal==='Quitado'){clientes[idx].status='Quitado';clientes[idx].statusQuit='Quitado em dia';}
+    else if(isParcial){clientes[idx].status='Pendente';}
+    else{clientes[idx].dataEmprestimo=toS(addD(dataEmprestimoOriginal,7));}
   }
   renderCli();
-  showOk(isParcial?`💛 Parcial de ${R(valorPago)} registrado!`:tipoPag==='Quitado'?'✅ Quitado!':'🔄 Renovado!');
-  if(btnConf){btnConf.disabled=false;btnConf.textContent='Confirmar Pagamento';}
-  // Bloqueia reload por 15 segundos para não sobrescrever estado local
-  bloqueioReload=true;
-  setTimeout(()=>{bloqueioReload=false;},15000);
+  showOk(isParcial?`💛 Parcial de ${R(vp)} registrado!`:tipoFinal==='Quitado'?'✅ Quitado!':'🔄 Renovado!');
 
-  // Libera flag após 15 segundos
-  setTimeout(()=>{processandoPagamento=false; processandoAcao=false;},15000);
+  // Bloqueia reload por 15s
+  bloqueioReload=true;setTimeout(()=>bloqueioReload=false,15000);
+  // Libera botão
+  if(btn){btn.disabled=false;btn.textContent='Confirmar Pagamento';}
 
-  // Dispara para o servidor via JSONP (fire and forget — não trava a tela)
-  // dataEmprestimoOriginal é salvo ANTES da atualização local
-  jsonp({
-    action:'registrarPagamento',
-    linha:cliPag.linha,
-    nome:cliPag.nome,
-    valor:cliPag.valor,
-    dataEmprestimo:dataEmprestimoOriginal,
-    tipo:tipoFinal,
-    multa:multaTotal,
-    valorPago,
-    valorDevido:valorDevido+multaTotal,
-    isParcial: isParcial ? 'true' : 'false'
+  // Dispara para servidor
+  jsonp({action:'registrarPagamento',linha:cliPag.linha,nome:cliPag.nome,valor:cliPag.valor,
+    dataEmprestimo:dataEmprestimoOriginal,tipo:tipoFinal,multa,valorPago:vp,
+    valorDevido:valorDevido+multa,isParcial:isParcial?'true':'false'
   }).then(r=>{
-    if(r&&r.ok) console.log('✅ Salvo no servidor');
-    else console.log('⚠️ Resposta servidor:', r);
-  }).catch(e=>{
-    console.log('⚠️ Erro servidor (pode ser normal):', e.message);
+    if(r&&r.ok)console.log('✅ Salvo');
+    else console.log('⚠️',r);
+  }).catch(e=>console.log('⚠️',e.message));
+
+  processando=false;
+}
+
+// ─── PENDÊNCIAS ──────────────────────────────────────────
+function renderPend(){
+  const lista=pendencias||[];
+  if(!lista.length){document.getElementById('lista-pend').innerHTML='<div class="empty"><div class="empty-icon">✅</div><div class="empty-text">Nenhuma pendência ativa</div></div>';return;}
+  let html='';
+  lista.forEach((p,i)=>{
+    const pct=Math.min(100,Math.round((p.valorPago/(p.valorDevido||1))*100));
+    const tel=String(p.telefone||'').replace(/\D/g,'');
+    const wppBtn=tel?`<button class="btn-wpp" style="padding:5px 10px;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;border:1px solid #25D36644;background:#25D36618;color:var(--wpp);" onclick="abrirWpp('${tel}','','${p.nome}')">💬 WhatsApp</button>`:'';
+    html+=`<div class="pend-card" style="animation-delay:${i*.05}s">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;">
+        <div>
+          <div style="font-weight:600;font-size:15px;color:var(--text)">${p.nome}</div>
+          <div style="font-size:12px;color:var(--t3);margin-top:2px;">${p.tipo} · ${p.data}</div>
+          ${wppBtn?`<div style="margin-top:6px">${wppBtn}</div>`:''}
+        </div>
+        <div style="text-align:right">
+          <div style="font-size:16px;font-weight:700;color:var(--orange)">${R(p.saldo)}</div>
+          <div style="font-size:11px;color:var(--t3)">saldo devedor</div>
+        </div>
+      </div>
+      <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--t3);margin-bottom:4px;">
+        ${p.valorEmprestado?`<span>Emprestado: <strong style="color:var(--text)">${R(p.valorEmprestado)}</strong></span>`:'<span></span>'}
+        <span>Devido: <strong style="color:var(--orange)">${R(p.valorDevido)}</strong></span>
+      </div>
+      <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--t3);margin-bottom:8px;">
+        <span>Pago: <strong style="color:var(--green)">${R(p.valorPago)}</strong></span>
+        <span>Saldo: <strong style="color:var(--red)">${R(p.saldo)}</strong></span>
+      </div>
+      <div style="height:4px;background:var(--border);border-radius:2px;overflow:hidden;margin-bottom:10px;"><div style="height:100%;width:${pct}%;background:linear-gradient(90deg,var(--orange),var(--gold));border-radius:2px;"></div></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:6px;">
+        <button onclick="abrirPagPend(${i})" style="padding:9px;background:var(--gdim);border:1px solid var(--gold);border-radius:10px;color:var(--gold2);font-size:12px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;">💰 Registrar Pagamento</button>
+        <button onclick="quitarPend(${p.linha},${p.linhaCliente||0})" style="padding:9px;background:var(--gdim2);border:1px solid var(--green);border-radius:10px;color:var(--green);font-size:12px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;">✅ Quitar Total</button>
+      </div>
+      <button onclick="excluirPend(${p.linha})" style="width:100%;padding:8px;background:var(--rdim);border:1px solid #e74c3c33;border-radius:10px;color:var(--red);font-size:11px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;">🗑️ Excluir Pendência</button>
+    </div>`;
   });
+  document.getElementById('lista-pend').innerHTML=html;
 }
 
-
-function selCat(cat,btn){
-  catCusto=cat;
-  document.querySelectorAll('.cat-chip').forEach(c=>c.classList.remove('active'));
-  btn.classList.add('active');
+function abrirPagPend(i){
+  pendAtual=pendencias[i];if(!pendAtual)return;
+  document.getElementById('pag-pend-info').innerHTML=`<div style="font-weight:700;font-size:15px;margin-bottom:8px;">${pendAtual.nome}</div>
+    ${pendAtual.valorEmprestado?`<div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;"><span style="color:var(--t3)">Emprestado</span><span style="font-weight:600">${R(pendAtual.valorEmprestado)}</span></div>`:''}
+    <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;"><span style="color:var(--t3)">Saldo devedor</span><span style="font-weight:700;color:var(--orange)">${R(pendAtual.saldo)}</span></div>
+    <div style="display:flex;justify-content:space-between;font-size:13px;"><span style="color:var(--t3)">Já pago</span><span style="font-weight:600;color:var(--green)">${R(pendAtual.valorPago)}</span></div>`;
+  document.getElementById('pag-pend-val').value='';
+  document.getElementById('pag-pend-novo').style.display='none';
+  openM('modal-pag-pend');
 }
 
-function abrirModalCusto(){
-  catCusto='Anúncios';
-  document.getElementById('custo-desc').value='';
-  document.getElementById('custo-valor').value='';
-  document.querySelectorAll('.cat-chip').forEach((c,i)=>{c.classList.toggle('active',i===0);});
-  openM('modal-custo');
+function calcPagPend(){
+  if(!pendAtual)return;
+  const v=Number(document.getElementById('pag-pend-val').value)||0;
+  const ns=Math.max(0,pendAtual.saldo-v);
+  document.getElementById('pag-pend-novo').style.display='block';
+  document.getElementById('pag-pend-saldo').textContent=R(ns);
+  document.getElementById('pag-pend-saldo').style.color=ns===0?'var(--green)':'var(--orange)';
 }
 
+async function confirmarPagPend(){
+  if(!pendAtual||travar())return;
+  const v=Number(document.getElementById('pag-pend-val').value||0);
+  if(!v){toast('⚠️ Digite o valor pago');processando=false;return;}
+  toast('💾 Salvando...');
+  try{
+    const r=await jsonp({action:'pagarPendencia',linha:pendAtual.linha,valorPago:v,linhaCliente:pendAtual.linhaCliente||0});
+    if(r.ok){closeM('modal-pag-pend');bloqueioReload=false;await reload();
+      if(r.quitado)showOk('✅ Pendência quitada! Cliente movido para Quitados.');
+      else showOk(`💰 ${R(v)} registrado! Saldo: ${R(r.novoSaldo)}`);
+      pendAtual=null;
+    }else toast('❌ '+(r.error||'Erro'));
+  }catch(e){toast('❌ '+e.message);}
+  processando=false;
+}
+
+async function quitarPend(linha,linhaCliente){
+  if(travar())return;
+  toast('💾 Quitando...');
+  try{
+    const r=await jsonp({action:'pagarPendencia',linha,valorPago:999999,linhaCliente:linhaCliente||0});
+    if(r.ok){bloqueioReload=false;await reload();showOk('✅ Pendência quitada! Cliente movido para Quitados.');}
+    else toast('❌ '+(r.error||'Erro'));
+  }catch(e){toast('❌ '+e.message);}
+  processando=false;
+}
+
+async function excluirPend(linha){
+  if(!confirm('Excluir esta pendência?'))return;
+  toast('🗑️ Excluindo...');
+  try{
+    const r=await jsonp({action:'excluirPendencia',linha});
+    if(r.ok){bloqueioReload=false;await reload();showOk('🗑️ Pendência excluída!');}
+    else toast('❌ '+(r.error||'Erro'));
+  }catch(e){toast('❌ '+e.message);}
+}
+
+// ─── NEGOCIAÇÕES ─────────────────────────────────────────
+function renderNegoc(){
+  const lista=negociacoes||[];
+  if(!lista.length){document.getElementById('lista-negoc').innerHTML='<div class="empty"><div class="empty-icon">🤝</div><div class="empty-text">Nenhuma negociação ativa</div></div>';return;}
+  let html='';
+  lista.forEach((n,i)=>{
+    const pct=Math.round((n.parcelasPagas/n.parcelas)*100);
+    const rest=n.parcelas-n.parcelasPagas;
+    const tel=String(n.telefone||'').replace(/\D/g,'');
+    html+=`<div class="negoc-card" style="animation-delay:${i*.05}s">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;">
+        <div>
+          <div style="font-weight:600;font-size:15px;color:var(--text)">${n.nome}</div>
+          <div style="font-size:12px;color:var(--t3);margin-top:2px;">Desde ${n.data}</div>
+          ${tel?`<button style="margin-top:6px;padding:5px 10px;border-radius:8px;font-size:10px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;border:1px solid #25D36644;background:#25D36618;color:var(--wpp);" onclick="abrirWpp('${tel}','','${n.nome}')">💬 WhatsApp</button>`:''}
+        </div>
+        <span style="background:var(--pdim);color:var(--purple);border:1px solid #9b59b633;border-radius:20px;padding:3px 10px;font-size:11px;font-weight:600;">${n.status}</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:8px;">
+        <span style="color:var(--t3)">${n.parcelasPagas}/${n.parcelas} pagas</span>
+        <span style="font-weight:700;color:var(--purple)">${R(n.valorParcela)}/parcela</span>
+      </div>
+      <div class="parc-bar"><div class="parc-fill" style="width:${pct}%"></div></div>
+      <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--t3);margin-top:6px;margin-bottom:10px;">
+        <span>Total: ${R(n.totalNegociado)}</span><span>${rest} restante(s)</span>
+      </div>
+      ${rest>0?`<button onclick="if(!travar())pagarParcela(${n.linha},${n.parcelasPagas},${n.parcelas},'${n.nome}',${n.valorParcela})" style="width:100%;padding:9px;background:var(--pdim);border:1px solid var(--purple);border-radius:10px;color:var(--purple);font-size:12px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;">💜 Registrar Parcela ${n.parcelasPagas+1}</button>`:'<div style="text-align:center;font-size:13px;color:var(--green);font-weight:700;">✅ Quitado!</div>'}
+    </div>`;
+  });
+  document.getElementById('lista-negoc').innerHTML=html;
+}
+
+async function pagarParcela(linha,pagas,total,nome,vp){
+  toast('💾 Salvando...');
+  try{
+    const r=await jsonp({action:'pagarParcela',linha,parcelasPagas:pagas,totalParcelas:total,nome,valorParcela:vp});
+    if(r.ok){bloqueioReload=false;await reload();showOk(r.quitado?'✅ Negociação quitada!':'✅ Parcela registrada!');}
+    else toast('❌ '+(r.error||'Erro'));
+  }catch(e){toast('❌ '+e.message);}
+  processando=false;
+}
+
+// ─── PREJUÍZOS ───────────────────────────────────────────
+function renderPrej(){
+  const lista=prejuizos||[];
+  if(!lista.length){document.getElementById('lista-prej').innerHTML='<div class="empty"><div class="empty-icon">💸</div><div class="empty-text">Nenhum prejuízo registrado</div></div>';return;}
+  const total=lista.reduce((s,p)=>s+p.quitar,0);
+  let html=`<div style="background:var(--rdim);border:1px solid var(--red);border-radius:14px;padding:14px 16px;margin-bottom:14px;text-align:center;"><div style="font-size:11px;font-weight:700;color:var(--red);letter-spacing:1px;margin-bottom:4px;">TOTAL EM PREJUÍZO</div><div style="font-family:'Playfair Display',serif;font-size:26px;font-weight:700;color:var(--red)">${R(total)}</div></div>`;
+  lista.forEach((p,i)=>{
+    const tel=String(p.telefone||'').replace(/\D/g,'');
+    html+=`<div class="prej-card" style="animation-delay:${i*.05}s">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+        <div>
+          <div style="font-weight:600;font-size:15px;color:var(--text)">${p.nome}</div>
+          <div style="font-size:12px;color:var(--t3);margin-top:2px;">${p.data}</div>
+          ${tel?`<button style="margin-top:6px;padding:5px 10px;border-radius:8px;font-size:10px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;border:1px solid #25D36644;background:#25D36618;color:var(--wpp);" onclick="abrirWpp('${tel}','','${p.nome}')">💬 WhatsApp</button>`:''}
+          ${p.obs?`<div style="font-size:11px;color:var(--t3);margin-top:3px;font-style:italic">${p.obs}</div>`:''}
+        </div>
+        <div style="text-align:right">
+          <div style="font-size:14px;font-weight:700;color:var(--red)">${R(p.quitar)}</div>
+          <div style="font-size:11px;color:var(--t3)">${p.diasAtr}d atraso</div>
+        </div>
+      </div>
+    </div>`;
+  });
+  document.getElementById('lista-prej').innerHTML=html;
+}
+
+// ─── CUSTOS ──────────────────────────────────────────────
+let catCusto='Anúncios';
+function selCat(cat,btn){catCusto=cat;document.querySelectorAll('.cat-chip').forEach(c=>c.classList.remove('active'));btn.classList.add('active');}
+function abrirModalCusto(){catCusto='Anúncios';document.getElementById('custo-desc').value='';document.getElementById('custo-valor').value='';document.querySelectorAll('.cat-chip').forEach((c,i)=>c.classList.toggle('active',i===0));openM('modal-custo');}
 async function confirmarCusto(){
-  const valor=Number(document.getElementById('custo-valor').value);
-  if(!valor){toast('⚠️ Digite o valor');return;}
+  if(travar())return;
+  const v=Number(document.getElementById('custo-valor').value||0);
+  if(!v){toast('⚠️ Digite o valor');processando=false;return;}
   const desc=document.getElementById('custo-desc').value;
   toast('💾 Salvando...');
   try{
-    const r=await jsonp({action:'lancarCusto',categoria:catCusto,descricao:desc||'',valor});
-    if(r.ok){closeM('modal-custo');await carregarCustos();showOk(`💳 Custo de ${R(valor)} lançado!`);}
+    const r=await jsonp({action:'lancarCusto',categoria:catCusto,descricao:desc||'',valor:v});
+    if(r.ok){closeM('modal-custo');await carregarCustos();showOk(`💳 Custo de ${R(v)} lançado!`);}
     else toast('❌ '+(r.error||'Erro'));
   }catch(e){toast('❌ '+e.message);}
+  processando=false;
 }
 
-// ============================================================
-// HISTÓRICO DO CAIXA
-// ============================================================
-async function abrirHistorico(){
-  openM('modal-hist');
-  document.getElementById('hist-content').innerHTML='<div style="text-align:center;padding:30px;color:var(--text3);"><div style="width:24px;height:24px;border:2px solid var(--border);border-top:2px solid var(--gold);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 10px;"></div>Carregando...</div>';
+async function carregarCustos(){
+  document.getElementById('lista-custos').innerHTML='<div style="text-align:center;padding:30px;color:var(--t3);"><div style="width:24px;height:24px;border:2px solid var(--border);border-top:2px solid var(--gold);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 10px;"></div>Carregando...</div>';
+  try{
+    const d=await jsonp({action:'getPlanilha2'});
+    renderCustos(d.custos||[]);
+  }catch(e){toast('❌ Erro ao carregar custos');}
+}
+
+function renderCustos(custos){
+  if(!custos.length){document.getElementById('lista-custos').innerHTML='<div class="empty"><div class="empty-icon">💳</div><div class="empty-text">Nenhum custo lançado</div></div>';return;}
+  const hj=new Date();
+  const totalMes=custos.filter(c=>{const d=new Date(c.data+'T12:00:00');return d.getMonth()===hj.getMonth()&&d.getFullYear()===hj.getFullYear();}).reduce((s,c)=>s+c.valor,0);
+  const total=custos.reduce((s,c)=>s+c.valor,0);
+  let html=`<div class="stat-grid" style="margin-bottom:14px;"><div class="stat-card"><span class="stat-icon">📅</span><div class="stat-value" style="color:var(--red);font-size:18px;">${R(totalMes)}</div><div class="stat-label">Este Mês</div></div><div class="stat-card"><span class="stat-icon">📊</span><div class="stat-value" style="color:var(--orange);font-size:18px;">${R(total)}</div><div class="stat-label">Total Geral</div></div></div>`;
+  const icons={'Anúncios':'📢','Saque':'💵','Recargas Chip':'📱','Outros':'📦'};
+  [...custos].reverse().forEach((c,i)=>{
+    html+=`<div class="custo-card" style="animation-delay:${i*.03}s"><div style="display:flex;align-items:center;gap:10px;"><div style="font-size:20px;">${icons[c.categoria]||'📦'}</div><div><div style="font-weight:600;font-size:14px;color:var(--text)">${c.categoria}</div><div style="font-size:12px;color:var(--t3)">${c.descricao||'—'} · ${c.data}</div></div></div><div style="font-family:'Playfair Display',serif;font-size:16px;font-weight:700;color:var(--red);">-${R(c.valor)}</div></div>`;
+  });
+  document.getElementById('lista-custos').innerHTML=html;
+}
+
+// ─── CAIXA REAL ──────────────────────────────────────────
+async function abrirCaixa(){
+  openM('modal-caixa');
+  document.getElementById('caixa-content').innerHTML='<div style="text-align:center;padding:30px;color:var(--t3);"><div style="width:24px;height:24px;border:2px solid var(--border);border-top:2px solid var(--gold);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 10px;"></div>Carregando...</div>';
   try{
     const cx=await jsonp({action:'getCaixaReal'});
-    renderMovimentosCaixa(cx.saldo||0, cx.movimentos||[]);
-  }catch(e){document.getElementById('hist-content').innerHTML='<div class="empty"><div class="empty-text">Erro ao carregar</div></div>';}
+    renderCaixa(cx.saldo||0,cx.movimentos||[]);
+  }catch(e){document.getElementById('caixa-content').innerHTML='<div class="empty"><div class="empty-text">Erro ao carregar</div></div>';}
 }
 
-function renderMovimentosCaixa(saldo, movimentos){
-  movCaixaCache = []; // Reseta cache
-  const corSaldo = saldo >= 0 ? 'var(--green)' : 'var(--red)';
-  
-  // Filtra só movimentos de hoje
-  const hoje = new Date().toLocaleDateString('pt-BR');
-  const hoje2 = new Date();
-  const movHoje = movimentos.filter(m => {
-    try {
-      // Tenta comparar a data
-      const partes = m.dataHora.split(',')[0].trim(); // pega só a data "dd/mm/yyyy"
-      return partes === hoje;
-    } catch(e) { return false; }
+function renderCaixa(saldo,movimentos){
+  movCacheArr=movimentos;
+  const hj=new Date().toLocaleDateString('pt-BR');
+  const movHoje=movimentos.filter(m=>{
+    try{const p=m.dataHora.split(',')[0].trim();return p===hj;}catch(e){return false;}
   });
+  const entHoje=movHoje.filter(m=>m.tipo==='Entrada').reduce((s,m)=>s+m.valor,0);
+  const saiHoje=movHoje.filter(m=>m.tipo==='Saída').reduce((s,m)=>s+m.valor,0);
+  const corSaldo=saldo>=0?'var(--green)':'var(--red)';
 
-  // Total entradas/saídas de hoje
-  const entradasHoje = movHoje.filter(m=>m.tipo==='Entrada').reduce((s,m)=>s+m.valor,0);
-  const saidasHoje = movHoje.filter(m=>m.tipo==='Saída').reduce((s,m)=>s+m.valor,0);
-
-  let html = `
-  <div style="background:linear-gradient(135deg,#1a2a4a,#141e2e);border:1px solid var(--gold-dim);border-radius:14px;padding:16px 18px;margin-bottom:12px;text-align:center;">
-    <div style="font-size:10px;font-weight:700;color:var(--text3);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:6px;">SALDO ATUAL</div>
-    <div style="font-family:'Playfair Display',serif;font-size:30px;font-weight:700;color:${corSaldo};">${R(saldo)}</div>
-  </div>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px;">
-    <div style="background:var(--green-dim);border:1px solid #2ecc7133;border-radius:12px;padding:12px;text-align:center;">
-      <div style="font-size:10px;font-weight:700;color:var(--green);letter-spacing:1px;margin-bottom:4px;">ENTRADAS HOJE</div>
-      <div style="font-size:16px;font-weight:700;color:var(--green);">+${R(entradasHoje)}</div>
+  let html=`
+    <div style="background:linear-gradient(135deg,#1a2a4a,#141e2e);border:1px solid var(--gdim);border-radius:14px;padding:16px 18px;margin-bottom:12px;text-align:center;">
+      <div style="font-size:10px;font-weight:700;color:var(--t3);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:6px;">SALDO ATUAL</div>
+      <div style="font-family:'Playfair Display',serif;font-size:30px;font-weight:700;color:${corSaldo};">${R(saldo)}</div>
     </div>
-    <div style="background:var(--red-dim);border:1px solid #e74c3c33;border-radius:12px;padding:12px;text-align:center;">
-      <div style="font-size:10px;font-weight:700;color:var(--red);letter-spacing:1px;margin-bottom:4px;">SAÍDAS HOJE</div>
-      <div style="font-size:16px;font-weight:700;color:var(--red);">-${R(saidasHoje)}</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px;">
+      <div style="background:var(--gdim2);border:1px solid #2ecc7133;border-radius:12px;padding:12px;text-align:center;">
+        <div style="font-size:10px;font-weight:700;color:var(--green);letter-spacing:1px;margin-bottom:4px;">ENTRADAS HOJE</div>
+        <div style="font-size:16px;font-weight:700;color:var(--green);">+${R(entHoje)}</div>
+      </div>
+      <div style="background:var(--rdim);border:1px solid #e74c3c33;border-radius:12px;padding:12px;text-align:center;">
+        <div style="font-size:10px;font-weight:700;color:var(--red);letter-spacing:1px;margin-bottom:4px;">SAÍDAS HOJE</div>
+        <div style="font-size:16px;font-weight:700;color:var(--red);">-${R(saiHoje)}</div>
+      </div>
     </div>
-  </div>
-  <div style="font-size:10px;font-weight:700;color:var(--text3);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;">MOVIMENTAÇÕES DE HOJE</div>`;
+    <div style="font-size:10px;font-weight:700;color:var(--t3);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;">MOVIMENTAÇÕES DE HOJE</div>`;
 
-  if(movHoje.length===0){
+  if(!movHoje.length){
     html+='<div class="empty"><div class="empty-icon">📋</div><div class="empty-text">Nenhuma movimentação hoje</div></div>';
   } else {
     movHoje.forEach((m,i)=>{
-      const isEntrada = m.tipo==='Entrada';
-      const cor = isEntrada ? 'var(--green)' : 'var(--red)';
-      const sinal = isEntrada ? '+' : '-';
-      // Só mostra ações para movimentos que vieram de pagamentos (têm linhaCliente)
-      const temCliente = m.linhaCliente && m.linhaCliente > 0;
-      // Salva no array global para referenciar por índice
-      movCaixaCache.push(m);
-      const idx = movCaixaCache.length - 1;
-      html+=`<div style="background:var(--card);border:1px solid var(--border);border-left:3px solid ${cor};border-radius:14px;padding:12px 14px;margin-bottom:8px;animation:fadeIn 0.3s ease ${i*0.02}s both;">
-        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">
+      const isEnt=m.tipo==='Entrada';
+      const cor=isEnt?'var(--green)':'var(--red)';
+      const sinal=isEnt?'+':'-';
+      const isDesfeito=m.descricao.startsWith('[DESFEITO]');
+      html+=`<div style="background:var(--card);border:1px solid var(--border);border-left:3px solid ${cor};border-radius:12px;padding:12px 14px;margin-bottom:8px;opacity:${isDesfeito?.5:1}">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:${isDesfeito?0:8}px;">
           <div>
             <div style="font-size:13px;font-weight:600;color:var(--text);">${m.descricao}</div>
-            <div style="font-size:11px;color:var(--text3);margin-top:2px;">${m.dataHora.split(',')[1]||m.dataHora}</div>
+            <div style="font-size:11px;color:var(--t3);margin-top:2px;">${m.dataHora.split(',')[1]||m.dataHora}</div>
           </div>
           <div style="font-size:15px;font-weight:700;color:${cor};">${sinal}${R(m.valor)}</div>
         </div>
-        <div style="display:flex;gap:6px;">
-          ${temCliente?`<button onclick="abrirAcaoMovIdx(${idx},'desfazer')" style="flex:1;padding:7px;background:var(--orange-dim);border:1px solid var(--orange);border-radius:8px;color:var(--orange);font-size:10px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;">↩️ Desfazer</button>`:''}
-          <button onclick="abrirAcaoMovIdx(${idx},'excluir')" style="flex:1;padding:7px;background:var(--red-dim);border:1px solid #e74c3c33;border-radius:8px;color:var(--red);font-size:10px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;">🗑️ Excluir</button>
-        </div>
+        ${!isDesfeito?`<div style="display:flex;gap:6px;">
+          ${isEnt&&m.linhaCliente>0?`<button onclick="abrirDesfazer(${i},'desfazer')" style="flex:1;padding:7px;background:var(--odim);border:1px solid var(--orange);border-radius:8px;color:var(--orange);font-size:10px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;">↩️ Desfazer</button>`:''}
+          <button onclick="abrirDesfazer(${i},'excluir')" style="flex:1;padding:7px;background:var(--rdim);border:1px solid #e74c3c33;border-radius:8px;color:var(--red);font-size:10px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;">🗑️ Excluir</button>
+        </div>`:'<div style="font-size:11px;color:var(--t3);text-align:center;">Desfeito</div>'}
       </div>`;
     });
   }
-  document.getElementById('hist-content').innerHTML=html;
+  document.getElementById('caixa-content').innerHTML=html;
 }
 
-function renderHistorico(hist){
-  if(hist.length===0){document.getElementById('hist-content').innerHTML='<div class="empty"><div class="empty-icon">📜</div><div class="empty-text">Nenhum registro ainda</div></div>';return;}
-  const tipoColor={'Renovado':'var(--orange)','Quitado':'var(--green)','Parcial':'var(--gold)','Parcela Negociação':'var(--purple)'};
-  const tipoIcon={'Renovado':'🔄','Quitado':'✅','Parcial':'💛','Parcela Negociação':'💜'};
-  let html='';
-  hist.forEach((h,i)=>{
-    if(h.status==='Desfeito') return;
-    const cor=tipoColor[h.tipo]||'var(--text2)';
-    const ico=tipoIcon[h.tipo]||'💰';
-    html+=`<div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px 16px;margin-bottom:8px;animation:fadeIn 0.3s ease ${i*0.03}s both;">
-      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;">
-        <div>
-          <div style="font-weight:600;font-size:15px;color:var(--text);">${h.nome}</div>
-          <div style="font-size:12px;color:var(--text3);margin-top:2px;">${h.dataHora}</div>
-        </div>
-        <div style="text-align:right;">
-          <span style="background:${cor}22;color:${cor};border:1px solid ${cor}33;border-radius:20px;padding:3px 10px;font-size:11px;font-weight:600;">${ico} ${h.tipo}</span>
-          <div style="font-size:15px;font-weight:700;color:${cor};margin-top:4px;">${R(h.valorPago)}</div>
-          ${h.multa>0?`<div style="font-size:11px;color:var(--text3);">+ multa ${R(h.multa)}</div>`:''}
-        </div>
-      </div>
-      <button onclick="desfazerAcao(${h.linha},${h.linhaCliente},'${h.tipo}','${h.dataEmprestimo}','${h.nome}')" style="width:100%;padding:8px;background:var(--red-dim);border:1px solid #e74c3c33;border-radius:10px;color:var(--red);font-size:11px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;margin-top:4px;">
-        ↩️ Desfazer esta ação
-      </button>
-    </div>`;
+function abrirDesfazer(idx,acao){
+  const m=movCacheArr.find(mv=>{
+    const hj=new Date().toLocaleDateString('pt-BR');
+    try{return mv.dataHora.split(',')[0].trim()===hj;}catch(e){return false;}
   });
-  document.getElementById('hist-content').innerHTML=html||'<div class="empty"><div class="empty-icon">✅</div><div class="empty-text">Nenhum registro ativo</div></div>';
+  // Pega pelo índice dos movHoje
+  const hj=new Date().toLocaleDateString('pt-BR');
+  const movHoje=movCacheArr.filter(mv=>{try{return mv.dataHora.split(',')[0].trim()===hj;}catch(e){return false;}});
+  const mov=movHoje[idx];
+  if(!mov)return;
+  movDesfazer=mov;tipoDesfazer=acao;
+  const isDesfazer=acao==='desfazer';
+  const isEnt=mov.tipo==='Entrada';
+  document.getElementById('desfazer-title').textContent=isDesfazer?'↩️ Desfazer':'🗑️ Excluir Movimentação';
+  document.getElementById('desfazer-title').style.color=isDesfazer?'var(--orange)':'var(--red)';
+  document.getElementById('btn-conf-desfazer').style.background=isDesfazer?'var(--odim)':'var(--rdim)';
+  document.getElementById('btn-conf-desfazer').style.borderColor=isDesfazer?'var(--orange)':'var(--red)';
+  document.getElementById('btn-conf-desfazer').style.color=isDesfazer?'var(--orange)':'var(--red)';
+  document.getElementById('desfazer-info').innerHTML=`<strong style="color:var(--text)">${mov.descricao}</strong><br><br>
+    Valor: <strong>${isEnt?'-':'+'}${R(mov.valor)}</strong> será estornado no caixa.<br>
+    ${isDesfazer?'<span style="color:var(--t3);font-size:12px;">O cliente voltará ao estado anterior.</span>':'<span style="color:var(--t3);font-size:12px;">Apenas o valor é estornado.</span>'}`;
+  openM('modal-desfazer');
 }
 
-async function desfazerAcao(linhaHist, linhaCliente, tipo, dataEmprestimo, nome){
-  if(!confirm('Desfazer esta ação? O cliente voltará para a base.'))return;
-  toast('↩️ Desfazendo...');
-  try{
-    const r=await jsonp({action:'desfazerHistorico',linhaHist,linhaCliente,tipo,dataEmprestimo,nome});
-    if(r.ok){closeM('modal-hist');await reload();showOk('↩️ Ação desfeita! Cliente restaurado.');}
-    else toast('❌ '+(r.error||'Erro'));
-  }catch(e){toast('❌ '+e.message);}
-}
-
-
-let movAcaoAtual = null;
-let tipoAcaoAtual = null;
-let movCaixaCache = [];
-
-function abrirAcaoMovIdx(idx, acao) {
-  const m = movCaixaCache[idx];
-  if(!m) return;
-  abrirAcaoMov(m, acao);
-}
-
-function abrirAcaoMov(mov, acao) {
-  movAcaoAtual = mov;
-  tipoAcaoAtual = acao;
-  const isDesfazer = acao === 'desfazer';
-  const cor = isDesfazer ? 'var(--orange)' : 'var(--red)';
-  document.getElementById('acao-mov-title').textContent = isDesfazer ? '↩️ Desfazer Movimentação' : '🗑️ Excluir Movimentação';
-  document.getElementById('acao-mov-title').style.color = cor;
-  document.getElementById('btn-confirmar-acao-mov').style.background = isDesfazer ? 'var(--orange-dim)' : 'var(--red-dim)';
-  document.getElementById('btn-confirmar-acao-mov').style.borderColor = isDesfazer ? 'var(--orange)' : 'var(--red)';
-  document.getElementById('btn-confirmar-acao-mov').style.color = isDesfazer ? 'var(--orange)' : 'var(--red)';
-  
-  const isEntrada = mov.tipo === 'Entrada';
-  const info = isDesfazer
-    ? `Desfazer: <strong style="color:var(--text);">${mov.descricao}</strong><br><br>
-       Valor: <strong>${isEntrada?'-':'+'}${R(mov.valor)}</strong> será estornado do caixa.<br>
-       O cliente voltará ao estado anterior.`
-    : `Excluir: <strong style="color:var(--text);">${mov.descricao}</strong><br><br>
-       Valor: <strong>${isEntrada?'-':'+'}${R(mov.valor)}</strong> será estornado do caixa.<br>
-       <span style="color:var(--text3);font-size:11px;">O cliente NÃO volta ao estado anterior.</span>`;
-  document.getElementById('acao-mov-info').innerHTML = info;
-  openM('modal-acao-mov');
-}
-
-async function confirmarAcaoMov() {
-  if(!movAcaoAtual) return;
-  const mov = movAcaoAtual;
-  const acao = tipoAcaoAtual;
+async function confirmarDesfazer(){
+  if(!movDesfazer||travar())return;
   toast('💾 Processando...');
-  try {
-    // 1. Estorna no caixa (inverte entrada/saída)
-    const tipoEstorno = mov.tipo === 'Entrada' ? 'Saída' : 'Entrada';
-    await jsonp({action:'movimentarCaixa', descricao:'Estorno: '+mov.descricao, tipo:tipoEstorno, valor:mov.valor});
-    
-    // 2. Se desfazer, volta o cliente
-    if(acao === 'desfazer') {
-      const nomeExtraido = mov.descricao.includes(': ') ? mov.descricao.split(': ').slice(1).join(': ') : (mov.nome||'');
-      
-      // Se não tem linhaCliente ou dataEmprestimo no movimento atual,
-      // busca no caixa o movimento de Entrada mais recente deste cliente
-      let linhaCliente = mov.linhaCliente||0;
-      let dataEmprestimo = mov.dataEmprestimo||'';
-      
-      if(!linhaCliente || !dataEmprestimo) {
-        try {
-          const cx = await jsonp({action:'getCaixaReal'});
-          const movEntrada = (cx.movimentos||[]).find(m => 
-            m.tipo==='Entrada' && 
-            m.descricao.includes(nomeExtraido) && 
-            m.linhaCliente > 0 &&
-            m.dataEmprestimo
-          );
-          if(movEntrada) {
-            linhaCliente = movEntrada.linhaCliente;
-            dataEmprestimo = movEntrada.dataEmprestimo;
-          }
-        } catch(e) {}
-      }
-      
-      await jsonp({
-        action:'desfazerHistorico',
-        nome: nomeExtraido,
-        linhaCliente: linhaCliente,
-        dataEmprestimo: dataEmprestimo,
-        tipo: 'Renovado'
-      });
+  try{
+    await jsonp({action:'movimentarCaixa',descricao:'Estorno: '+movDesfazer.descricao,tipo:movDesfazer.tipo==='Entrada'?'Saída':'Entrada',valor:movDesfazer.valor,dataEmpOriginal:'',linhaCliente:0});
+    if(tipoDesfazer==='desfazer'&&movDesfazer.linhaCliente>0){
+      await jsonp({action:'desfazerPagamento',linhaCaixa:movDesfazer.linha,linhaCliente:movDesfazer.linhaCliente,dataEmpOriginal:movDesfazer.dataEmpOriginal,tipo:movDesfazer.tipo,valor:movDesfazer.valor,nome:movDesfazer.descricao});
     }
-    
-    closeM('modal-acao-mov');
-    showOk(acao==='desfazer'?'↩️ Movimentação desfeita!':'🗑️ Movimentação excluída!');
-    
-    // Recarrega caixa
-    const cx = await jsonp({action:'getCaixaReal'});
-    renderMovimentosCaixa(cx.saldo||0, cx.movimentos||[]);
-    
-    // Se desfez, recarrega clientes
-    if(acao === 'desfazer') await reload();
-    
-    movAcaoAtual = null;
-    tipoAcaoAtual = null;
-  } catch(e) { toast('❌ '+e.message); }
+    closeM('modal-desfazer');
+    showOk(tipoDesfazer==='desfazer'?'↩️ Desfeito! Cliente restaurado.':'🗑️ Movimentação excluída.');
+    await abrirCaixa();
+    if(tipoDesfazer==='desfazer'){bloqueioReload=false;await reload();}
+    movDesfazer=null;tipoDesfazer=null;
+  }catch(e){toast('❌ '+e.message);}
+  processando=false;
 }
 
+// ─── SUPRIMENTO/SANGRIA ──────────────────────────────────
 function abrirMovCaixa(tipo){
-  const isSup = tipo==='suprimento';
-  document.getElementById('mov-caixa-tipo').value=tipo;
-  document.getElementById('mov-caixa-title').textContent=isSup?'➕ Suprimento':'➖ Sangria';
-  document.getElementById('mov-caixa-title').style.color=isSup?'var(--green)':'var(--red)';
-  document.getElementById('btn-mov-caixa').style.background=isSup?'linear-gradient(135deg,#27ae60,#2ecc71)':'linear-gradient(135deg,#c0392b,#e74c3c)';
-  document.getElementById('mov-caixa-valor').value='';
-  document.getElementById('mov-caixa-obs').value='';
-  openM('modal-mov-caixa');
+  const isSup=tipo==='suprimento';
+  document.getElementById('mov-cx-tipo').value=tipo;
+  document.getElementById('mov-cx-title').textContent=isSup?'➕ Suprimento':'➖ Sangria';
+  document.getElementById('mov-cx-title').style.color=isSup?'var(--green)':'var(--red)';
+  document.getElementById('btn-mov-cx').style.background=isSup?'linear-gradient(135deg,#27ae60,#2ecc71)':'linear-gradient(135deg,#c0392b,#e74c3c)';
+  document.getElementById('mov-cx-valor').value='';document.getElementById('mov-cx-obs').value='';
+  openM('modal-mov-cx');
 }
 
-async function confirmarMovCaixa(){
-  const tipo=document.getElementById('mov-caixa-tipo').value;
-  const valor=Number(document.getElementById('mov-caixa-valor').value||0);
-  const obs=document.getElementById('mov-caixa-obs').value.trim();
-  if(!valor){toast('⚠️ Digite o valor');return;}
+async function confirmarMovCx(){
+  if(travar())return;
+  const tipo=document.getElementById('mov-cx-tipo').value;
+  const v=Number(document.getElementById('mov-cx-valor').value||0);
+  if(!v){toast('⚠️ Digite o valor');processando=false;return;}
+  const obs=document.getElementById('mov-cx-obs').value;
   const isSup=tipo==='suprimento';
-  const descricao=(isSup?'Suprimento':'Sangria')+(obs?' - '+obs:'');
+  const desc=(isSup?'Suprimento':'Sangria')+(obs?' - '+obs:'');
   toast('💾 Salvando...');
   try{
-    const r=await jsonp({action:'movimentarCaixa',descricao,tipo:isSup?'Entrada':'Saída',valor});
-    if(r.ok){
-      closeM('modal-mov-caixa');
-      showOk(isSup?`➕ Suprimento de ${R(valor)} registrado!`:`➖ Sangria de ${R(valor)} registrada!`);
-      // Recarrega o caixa
-      const cx=await jsonp({action:'getCaixaReal'});
-      renderMovimentosCaixa(cx.saldo||0,cx.movimentos||[]);
-    } else toast('❌ '+(r.error||'Erro'));
+    const r=await jsonp({action:'movimentarCaixa',descricao:desc,tipo:isSup?'Entrada':'Saída',valor:v,dataEmpOriginal:'',linhaCliente:0});
+    if(r.ok){closeM('modal-mov-cx');showOk(isSup?`➕ Suprimento de ${R(v)} registrado!`:`➖ Sangria de ${R(v)} registrada!`);await abrirCaixa();}
+    else toast('❌ '+(r.error||'Erro'));
   }catch(e){toast('❌ '+e.message);}
+  processando=false;
 }
 
-function openM(id){document.getElementById(id).classList.add('open');}
-function closeM(id){document.getElementById(id).classList.remove('open');}
-function showOk(msg){const el=document.getElementById('success-banner');el.textContent=msg;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),4000);}
-window.addEventListener('load',()=>{setTimeout(()=>{document.getElementById('loader').style.display='none';},1800);});
+// ─── WHATSAPP ────────────────────────────────────────────
+function abrirWpp(tel,tel2,nome){
+  const t1=String(tel||'').replace(/\D/g,'');
+  const t2=String(tel2||'').replace(/\D/g,'');
+  if(t2&&t2.length>5){
+    document.getElementById('wpp-nome').textContent='Como deseja falar com '+(nome||'o cliente')+'?';
+    const l1=t1.startsWith('55')?`https://wa.me/${t1}`:`https://wa.me/55${t1}`;
+    const l2=t2.startsWith('55')?`https://wa.me/${t2}`:`https://wa.me/55${t2}`;
+    document.getElementById('wpp-opcoes').innerHTML=`
+      <button onclick="window.open('${l1}','_blank');closeM('modal-wpp');" style="width:100%;padding:14px;background:#25D36618;border:1px solid var(--wpp);border-radius:12px;color:var(--wpp);font-size:14px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;margin-bottom:10px;">📱 Principal: ${tel}</button>
+      <button onclick="window.open('${l2}','_blank');closeM('modal-wpp');" style="width:100%;padding:14px;background:#25D36618;border:1px solid var(--wpp);border-radius:12px;color:var(--wpp);font-size:14px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;">📱 Adicional: ${tel2}</button>`;
+    openM('modal-wpp');
+  } else {
+    const n=t1.startsWith('55')?`https://wa.me/${t1}`:`https://wa.me/55${t1}`;
+    window.open(n,'_blank');
+  }
+}
+
+window.addEventListener('load',()=>setTimeout(()=>{document.getElementById('loader').style.display='none';},1800));
 </script>
 </body>
 </html>
