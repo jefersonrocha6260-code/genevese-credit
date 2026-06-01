@@ -678,7 +678,7 @@ function norm(s){return(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\
 
 function buscarCli(input){
   const b=norm(input.value).trim();
-  if(!b){renderCli();return;}
+  if(!b){document.getElementById('busca').value='';renderCli();return;}
   const lista=(clientes||[]).filter(c=>{
     if(!c.nome||c.status==='Pendente')return false;
     return norm(c.nome).includes(b)||
@@ -733,26 +733,14 @@ function buscarCli(input){
 function setF(f,btn){filtro=f;document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));btn.classList.add('active');renderCli();}
 
 function renderCli(){
-  const busca=document.getElementById('busca');
-  if(busca&&busca.value.trim()){buscarCli(busca);return;}
   const hj=new Date();hj.setHours(0,0,0,0);
-  const buscaRaw='';
   const lista=(clientes||[]).filter(c=>{
-    if(!c.nome)return false;
-    if(c.status==='Pendente')return false;
-    // Se há busca, ignora filtro de status e busca em todos
-    if(buscaRaw){
-      const nomOk=c.nome.toLowerCase().includes(buscaRaw);
-      const telOk=(c.telefone||'').replace(/\D/g,'').includes(buscaRaw.replace(/\D/g,''));
-      const cpfOk=(c.cpf||'').replace(/\D/g,'').includes(buscaRaw.replace(/\D/g,''));
-      return nomOk||telOk||cpfOk;
-    }
-    // Sem busca, aplica filtro de status
+    if(!c.nome||c.status==='Pendente')return false;
     if(filtro==='Ativo')return c.status==='Ativo'&&diasA(c.dataEmprestimo)===0;
     if(filtro==='Hoje'){const v=addD(c.dataEmprestimo,7);v.setHours(0,0,0,0);return c.status==='Ativo'&&v.getTime()===hj.getTime();}
     if(filtro==='Atraso')return c.status==='Ativo'&&diasA(c.dataEmprestimo)>0;
     if(filtro==='Quitado')return c.status==='Quitado';
-    return c.status!=='Pendente';
+    return true;
   });
   if(!lista.length){document.getElementById('lista-cli').innerHTML='<div class="empty"><div class="empty-icon">🔍</div><div class="empty-text">Nenhum cliente encontrado</div></div>';return;}
   const isAdmin=user&&user.perfil==='admin';
