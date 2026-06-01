@@ -683,13 +683,15 @@ function renderCli(){
   const buscaRaw=document.getElementById('busca').value.toLowerCase().trim();
   const lista=(clientes||[]).filter(c=>{
     if(!c.nome)return false;
+    if(c.status==='Pendente')return false;
+    // Se há busca, ignora filtro de status e busca em todos
     if(buscaRaw){
       const nomOk=c.nome.toLowerCase().includes(buscaRaw);
       const telOk=(c.telefone||'').replace(/\D/g,'').includes(buscaRaw.replace(/\D/g,''));
       const cpfOk=(c.cpf||'').replace(/\D/g,'').includes(buscaRaw.replace(/\D/g,''));
-      if(!nomOk&&!telOk&&!cpfOk)return false;
+      return nomOk||telOk||cpfOk;
     }
-    if(c.status==='Pendente')return false; // Pendentes ficam só em Pendências
+    // Sem busca, aplica filtro de status
     if(filtro==='Ativo')return c.status==='Ativo'&&diasA(c.dataEmprestimo)===0;
     if(filtro==='Hoje'){const v=addD(c.dataEmprestimo,7);v.setHours(0,0,0,0);return c.status==='Ativo'&&v.getTime()===hj.getTime();}
     if(filtro==='Atraso')return c.status==='Ativo'&&diasA(c.dataEmprestimo)>0;
