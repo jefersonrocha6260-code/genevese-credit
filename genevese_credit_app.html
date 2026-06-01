@@ -242,7 +242,7 @@ input[type=date]::-webkit-calendar-picker-indicator{filter:invert(.5);}
       </div>
       <div class="search-wrap">
         <span class="search-icon">🔍</span>
-        <input id="busca" class="search-input" placeholder="Nome, CPF ou telefone..." oninput="filtrarClientes(this.value)" onkeyup="filtrarClientes(this.value)">
+        <input id="busca" class="search-input" placeholder="Nome, CPF ou telefone..." oninput="filtrarClientes(event.target.value)" onkeyup="filtrarClientes(event.target.value)">
       </div>
     </div>
     <div class="page">
@@ -674,12 +674,13 @@ function navCli(f){
 }
 
 // ─── CLIENTES ────────────────────────────────────────────
+function norm(s){return(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');}
 function filtrarClientes(val){
-  const b=val.toLowerCase().trim();
+  const b=norm(val).trim();
   if(!b){renderCli();return;}
   const lista=(clientes||[]).filter(c=>{
-    if(!c.nome||c.status==='Pendente')return false;
-    return c.nome.toLowerCase().includes(b)||
+    if(!c.nome)return false;
+    return norm(c.nome).includes(b)||
            (c.telefone||'').replace(/\D/g,'').includes(b.replace(/\D/g,''))||
            (c.cpf||'').replace(/\D/g,'').includes(b.replace(/\D/g,''));
   });
