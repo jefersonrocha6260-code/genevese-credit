@@ -242,7 +242,7 @@ input[type=date]::-webkit-calendar-picker-indicator{filter:invert(.5);}
       </div>
       <div class="search-wrap">
         <span class="search-icon">🔍</span>
-        <input id="busca" class="search-input" placeholder="Nome, CPF ou telefone..." oninput="renderCli()">
+        <input id="busca" class="search-input" placeholder="Nome, CPF ou telefone..." oninput="renderCli()" onkeyup="renderCli()">
       </div>
     </div>
     <div class="page">
@@ -680,13 +680,13 @@ function renderCli(){
   const busca=document.getElementById('busca').value.toLowerCase().replace(/\D/g,'') ||
               document.getElementById('busca').value.toLowerCase();
   const hj=new Date();hj.setHours(0,0,0,0);
+  const buscaRaw=document.getElementById('busca').value.toLowerCase().trim();
   const lista=(clientes||[]).filter(c=>{
     if(!c.nome)return false;
-    // Busca por nome, cpf ou telefone
-    if(busca){
-      const nomOk=c.nome.toLowerCase().includes(document.getElementById('busca').value.toLowerCase());
-      const telOk=(c.telefone||'').replace(/\D/g,'').includes(busca.replace(/\D/g,''));
-      const cpfOk=(c.cpf||'').replace(/\D/g,'').includes(busca.replace(/\D/g,''));
+    if(buscaRaw){
+      const nomOk=c.nome.toLowerCase().includes(buscaRaw);
+      const telOk=(c.telefone||'').replace(/\D/g,'').includes(buscaRaw.replace(/\D/g,''));
+      const cpfOk=(c.cpf||'').replace(/\D/g,'').includes(buscaRaw.replace(/\D/g,''));
       if(!nomOk&&!telOk&&!cpfOk)return false;
     }
     if(c.status==='Pendente')return false; // Pendentes ficam só em Pendências
@@ -820,7 +820,20 @@ async function salvarCliente(){
     let r;
     if(modoEdit){r=await jsonp({action:'editarCliente',linha,nome,cpf,telefone:tel,telefone2:tel2,dataEmprestimo:data,valor:v});}
     else{r=await jsonp({action:'cadastrarCliente',nome,cpf,telefone:tel,telefone2:tel2,dataEmprestimo:data,valor:v});}
-    if(r.ok){closeM('modal-cad');bloqueioReload=false;await reload();showOk(modoEdit?`✅ ${nome} atualizado!`:`✅ ${nome} cadastrado!`);}
+    if(r.ok){
+      closeM('modal-cad');
+      bloqueioReload=false;
+      await reload();
+      // Após reemprestar, vai para aba Ativos
+      if(!modoEdit){
+        filtro='Ativo';
+        document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
+        const chipAtivo=document.getElementById('chip-ativo');
+        if(chipAtivo)chipAtivo.classList.add('active');
+        renderCli();
+      }
+      showOk(modoEdit?`✅ ${nome} atualizado!`:`✅ ${nome} cadastrado!`);
+    }
     else toast('❌ '+(r.error||'Erro'));
   }catch(e){toast('❌ '+e.message);}
   processando=false;
