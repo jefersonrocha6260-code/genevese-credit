@@ -18,20 +18,14 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 @keyframes pulse{0%,100%{box-shadow:0 0 20px #c9a84c22;}50%{box-shadow:0 0 50px #c9a84c55;}}
 @keyframes loadbar{from{width:0}to{width:100%}}
 @keyframes scrin{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
-
-/* LOADER */
 #loader{position:fixed;inset:0;z-index:9999;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;}
 .lem{width:80px;height:80px;border-radius:20px;background:linear-gradient(135deg,#1a2a4a,#0d1420);border:1px solid var(--gold);display:flex;align-items:center;justify-content:center;font-size:36px;animation:pulse 2s infinite;}
 .ltit{font-family:'Playfair Display',serif;color:var(--gold2);font-size:22px;font-weight:700;}
 .lsub{color:var(--t3);font-size:11px;letter-spacing:2px;text-transform:uppercase;}
 .lbar{width:120px;height:2px;background:var(--border);border-radius:1px;overflow:hidden;}
 .lbar-f{height:100%;background:linear-gradient(90deg,var(--gold),var(--gold2));animation:loadbar 1.5s ease forwards;}
-
-/* SCREENS */
 .screen{display:none;min-height:100vh;padding-bottom:90px;}
 .screen.active{display:block;animation:scrin .3s ease;}
-
-/* LOGIN */
 #login-screen{background:radial-gradient(ellipse at top,#0d1e3a,var(--bg) 70%);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 24px;min-height:100vh;}
 .l-brand{font-family:'Playfair Display',serif;color:var(--gold2);font-size:28px;font-weight:700;}
 .l-tag{color:var(--t3);font-size:11px;letter-spacing:2px;text-transform:uppercase;margin:6px 0 36px;}
@@ -47,16 +41,12 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 .btn-gold:disabled{background:var(--border);color:var(--t3);box-shadow:none;cursor:not-allowed;}
 .l-hint{color:var(--t3);font-size:11px;text-align:center;margin-top:14px;}
 .l-err{color:var(--red);font-size:12px;text-align:center;margin:-6px 0 10px;}
-
-/* TOPBAR */
 .topbar{background:linear-gradient(180deg,#0a1222,var(--bg));padding:24px 20px 36px;border-bottom:1px solid var(--border);position:relative;}
 .topbar::after{content:'';position:absolute;bottom:0;left:20px;right:20px;height:1px;background:linear-gradient(90deg,transparent,var(--gdim),transparent);}
 .topbar-row{display:flex;justify-content:space-between;align-items:flex-start;}
 .topbar-title{font-family:'Playfair Display',serif;color:var(--text);font-size:26px;font-weight:700;}
 .topbar-date{color:var(--t3);font-size:11px;margin-top:4px;}
 .topbar-badge{background:linear-gradient(135deg,#1a2a4a,#1e3355);color:var(--gold2);font-size:10px;font-weight:700;padding:6px 12px;border-radius:20px;border:1px solid var(--gdim);letter-spacing:1px;text-transform:uppercase;}
-
-/* NAV */
 .bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:var(--bg2);border-top:1px solid var(--border);display:flex;z-index:100;box-shadow:0 -8px 32px #00000066;overflow-x:auto;}
 .nav-btn{flex:1;min-width:52px;padding:8px 0 14px;background:none;border:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;}
 .nav-icon{font-size:18px;}
@@ -64,11 +54,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 .nav-btn.active .nav-label{color:var(--gold2);}
 .nav-line{width:16px;height:2px;border-radius:1px;background:transparent;}
 .nav-btn.active .nav-line{background:linear-gradient(90deg,var(--gold),var(--gold2));}
-
-/* PAGE */
 .page{padding:0 16px;margin-top:-16px;}
-
-/* CARDS STAT */
 .stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;}
 .stat-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:16px;position:relative;overflow:hidden;cursor:pointer;transition:border-color .2s;}
 .stat-card:hover{border-color:var(--gold);}
@@ -78,8 +64,6 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 .stat-label{font-size:10px;font-weight:600;color:var(--t3);letter-spacing:1px;text-transform:uppercase;}
 .stat-wide{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:16px 18px;margin-bottom:10px;display:flex;align-items:center;gap:14px;cursor:pointer;position:relative;overflow:hidden;}
 .stat-wide::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);}
-
-/* CLIENT CARDS */
 .cc{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:8px;position:relative;overflow:hidden;animation:fadeIn .3s ease both;}
 .cc-accent{position:absolute;left:0;top:0;bottom:0;width:3px;}
 .cc-body{padding-left:10px;}
@@ -92,8 +76,6 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 .cv-label{font-size:9px;font-weight:700;color:var(--t3);letter-spacing:1px;text-transform:uppercase;margin-bottom:2px;}
 .cv-value{font-size:12px;font-weight:700;}
 .cv-div{width:1px;background:var(--border);}
-
-/* BUTTONS */
 .btn-sm{padding:6px 10px;border-radius:8px;font-size:10px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;border:1px solid;transition:all .15s;white-space:nowrap;}
 .btn-pay{background:linear-gradient(135deg,#1a2a4a,#1e3355);color:var(--gold2);border-color:var(--gdim);}
 .btn-wpp{background:#25D36618;color:var(--wpp);border-color:#25D36644;}
@@ -102,21 +84,15 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 .btn-prej{background:#e74c3c11;color:var(--red);border-color:#e74c3c44;}
 .btn-negoc{background:#9b59b611;color:var(--purple);border-color:#9b59b644;}
 .btn-quit-re{background:linear-gradient(135deg,#1a2a4a,#1e3355);color:var(--gold2);border-color:var(--gdim);}
-
-/* SEARCH */
 .search-wrap{position:relative;margin-top:14px;}
 .search-input{width:100%;padding:12px 16px 12px 40px;background:#ffffff08;border:1px solid var(--border);border-radius:12px;color:var(--text);font-size:14px;font-family:'Inter',sans-serif;outline:none;}
 .search-input::placeholder{color:var(--t3);}
 .search-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--t3);font-size:14px;pointer-events:none;}
-
-/* CHIPS */
 .chip-row{display:flex;gap:8px;padding:14px 0 4px;overflow-x:auto;}
 .chip-row::-webkit-scrollbar{display:none;}
 .chip{padding:6px 14px;border-radius:20px;border:1px solid var(--border);font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap;font-family:'Inter',sans-serif;background:transparent;color:var(--t3);}
 .chip.active{background:var(--gdim);border-color:var(--gold);color:var(--gold2);}
 .add-btn{background:linear-gradient(135deg,#b8943e,#c9a84c);color:#0d1420;border:none;border-radius:10px;padding:8px 14px;font-size:11px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;letter-spacing:.5px;text-transform:uppercase;}
-
-/* MODAL */
 .modal-overlay{position:fixed;inset:0;z-index:500;background:#000000cc;display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:opacity .3s;backdrop-filter:blur(4px);}
 .modal-overlay.open{opacity:1;pointer-events:all;}
 .modal-sheet{background:var(--bg2);border:1px solid var(--border);border-bottom:none;border-radius:24px 24px 0 0;width:100%;max-width:480px;padding:24px 20px 44px;max-height:92vh;overflow-y:auto;transform:translateY(100%);transition:transform .35s cubic-bezier(.4,0,.2,1);position:relative;}
@@ -125,8 +101,6 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 .modal-handle{width:36px;height:3px;background:var(--border);border-radius:2px;margin:0 auto 20px;}
 .modal-close{float:right;background:var(--card);border:1px solid var(--border);border-radius:50%;width:32px;height:32px;cursor:pointer;font-size:14px;color:var(--t3);display:flex;align-items:center;justify-content:center;}
 .modal-title{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:var(--text);margin-bottom:20px;}
-
-/* PAY OPTS */
 .pay-opts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;}
 .pay-opt{padding:16px 12px;border-radius:14px;border:1px solid var(--border);background:var(--card);cursor:pointer;text-align:center;}
 .pay-opt.sel-r{border-color:var(--orange);background:var(--odim);}
@@ -135,22 +109,16 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 .po-icon{font-size:22px;margin-bottom:6px;display:block;}
 .po-label{font-size:10px;font-weight:700;color:var(--t3);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;}
 .po-value{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;}
-
-/* TOGGLE */
 .tog-row{display:flex;align-items:center;justify-content:space-between;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:13px 16px;margin-bottom:10px;}
 .tog-row.on{border-color:var(--gdim);}
 .tog-sw{width:46px;height:26px;border-radius:13px;background:var(--border);border:none;cursor:pointer;position:relative;flex-shrink:0;}
 .tog-sw.on{background:var(--gold);}
 .tog-knob{position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:left .2s;}
 .tog-sw.on .tog-knob{left:23px;}
-
-/* SUMMARY */
 .summary-box{background:linear-gradient(135deg,#1a2a4a,#141e2e);border:1px solid var(--gdim);border-radius:14px;padding:16px 18px;margin-bottom:14px;position:relative;overflow:hidden;}
 .summary-box::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);}
 .sum-label{font-size:10px;font-weight:700;color:var(--t3);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:6px;}
 .sum-value{font-family:'Playfair Display',serif;font-size:28px;font-weight:700;color:var(--gold2);}
-
-/* OUTROS */
 .info-box{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px 16px;margin-bottom:14px;}
 .sec-title{font-size:10px;font-weight:700;color:var(--t3);letter-spacing:2px;text-transform:uppercase;margin:16px 0 10px;display:flex;align-items:center;gap:8px;}
 .sec-title::after{content:'';flex:1;height:1px;background:var(--border);}
@@ -178,7 +146,6 @@ input[type=date]::-webkit-calendar-picker-indicator{filter:invert(.5);}
 </style>
 </head>
 <body>
-
 <div id="loader">
   <div class="lem">🚗</div>
   <div class="ltit">Genevese Credit</div>
@@ -190,8 +157,6 @@ input[type=date]::-webkit-calendar-picker-indicator{filter:invert(.5);}
   <div style="width:40px;height:40px;border:3px solid #1e2d42;border-top:3px solid #c9a84c;border-radius:50%;animation:spin .8s linear infinite;"></div>
   <div style="font-size:14px;font-weight:600;color:#e8c96d;">Atualizando...</div>
 </div>
-
-<!-- LOGIN -->
 <div id="login-screen" class="screen active" style="display:flex;">
   <div class="lem" style="margin-bottom:24px;">🚗</div>
   <div class="l-brand">Genevese Credit</div>
@@ -209,11 +174,7 @@ input[type=date]::-webkit-calendar-picker-indicator{filter:invert(.5);}
     <p class="l-hint">Admin: 1234 · Cobrança: 5678</p>
   </div>
 </div>
-
-<!-- APP -->
 <div id="app" style="display:none;">
-
-  <!-- DASHBOARD -->
   <div id="screen-dashboard" class="screen active">
     <div class="topbar">
       <div class="topbar-row">
@@ -232,15 +193,12 @@ input[type=date]::-webkit-calendar-picker-indicator{filter:invert(.5);}
       <div style="text-align:center;padding:40px;color:var(--t3);"><div style="width:24px;height:24px;border:2px solid var(--border);border-top:2px solid var(--gold);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 12px;"></div>Carregando...</div>
     </div>
   </div>
-
-  <!-- CLIENTES -->
   <div id="screen-clientes" class="screen">
     <div class="topbar">
       <div class="topbar-row">
         <div class="topbar-title">Clientes</div>
         <button id="btn-novo" class="add-btn" onclick="abrirCad()">+ Novo</button>
       </div>
-
     </div>
     <div class="page">
       <div class="search-wrap" style="margin-bottom:10px;">
@@ -258,26 +216,18 @@ input[type=date]::-webkit-calendar-picker-indicator{filter:invert(.5);}
       <div id="lista-cli" style="padding-top:8px;"></div>
     </div>
   </div>
-
-  <!-- PENDÊNCIAS -->
   <div id="screen-pendencias" class="screen">
     <div class="topbar"><div class="topbar-title">Pendências</div></div>
     <div class="page" style="padding-top:20px;"><div id="lista-pend"></div></div>
   </div>
-
-  <!-- NEGOCIAÇÕES -->
   <div id="screen-negociacoes" class="screen">
     <div class="topbar"><div class="topbar-title">Negociações</div></div>
     <div class="page" style="padding-top:20px;"><div id="lista-negoc"></div></div>
   </div>
-
-  <!-- PREJUÍZOS -->
   <div id="screen-prejuizos" class="screen">
     <div class="topbar"><div class="topbar-title">Prejuízos</div></div>
     <div class="page" style="padding-top:20px;"><div id="lista-prej"></div></div>
   </div>
-
-  <!-- CUSTOS -->
   <div id="screen-custos" class="screen">
     <div class="topbar">
       <div class="topbar-row">
@@ -287,7 +237,6 @@ input[type=date]::-webkit-calendar-picker-indicator{filter:invert(.5);}
     </div>
     <div class="page" style="padding-top:20px;"><div id="lista-custos"></div></div>
   </div>
-
   <nav class="bottom-nav">
     <button class="nav-btn active" onclick="showS('dashboard',this)"><span class="nav-icon">📊</span><span class="nav-label">Início</span><span class="nav-line"></span></button>
     <button class="nav-btn" onclick="showS('clientes',this)"><span class="nav-icon">👥</span><span class="nav-label">Clientes</span><span class="nav-line"></span></button>
@@ -298,7 +247,6 @@ input[type=date]::-webkit-calendar-picker-indicator{filter:invert(.5);}
     <button class="nav-btn" onclick="fazerLogout()"><span class="nav-icon">🚪</span><span class="nav-label">Sair</span><span class="nav-line"></span></button>
   </nav>
 </div>
-
 <!-- MODAL CADASTRO -->
 <div id="modal-cad" class="modal-overlay" onclick="closeM('modal-cad')">
   <div class="modal-sheet" onclick="event.stopPropagation()">
@@ -335,7 +283,6 @@ input[type=date]::-webkit-calendar-picker-indicator{filter:invert(.5);}
     <button class="btn-gold" id="btn-salvar" onclick="salvarCliente()">Cadastrar Cliente</button>
   </div>
 </div>
-
 <!-- MODAL PAGAMENTO -->
 <div id="modal-pag" class="modal-overlay" onclick="closeM('modal-pag')">
   <div class="modal-sheet" onclick="event.stopPropagation()">
@@ -376,7 +323,6 @@ input[type=date]::-webkit-calendar-picker-indicator{filter:invert(.5);}
     </div>
   </div>
 </div>
-
 <!-- MODAL EXCLUIR -->
 <div id="modal-del" class="modal-overlay" onclick="closeM('modal-del')">
   <div class="modal-sheet" onclick="event.stopPropagation()" style="padding-bottom:32px;">
@@ -408,7 +354,6 @@ input[type=date]::-webkit-calendar-picker-indicator{filter:invert(.5);}
     </div>
   </div>
 </div>
-
 <!-- MODAL PREJUÍZO -->
 <div id="modal-prej" class="modal-overlay" onclick="closeM('modal-prej')">
   <div class="modal-sheet" onclick="event.stopPropagation()" style="padding-bottom:32px;">
@@ -424,7 +369,6 @@ input[type=date]::-webkit-calendar-picker-indicator{filter:invert(.5);}
     </div>
   </div>
 </div>
-
 <!-- MODAL NEGOCIAÇÃO -->
 <div id="modal-negoc" class="modal-overlay" onclick="closeM('modal-negoc')">
   <div class="modal-sheet" onclick="event.stopPropagation()">
@@ -444,7 +388,6 @@ input[type=date]::-webkit-calendar-picker-indicator{filter:invert(.5);}
     <button class="btn-gold" onclick="confirmarNegociacao()" style="background:linear-gradient(135deg,#7b2d8b,#9b59b6)">Criar Negociação</button>
   </div>
 </div>
-
 <!-- MODAL CUSTO -->
 <div id="modal-custo" class="modal-overlay" onclick="closeM('modal-custo')">
   <div class="modal-sheet" onclick="event.stopPropagation()">
@@ -465,7 +408,6 @@ input[type=date]::-webkit-calendar-picker-indicator{filter:invert(.5);}
     <button class="btn-gold" onclick="confirmarCusto()">Lançar Custo</button>
   </div>
 </div>
-
 <!-- MODAL CAIXA REAL -->
 <div id="modal-caixa" class="modal-overlay" onclick="closeM('modal-caixa')">
   <div class="modal-sheet" onclick="event.stopPropagation()">
@@ -479,7 +421,6 @@ input[type=date]::-webkit-calendar-picker-indicator{filter:invert(.5);}
     <div id="caixa-content"><div style="text-align:center;padding:30px;color:var(--t3);">Carregando...</div></div>
   </div>
 </div>
-
 <!-- MODAL SUPRIMENTO/SANGRIA -->
 <div id="modal-mov-cx" class="modal-overlay" onclick="closeM('modal-mov-cx')">
   <div class="modal-sheet" onclick="event.stopPropagation()" style="padding-bottom:32px;">
@@ -494,7 +435,6 @@ input[type=date]::-webkit-calendar-picker-indicator{filter:invert(.5);}
     <button class="btn-gold" id="btn-mov-cx" onclick="confirmarMovCx()">Confirmar</button>
   </div>
 </div>
-
 <!-- MODAL DESFAZER CAIXA -->
 <div id="modal-desfazer" class="modal-overlay" onclick="closeM('modal-desfazer')">
   <div class="modal-sheet" onclick="event.stopPropagation()" style="padding-bottom:32px;">
@@ -507,7 +447,6 @@ input[type=date]::-webkit-calendar-picker-indicator{filter:invert(.5);}
     </div>
   </div>
 </div>
-
 <!-- MODAL PAG PENDÊNCIA -->
 <div id="modal-pag-pend" class="modal-overlay" onclick="closeM('modal-pag-pend')">
   <div class="modal-sheet" onclick="event.stopPropagation()">
@@ -523,7 +462,6 @@ input[type=date]::-webkit-calendar-picker-indicator{filter:invert(.5);}
     <button class="btn-gold" onclick="confirmarPagPend()">Confirmar Pagamento</button>
   </div>
 </div>
-
 <!-- MODAL WPP -->
 <div id="modal-wpp" class="modal-overlay" onclick="closeM('modal-wpp')">
   <div class="modal-sheet" onclick="event.stopPropagation()" style="padding-bottom:32px;">
@@ -532,13 +470,11 @@ input[type=date]::-webkit-calendar-picker-indicator{filter:invert(.5);}
     <div id="wpp-nome" style="font-size:14px;color:var(--t2);margin-bottom:16px;"></div>
     <div id="wpp-opcoes"></div>
   </div>
-</div>
-<script>
+</div><script>
 const API='https://script.google.com/macros/s/AKfycbzV3cGaCaqZ1ljiuBpImMveQJHG2a7w7NPhalMzQFoGkTaJXgl-2VXNOBN_zoUq7I93/exec';
 const JUROS=[{emp:250,quit:350,renov:100},{emp:350,quit:490,renov:140},{emp:400,quit:560,renov:160},{emp:500,quit:690,renov:190},{emp:800,quit:1100,renov:300},{emp:1000,quit:1390,renov:390}];
 const USERS={admin:{senha:'1234',nome:'Admin'},cobranca:{senha:'5678',nome:'Cobrança'}};
 
-// Estado global
 let user=null,clientes=[],pendencias=[],negociacoes=[],prejuizos=[];
 let filtro='todos',cliPag=null,tipoPag=null,m21=false,negPag=false;
 let cliDel=null,cliPrej=null,cliNegoc=null,modoEdit=false,catCusto='Anúncios';
@@ -546,7 +482,6 @@ let pendAtual=null,movDesfazer=null,tipoDesfazer=null;
 let bloqueioReload=false,processando=false,delOpcao='total';
 let movCacheArr=[];
 
-// Utils
 const R=v=>Number(v).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
 const D=s=>{if(!s)return'';const d=new Date(s+'T12:00:00');return d.toLocaleDateString('pt-BR');};
 const addD=(s,n)=>{const d=new Date(s+'T12:00:00');d.setDate(d.getDate()+n);return d;};
@@ -571,7 +506,6 @@ function jsonp(p){
   });
 }
 
-// ─── AUTH ────────────────────────────────────────────────
 function fazerLogin(){
   const p=document.getElementById('login-perfil').value;
   const s=document.getElementById('login-senha').value;
@@ -591,12 +525,10 @@ function fazerLogin(){
 document.getElementById('login-senha').addEventListener('keydown',e=>{if(e.key==='Enter')fazerLogin();});
 function fazerLogout(){user=null;document.getElementById('app').style.display='none';document.getElementById('login-screen').style.display='flex';document.getElementById('login-senha').value='';}
 
-// ─── INIT ────────────────────────────────────────────────
 async function init(){
   document.getElementById('topbar-date').textContent=new Date().toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
   document.getElementById('loader').style.display='none';
   await reload();
-  // Busca por nome
   document.getElementById('busca').addEventListener('input',function(){
     const b=(this.value||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim();
     if(!b){renderCli();return;}
@@ -663,9 +595,20 @@ function showS(id,btn){
   if(id==='custos')carregarCustos();
 }
 
-// ─── DASHBOARD ───────────────────────────────────────────
+// ─── DASHBOARD ── MODIFICADO ────────────────────────────────────────────────
 function renderDash(d){
   const{totalNaRua=0,ativos=0,emAtraso=0,venceHoje=0,caixaMes=0,totalPrejuizo=0,totalPendencias=0,totalCustosMes=0,projecaoSemana=0,projecaoMes=0}=d;
+  // Calcular totais de renovação e emprestado para Vence Hoje e Em Atraso
+  const hj=new Date();hj.setHours(0,0,0,0);
+  let totalRenovHoje=0,totalEmpHoje=0,totalRenovAtraso=0,totalEmpAtraso=0;
+  (clientes||[]).forEach(c=>{
+    if(c.status!=='Ativo')return;
+    const j=getJ(c.valor);if(!j)return;
+    const venc=addD(c.dataEmprestimo,7);venc.setHours(0,0,0,0);
+    const dias=diasA(c.dataEmprestimo);
+    if(venc.getTime()===hj.getTime()&&dias===0){totalRenovHoje+=j.renov;totalEmpHoje+=Number(c.valor);}
+    if(dias>0){totalRenovAtraso+=j.renov;totalEmpAtraso+=Number(c.valor);}
+  });
   let html=`
     <div class="stat-grid">
       <div class="stat-card" style="border-color:#c9a84c33;"><span class="stat-icon">💰</span><div class="stat-value" style="color:var(--gold2);font-size:18px;">${R(totalNaRua)}</div><div class="stat-label">Na Rua</div></div>
@@ -677,8 +620,36 @@ function renderDash(d){
       <div style="font-size:11px;color:var(--t3);">📜 Ver</div>
     </div>
     <div class="stat-grid">
-      <div class="stat-card" onclick="navCli('Hoje')" style="cursor:pointer;"><span class="stat-icon">⚠️</span><div class="stat-value" style="color:#f39c12;">${venceHoje}</div><div class="stat-label">Vence Hoje ↗</div></div>
-      <div class="stat-card" onclick="navCli('Atraso')" style="cursor:pointer;"><span class="stat-icon">🚨</span><div class="stat-value" style="color:var(--red);">${emAtraso}</div><div class="stat-label">Em Atraso ↗</div></div>
+      <div class="stat-card" onclick="navCli('Hoje')" style="cursor:pointer;">
+        <span class="stat-icon">⚠️</span>
+        <div class="stat-value" style="color:#f39c12;">${venceHoje}</div>
+        <div class="stat-label" style="margin-bottom:10px;">Vence Hoje ↗</div>
+        <div style="border-top:1px solid var(--border);padding-top:8px;display:flex;flex-direction:column;gap:5px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <span style="font-size:9px;font-weight:700;color:var(--t3);letter-spacing:.8px;text-transform:uppercase;">Renovação</span>
+            <span style="font-size:12px;font-weight:700;color:var(--orange);">${R(totalRenovHoje)}</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <span style="font-size:9px;font-weight:700;color:var(--t3);letter-spacing:.8px;text-transform:uppercase;">Emprestado</span>
+            <span style="font-size:12px;font-weight:700;color:var(--text);">${R(totalEmpHoje)}</span>
+          </div>
+        </div>
+      </div>
+      <div class="stat-card" onclick="navCli('Atraso')" style="cursor:pointer;">
+        <span class="stat-icon">🚨</span>
+        <div class="stat-value" style="color:var(--red);">${emAtraso}</div>
+        <div class="stat-label" style="margin-bottom:10px;">Em Atraso ↗</div>
+        <div style="border-top:1px solid var(--border);padding-top:8px;display:flex;flex-direction:column;gap:5px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <span style="font-size:9px;font-weight:700;color:var(--t3);letter-spacing:.8px;text-transform:uppercase;">Renovação</span>
+            <span style="font-size:12px;font-weight:700;color:var(--orange);">${R(totalRenovAtraso)}</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <span style="font-size:9px;font-weight:700;color:var(--t3);letter-spacing:.8px;text-transform:uppercase;">Emprestado</span>
+            <span style="font-size:12px;font-weight:700;color:var(--text);">${R(totalEmpAtraso)}</span>
+          </div>
+        </div>
+      </div>
     </div>
     <div class="stat-grid">
       <div class="stat-card" onclick="showS('pendencias',document.querySelectorAll('.nav-btn')[2])" style="cursor:pointer;"><span class="stat-icon">⏳</span><div class="stat-value" style="color:var(--orange);font-size:18px;">${R(totalPendencias)}</div><div class="stat-label">Pendências ↗</div></div>
@@ -707,7 +678,6 @@ function navCli(f){
   renderCli();
 }
 
-// ─── CLIENTES ────────────────────────────────────────────
 function setF(f,btn){filtro=f;document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));btn.classList.add('active');renderCli();}
 
 function renderCli(){
@@ -766,7 +736,6 @@ function renderCli(){
   document.getElementById('lista-cli').innerHTML=html;
 }
 
-// ─── CADASTRO ────────────────────────────────────────────
 function abrirCad(){
   modoEdit=false;
   document.getElementById('modal-cad-title').textContent='Novo Cliente';
@@ -845,25 +814,14 @@ async function salvarCliente(){
     if(modoEdit){r=await jsonp({action:'editarCliente',linha,nome,cpf,telefone:tel,telefone2:tel2,dataEmprestimo:data,valor:v});}
     else{r=await jsonp({action:'cadastrarCliente',nome,cpf,telefone:tel,telefone2:tel2,dataEmprestimo:data,valor:v});}
     if(r.ok){
-      closeM('modal-cad');
-      bloqueioReload=false;
-      await reload();
-      // Após reemprestar, vai para aba Ativos
-      if(!modoEdit){
-        filtro='Ativo';
-        document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
-        const chipAtivo=document.getElementById('chip-ativo');
-        if(chipAtivo)chipAtivo.classList.add('active');
-        renderCli();
-      }
+      closeM('modal-cad');bloqueioReload=false;await reload();
+      if(!modoEdit){filtro='Ativo';document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));const chipAtivo=document.getElementById('chip-ativo');if(chipAtivo)chipAtivo.classList.add('active');renderCli();}
       showOk(modoEdit?`✅ ${nome} atualizado!`:`✅ ${nome} cadastrado!`);
-    }
-    else toast('❌ '+(r.error||'Erro'));
+    }else toast('❌ '+(r.error||'Erro'));
   }catch(e){toast('❌ '+e.message);}
   processando=false;
 }
 
-// ─── EXCLUSÃO ────────────────────────────────────────────
 function selDelOpt(opt){
   delOpcao=opt;
   ['total','parcial','nao'].forEach(o=>{
@@ -888,19 +846,12 @@ async function confirmarExclusao(){
   toast('🗑️ Excluindo...');
   try{
     const r=await jsonp({action:'excluirCliente',linha:cliDel.linha,opcaoCaixa:delOpcao,valorRetorno:document.getElementById('del-val-parc').value||0});
-    if(r.ok){
-      closeM('modal-del');
-      // Atualiza localmente
-      clientes=clientes.filter(c=>c.linha!==cliDel.linha);
-      renderCli();
-      bloqueioReload=false;await reload();
-      showOk(`🗑️ ${cliDel.nome} excluído.`);cliDel=null;
-    }else toast('❌ '+(r.error||'Erro'));
+    if(r.ok){closeM('modal-del');clientes=clientes.filter(c=>c.linha!==cliDel.linha);renderCli();bloqueioReload=false;await reload();showOk(`🗑️ ${cliDel.nome} excluído.`);cliDel=null;}
+    else toast('❌ '+(r.error||'Erro'));
   }catch(e){toast('❌ '+e.message);}
   processando=false;
 }
 
-// ─── PREJUÍZO ────────────────────────────────────────────
 function abrirPrej(linha){
   cliPrej=clientes.find(c=>c.linha===linha);if(!cliPrej)return;
   const j=getJ(cliPrej.valor);const d=diasA(cliPrej.dataEmprestimo);
@@ -919,7 +870,6 @@ async function confirmarPrejuizo(){
   processando=false;
 }
 
-// ─── NEGOCIAÇÃO ──────────────────────────────────────────
 function abrirNegoc(linha){
   cliNegoc=clientes.find(c=>c.linha===linha);if(!cliNegoc)return;
   const j=getJ(cliNegoc.valor);
@@ -950,7 +900,6 @@ async function confirmarNegociacao(){
   processando=false;
 }
 
-// ─── PAGAMENTO ───────────────────────────────────────────
 function abrirPag(linha){
   cliPag=clientes.find(c=>c.linha===linha);if(!cliPag)return;
   tipoPag=null;m21=false;negPag=false;
@@ -1003,7 +952,6 @@ async function confirmarPag(){
   processando=true;
   const btn=document.getElementById('btn-conf-pag');
   if(btn){btn.disabled=true;btn.textContent='Salvando...';}
-
   const dataEmprestimoOriginal=cliPag.dataEmprestimo;
   const j=getJ(cliPag.valor);
   const vp=Number(document.getElementById('vp-input').value)||0;
@@ -1011,8 +959,6 @@ async function confirmarPag(){
   const isParcial=tipoPag==='Parcial';
   const tipoFinal=isParcial?'Parcial':tipoPag;
   const valorDevido=tipoPag==='Quitado'?(j?j.quit:0):(j?j.renov:0);
-
-  // Atualiza localmente IMEDIATO
   closeM('modal-pag');tipoPag=null;
   const idx=clientes.findIndex(c=>c.linha===cliPag.linha);
   if(idx>=0){
@@ -1022,25 +968,15 @@ async function confirmarPag(){
   }
   renderCli();
   showOk(isParcial?`💛 Parcial de ${R(vp)} registrado!`:tipoFinal==='Quitado'?'✅ Quitado!':'🔄 Renovado!');
-
-  // Bloqueia reload por 15s
   bloqueioReload=true;setTimeout(()=>bloqueioReload=false,15000);
-  // Libera botão
   if(btn){btn.disabled=false;btn.textContent='Confirmar Pagamento';}
-
-  // Dispara para servidor
   jsonp({action:'registrarPagamento',linha:cliPag.linha,nome:cliPag.nome,valor:cliPag.valor,
     dataEmprestimo:dataEmprestimoOriginal,tipo:tipoFinal,multa,valorPago:vp,
     valorDevido:valorDevido+multa,isParcial:isParcial?'true':'false'
-  }).then(r=>{
-    if(r&&r.ok)console.log('✅ Salvo');
-    else console.log('⚠️',r);
-  }).catch(e=>console.log('⚠️',e.message));
-
+  }).then(r=>{if(r&&r.ok)console.log('✅ Salvo');else console.log('⚠️',r);}).catch(e=>console.log('⚠️',e.message));
   processando=false;
 }
 
-// ─── PENDÊNCIAS ──────────────────────────────────────────
 function renderPend(){
   const lista=pendencias||[];
   if(!lista.length){document.getElementById('lista-pend').innerHTML='<div class="empty"><div class="empty-icon">✅</div><div class="empty-text">Nenhuma pendência ativa</div></div>';return;}
@@ -1086,8 +1022,7 @@ function abrirPagPend(i){
     ${pendAtual.valorEmprestado?`<div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;"><span style="color:var(--t3)">Emprestado</span><span style="font-weight:600">${R(pendAtual.valorEmprestado)}</span></div>`:''}
     <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;"><span style="color:var(--t3)">Saldo devedor</span><span style="font-weight:700;color:var(--orange)">${R(pendAtual.saldo)}</span></div>
     <div style="display:flex;justify-content:space-between;font-size:13px;"><span style="color:var(--t3)">Já pago</span><span style="font-weight:600;color:var(--green)">${R(pendAtual.valorPago)}</span></div>`;
-  document.getElementById('pag-pend-val').value='';
-  document.getElementById('pag-pend-novo').style.display='none';
+  document.getElementById('pag-pend-val').value='';document.getElementById('pag-pend-novo').style.display='none';
   openM('modal-pag-pend');
 }
 
@@ -1137,7 +1072,6 @@ async function excluirPend(linha){
   }catch(e){toast('❌ '+e.message);}
 }
 
-// ─── NEGOCIAÇÕES ─────────────────────────────────────────
 function renderNegoc(){
   const lista=negociacoes||[];
   if(!lista.length){document.getElementById('lista-negoc').innerHTML='<div class="empty"><div class="empty-icon">🤝</div><div class="empty-text">Nenhuma negociação ativa</div></div>';return;}
@@ -1179,7 +1113,6 @@ async function pagarParcela(linha,pagas,total,nome,vp){
   processando=false;
 }
 
-// ─── PREJUÍZOS ───────────────────────────────────────────
 function renderPrej(){
   const lista=prejuizos||[];
   if(!lista.length){document.getElementById('lista-prej').innerHTML='<div class="empty"><div class="empty-icon">💸</div><div class="empty-text">Nenhum prejuízo registrado</div></div>';return;}
@@ -1205,7 +1138,6 @@ function renderPrej(){
   document.getElementById('lista-prej').innerHTML=html;
 }
 
-// ─── CUSTOS ──────────────────────────────────────────────
 function selCat(cat,btn){catCusto=cat;document.querySelectorAll('.cat-chip').forEach(c=>c.classList.remove('active'));btn.classList.add('active');}
 function abrirModalCusto(){catCusto='Anúncios';document.getElementById('custo-desc').value='';document.getElementById('custo-valor').value='';document.querySelectorAll('.cat-chip').forEach((c,i)=>c.classList.toggle('active',i===0));openM('modal-custo');}
 async function confirmarCusto(){
@@ -1224,10 +1156,8 @@ async function confirmarCusto(){
 
 async function carregarCustos(){
   document.getElementById('lista-custos').innerHTML='<div style="text-align:center;padding:30px;color:var(--t3);"><div style="width:24px;height:24px;border:2px solid var(--border);border-top:2px solid var(--gold);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 10px;"></div>Carregando...</div>';
-  try{
-    const d=await jsonp({action:'getPlanilha2'});
-    renderCustos(d.custos||[]);
-  }catch(e){toast('❌ Erro ao carregar custos');}
+  try{const d=await jsonp({action:'getPlanilha2'});renderCustos(d.custos||[]);}
+  catch(e){toast('❌ Erro ao carregar custos');}
 }
 
 function renderCustos(custos){
@@ -1243,26 +1173,20 @@ function renderCustos(custos){
   document.getElementById('lista-custos').innerHTML=html;
 }
 
-// ─── CAIXA REAL ──────────────────────────────────────────
 async function abrirCaixa(){
   openM('modal-caixa');
   document.getElementById('caixa-content').innerHTML='<div style="text-align:center;padding:30px;color:var(--t3);"><div style="width:24px;height:24px;border:2px solid var(--border);border-top:2px solid var(--gold);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 10px;"></div>Carregando...</div>';
-  try{
-    const cx=await jsonp({action:'getCaixaReal'});
-    renderCaixa(cx.saldo||0,cx.movimentos||[]);
-  }catch(e){document.getElementById('caixa-content').innerHTML='<div class="empty"><div class="empty-text">Erro ao carregar</div></div>';}
+  try{const cx=await jsonp({action:'getCaixaReal'});renderCaixa(cx.saldo||0,cx.movimentos||[]);}
+  catch(e){document.getElementById('caixa-content').innerHTML='<div class="empty"><div class="empty-text">Erro ao carregar</div></div>';}
 }
 
 function renderCaixa(saldo,movimentos){
   movCacheArr=movimentos;
   const hj=new Date().toLocaleDateString('pt-BR');
-  const movHoje=movimentos.filter(m=>{
-    try{const p=m.dataHora.split(',')[0].trim();return p===hj;}catch(e){return false;}
-  });
+  const movHoje=movimentos.filter(m=>{try{const p=m.dataHora.split(',')[0].trim();return p===hj;}catch(e){return false;}});
   const entHoje=movHoje.filter(m=>m.tipo==='Entrada').reduce((s,m)=>s+m.valor,0);
   const saiHoje=movHoje.filter(m=>m.tipo==='Saída').reduce((s,m)=>s+m.valor,0);
   const corSaldo=saldo>=0?'var(--green)':'var(--red)';
-
   let html=`
     <div style="background:linear-gradient(135deg,#1a2a4a,#141e2e);border:1px solid var(--gdim);border-radius:14px;padding:16px 18px;margin-bottom:12px;text-align:center;">
       <div style="font-size:10px;font-weight:700;color:var(--t3);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:6px;">SALDO ATUAL</div>
@@ -1279,7 +1203,6 @@ function renderCaixa(saldo,movimentos){
       </div>
     </div>
     <div style="font-size:10px;font-weight:700;color:var(--t3);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;">MOVIMENTAÇÕES DE HOJE</div>`;
-
   if(!movHoje.length){
     html+='<div class="empty"><div class="empty-icon">📋</div><div class="empty-text">Nenhuma movimentação hoje</div></div>';
   } else {
@@ -1307,15 +1230,9 @@ function renderCaixa(saldo,movimentos){
 }
 
 function abrirDesfazer(idx,acao){
-  const m=movCacheArr.find(mv=>{
-    const hj=new Date().toLocaleDateString('pt-BR');
-    try{return mv.dataHora.split(',')[0].trim()===hj;}catch(e){return false;}
-  });
-  // Pega pelo índice dos movHoje
   const hj=new Date().toLocaleDateString('pt-BR');
   const movHoje=movCacheArr.filter(mv=>{try{return mv.dataHora.split(',')[0].trim()===hj;}catch(e){return false;}});
-  const mov=movHoje[idx];
-  if(!mov)return;
+  const mov=movHoje[idx];if(!mov)return;
   movDesfazer=mov;tipoDesfazer=acao;
   const isDesfazer=acao==='desfazer';
   const isEnt=mov.tipo==='Entrada';
@@ -1347,7 +1264,6 @@ async function confirmarDesfazer(){
   processando=false;
 }
 
-// ─── SUPRIMENTO/SANGRIA ──────────────────────────────────
 function abrirMovCaixa(tipo){
   const isSup=tipo==='suprimento';
   document.getElementById('mov-cx-tipo').value=tipo;
@@ -1375,7 +1291,6 @@ async function confirmarMovCx(){
   processando=false;
 }
 
-// ─── WHATSAPP ────────────────────────────────────────────
 function abrirWpp(tel,tel2,nome){
   const t1=String(tel||'').replace(/\D/g,'');
   const t2=String(tel2||'').replace(/\D/g,'');
