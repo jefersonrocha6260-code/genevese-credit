@@ -542,11 +542,12 @@ async function init(){
       else if(d>0){ac='var(--red)';bl=`🚨 ${d}d atraso`;bb='var(--rdim)';bc='var(--red)';}
       else if(vH.getTime()===hj.getTime()){ac='#f39c12';bl='⚠️ Vence hoje';bb='#f39c1222';bc='#f39c12';}
       const isAdmin=user&&user.perfil==='admin';
+      const wppBtnB=c.telefone?`<button class="btn-sm btn-wpp" onclick="abrirWpp('${c.telefone}','${c.telefone2||''}','${c.nome}')">💬</button>`:'';
       return `<div class="cc" style="animation-delay:${i*.03}s">
         <div class="cc-accent" style="background:${ac};border-radius:14px 0 0 14px;"></div>
         <div class="cc-body">
           <div class="cc-name">${c.nome}</div>
-          <div class="cc-meta">${c.telefone?`<span>📞 ${c.telefone}</span>`:''}</div>
+          <div class="cc-meta">${c.telefone?`<span>📞 ${c.telefone}</span>`:''}${wppBtnB}</div>
           <span class="cc-badge" style="background:${bb};color:${bc};border:1px solid ${bc}33;">${bl}</span>
           ${c.status==='Ativo'?`<div style="font-size:11px;color:var(--t3);margin-top:3px;">Vence ${D(toS(venc))}</div>`:''}
           <div class="cc-actions">
