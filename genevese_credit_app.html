@@ -1169,7 +1169,6 @@ function renderPrej(){
 }
 
 // ─── CUSTOS ──────────────────────────────────────────────
-let catCusto='Anúncios';
 function selCat(cat,btn){catCusto=cat;document.querySelectorAll('.cat-chip').forEach(c=>c.classList.remove('active'));btn.classList.add('active');}
 function abrirModalCusto(){catCusto='Anúncios';document.getElementById('custo-desc').value='';document.getElementById('custo-valor').value='';document.querySelectorAll('.cat-chip').forEach((c,i)=>c.classList.toggle('active',i===0));openM('modal-custo');}
 async function confirmarCusto(){
