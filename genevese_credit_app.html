@@ -462,6 +462,33 @@ input[type=date]::-webkit-calendar-picker-indicator{filter:invert(.5);}
     <button class="btn-gold" onclick="confirmarPagPend()">Confirmar Pagamento</button>
   </div>
 </div>
+<!-- MODAL RECUPERAR PREJUÍZO -->
+<div id="modal-recuperar" class="modal-overlay" onclick="closeM('modal-recuperar')">
+  <div class="modal-sheet" onclick="event.stopPropagation()" style="padding-bottom:32px;">
+    <div class="modal-handle"></div>
+    <button class="modal-close" onclick="closeM('modal-recuperar')">✕</button>
+    <div class="modal-title" style="color:var(--green)">💚 Recuperar Prejuízo</div>
+    <div id="recuperar-info" class="info-box" style="margin-bottom:16px;"></div>
+    <div style="font-size:10px;font-weight:700;color:var(--t3);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px;">Quanto foi recuperado?</div>
+    <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px;" id="recuperar-opts">
+      <label onclick="selRecuperar('total')" id="rec-opt-total" style="display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px 14px;cursor:pointer;">
+        <div id="rec-r-total" style="width:18px;height:18px;border-radius:50%;border:2px solid var(--border);flex-shrink:0;"></div>
+        <div><div style="font-size:13px;font-weight:600">Valor total para quitar</div><div id="rec-total-label" style="font-size:11px;color:var(--t3);margin-top:1px;"></div></div>
+      </label>
+      <label onclick="selRecuperar('especifico')" id="rec-opt-esp" style="display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px 14px;cursor:pointer;">
+        <div id="rec-r-esp" style="width:18px;height:18px;border-radius:50%;border:2px solid var(--border);flex-shrink:0;"></div>
+        <div style="flex:1;"><div style="font-size:13px;font-weight:600">Valor específico</div>
+          <input id="rec-val-esp" type="number" onclick="event.stopPropagation();selRecuperar('especifico')" placeholder="Digite o valor..." style="width:100%;margin-top:6px;padding:8px 10px;background:var(--bg2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:13px;font-family:'Inter',sans-serif;outline:none;">
+        </div>
+      </label>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+      <button onclick="closeM('modal-recuperar')" style="padding:13px;background:var(--card);border:1px solid var(--border);border-radius:12px;color:var(--t2);font-size:13px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;">Cancelar</button>
+      <button onclick="confirmarRecuperar()" style="padding:13px;background:#2ecc7122;border:1px solid var(--green);border-radius:12px;color:var(--green);font-size:13px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;">✅ Confirmar</button>
+    </div>
+  </div>
+</div>
+
 <!-- MODAL WPP -->
 <div id="modal-wpp" class="modal-overlay" onclick="closeM('modal-wpp')">
   <div class="modal-sheet" onclick="event.stopPropagation()" style="padding-bottom:32px;">
@@ -1134,9 +1161,62 @@ function renderPrej(){
           <div style="font-size:11px;color:var(--t3)">${p.diasAtr}d atraso</div>
         </div>
       </div>
+      <button onclick="abrirRecuperar(${i})" style="width:100%;margin-top:10px;padding:10px;background:#2ecc7118;border:1px solid #2ecc7144;border-radius:10px;color:var(--green);font-size:12px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;">💚 Recuperado</button>
     </div>`;
   });
   document.getElementById('lista-prej').innerHTML=html;
+}
+
+let prejAtual=null,recOpcao='total';
+
+function abrirRecuperar(i){
+  prejAtual=prejuizos[i];if(!prejAtual)return;
+  document.getElementById('recuperar-info').innerHTML=`
+    <div style="font-weight:700;font-size:15px;margin-bottom:8px;">${prejAtual.nome}</div>
+    <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;"><span style="color:var(--t3)">Valor para quitar</span><span style="font-weight:700;color:var(--red)">${R(prejAtual.quitar)}</span></div>
+    <div style="display:flex;justify-content:space-between;font-size:13px;"><span style="color:var(--t3)">Dias em atraso</span><span style="font-weight:600">${prejAtual.diasAtr}d</span></div>`;
+  document.getElementById('rec-total-label').textContent='Entra '+R(prejAtual.quitar)+' no caixa';
+  document.getElementById('rec-val-esp').value='';
+  selRecuperar('total');
+  openM('modal-recuperar');
+}
+
+function selRecuperar(opt){
+  recOpcao=opt;
+  ['total','esp'].forEach(o=>{
+    const key=o==='total'?'total':'esp';
+    const r=document.getElementById('rec-r-'+key);
+    const l=document.getElementById('rec-opt-'+key);
+    const active=opt==='total'?o==='total':o==='esp';
+    r.style.background=active?'var(--green)':'transparent';
+    r.style.borderColor=active?'var(--green)':'var(--border)';
+    l.style.borderColor=active?'#2ecc7144':'var(--border)';
+  });
+}
+
+async function confirmarRecuperar(){
+  if(!prejAtual||travar())return;
+  const valorTotal=prejAtual.quitar;
+  const valorEsp=Number(document.getElementById('rec-val-esp').value||0);
+  const valor=recOpcao==='total'?valorTotal:valorEsp;
+  if(!valor||valor<=0){toast('⚠️ Digite um valor válido');processando=false;return;}
+  toast('💾 Registrando...');
+  try{
+    const r=await jsonp({
+      action:'recuperarPrejuizo',
+      linha:prejAtual.linha,
+      nome:prejAtual.nome,
+      valor:valor
+    });
+    if(r.ok){
+      closeM('modal-recuperar');
+      bloqueioReload=false;
+      await reload();
+      showOk(`💚 ${prejAtual.nome} recuperado! ${R(valor)} entrou no caixa.`);
+      prejAtual=null;
+    } else toast('❌ '+(r.error||'Erro'));
+  }catch(e){toast('❌ '+e.message);}
+  processando=false;
 }
 
 function selCat(cat,btn){catCusto=cat;document.querySelectorAll('.cat-chip').forEach(c=>c.classList.remove('active'));btn.classList.add('active');}
