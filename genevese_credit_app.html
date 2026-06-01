@@ -677,8 +677,6 @@ function navCli(f){
 function setF(f,btn){filtro=f;document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));btn.classList.add('active');renderCli();}
 
 function renderCli(){
-  const busca=document.getElementById('busca').value.toLowerCase().replace(/\D/g,'') ||
-              document.getElementById('busca').value.toLowerCase();
   const hj=new Date();hj.setHours(0,0,0,0);
   const buscaRaw=document.getElementById('busca').value.toLowerCase().trim();
   const lista=(clientes||[]).filter(c=>{
