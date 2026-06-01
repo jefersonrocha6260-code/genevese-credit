@@ -678,7 +678,7 @@ function norm(s){return(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\
 
 function buscarCli(input){
   const b=norm(input.value).trim();
-  if(!b){document.getElementById('busca').value='';renderCli();return;}
+  if(!b){renderCli();return;}
   const lista=(clientes||[]).filter(c=>{
     if(!c.nome||c.status==='Pendente')return false;
     return norm(c.nome).includes(b)||
@@ -733,6 +733,9 @@ function buscarCli(input){
 function setF(f,btn){filtro=f;document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));btn.classList.add('active');renderCli();}
 
 function renderCli(){
+  // Se há texto na busca, usa buscarCli
+  const campoB=document.getElementById('busca');
+  if(campoB&&campoB.value.trim()){buscarCli(campoB);return;}
   const hj=new Date();hj.setHours(0,0,0,0);
   const lista=(clientes||[]).filter(c=>{
     if(!c.nome||c.status==='Pendente')return false;
