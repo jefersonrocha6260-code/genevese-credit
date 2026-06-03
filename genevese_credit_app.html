@@ -1328,7 +1328,7 @@ function renderCaixa(saldo,movimentos){
         <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:${isDesfeito?0:8}px;">
           <div>
             <div style="font-size:13px;font-weight:600;color:var(--text);">${m.descricao}</div>
-            <div style="font-size:11px;color:var(--t3);margin-top:2px;">${m.dataHora.split(',')[1]||m.dataHora}</div>
+            <div style="font-size:11px;color:var(--t3);margin-top:2px;">${(()=>{try{const dh=String(m.dataHora||'');if(dh.includes(','))return dh.split(',')[1].trim();const d=new Date(dh);if(!isNaN(d.getTime()))return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');return dh;}catch(e){return m.dataHora;}})()}</div>
           </div>
           <div style="font-size:15px;font-weight:700;color:${cor};">${sinal}${R(m.valor)}</div>
         </div>
