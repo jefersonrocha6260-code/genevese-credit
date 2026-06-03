@@ -770,7 +770,7 @@ function abrirCad(){
   document.getElementById('btn-salvar').textContent='Cadastrar Cliente';
   document.getElementById('edit-linha').value='';
   ['cad-nome','cad-cpf','cad-tel','cad-tel2'].forEach(id=>document.getElementById(id).value='');
-  document.getElementById('cad-data').value=new Date().toISOString().split('T')[0];
+  const _hj=new Date();document.getElementById('cad-data').value=_hj.getFullYear()+'-'+String(_hj.getMonth()+1).padStart(2,'0')+'-'+String(_hj.getDate()).padStart(2,'0');
   document.getElementById('cad-valor').value='';
   document.getElementById('cad-custom-box').style.display='none';
   document.getElementById('cad-resumo').style.display='none';
@@ -804,7 +804,7 @@ function reemprestar(linha){
   document.getElementById('cad-cpf').value=c.cpf||'';
   document.getElementById('cad-tel').value=c.telefone||'';
   document.getElementById('cad-tel2').value=c.telefone2||'';
-  document.getElementById('cad-data').value=new Date().toISOString().split('T')[0];
+  const _hj=new Date();document.getElementById('cad-data').value=_hj.getFullYear()+'-'+String(_hj.getMonth()+1).padStart(2,'0')+'-'+String(_hj.getDate()).padStart(2,'0');
   document.getElementById('cad-valor').value='';
   document.getElementById('cad-custom-box').style.display='none';
   document.getElementById('cad-resumo').style.display='none';
