@@ -211,6 +211,14 @@ input[type=date]::-webkit-calendar-picker-indicator{filter:invert(.5);}
         <button class="chip" id="chip-hoje" onclick="setF('Hoje',this)">⚠️ Vence Hoje</button>
         <button class="chip" id="chip-atraso" onclick="setF('Atraso',this)">🚨 Em Atraso</button>
         <button class="chip" id="chip-quitado" onclick="setF('Quitado',this)">✅ Quitados</button>
+        <button class="chip" id="chip-data" onclick="abrirFiltroData(this)">📅 Por Data</button>
+      </div>
+      <div id="filtro-data-wrap" style="display:none;margin-bottom:8px;">
+        <div style="display:flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--gold);border-radius:12px;padding:10px 14px;">
+          <span style="font-size:12px;color:var(--t3);white-space:nowrap;">Emprestado em:</span>
+          <input type="date" id="filtro-data-input" style="flex:1;background:transparent;border:none;color:var(--gold2);font-size:13px;font-weight:600;font-family:'Inter',sans-serif;outline:none;" oninput="setFData(this.value)">
+          <button onclick="limparFiltroData()" style="background:transparent;border:none;color:var(--t3);font-size:16px;cursor:pointer;padding:0;">✕</button>
+        </div>
       </div>
       <div id="success-banner" class="success-banner"></div>
       <div id="lista-cli" style="padding-top:8px;"></div>
@@ -505,7 +513,7 @@ const USERS={admin:{senha:'1234',nome:'Admin'},cobranca:{senha:'5678',nome:'Cobr
 let user=null,clientes=[],pendencias=[],negociacoes=[],prejuizos=[];
 let filtro='todos',cliPag=null,tipoPag=null,m21=false,negPag=false;
 let cliDel=null,cliPrej=null,cliNegoc=null,modoEdit=false,catCusto='Anúncios';
-let pendAtual=null,movDesfazer=null,tipoDesfazer=null;
+let pendAtual=null,movDesfazer=null,tipoDesfazer=null,filtroData=null;
 let bloqueioReload=false,processando=false,delOpcao='total';
 let movCacheArr=[];
 
@@ -706,13 +714,44 @@ function navCli(f){
   renderCli();
 }
 
-function setF(f,btn){filtro=f;document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));btn.classList.add('active');renderCli();}
+function abrirFiltroData(btn){
+  document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
+  btn.classList.add('active');
+  filtro='Data';filtroData=null;
+  document.getElementById('filtro-data-wrap').style.display='block';
+  const _hj=new Date();
+  document.getElementById('filtro-data-input').value=_hj.getFullYear()+'-'+String(_hj.getMonth()+1).padStart(2,'0')+'-'+String(_hj.getDate()).padStart(2,'0');
+  setFData(document.getElementById('filtro-data-input').value);
+}
+
+function setFData(val){
+  filtroData=val||null;
+  filtro='Data';
+  renderCli();
+}
+
+function limparFiltroData(){
+  filtroData=null;filtro='todos';
+  document.getElementById('filtro-data-wrap').style.display='none';
+  document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
+  document.getElementById('chip-todos').classList.add('active');
+  renderCli();
+}
+
+function setF(f,btn){
+  filtro=f;filtroData=null;
+  document.getElementById('filtro-data-wrap').style.display='none';
+  document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
+  btn.classList.add('active');
+  renderCli();
+}
 
 function renderCli(){
   const hj=new Date();hj.setHours(0,0,0,0);
   const lista=(clientes||[]).filter(c=>{
     if(!c.nome||c.status==='Pendente')return false;
     if(filtro==='Ativo')return c.status==='Ativo'&&diasA(c.dataEmprestimo)===0;
+    if(filtro==='Data')return c.status==='Ativo'&&filtroData&&c.dataEmprestimo===filtroData;
     if(filtro==='Hoje'){const v=addD(c.dataEmprestimo,7);v.setHours(0,0,0,0);return c.status==='Ativo'&&v.getTime()===hj.getTime();}
     if(filtro==='Atraso')return c.status==='Ativo'&&diasA(c.dataEmprestimo)>0;
     if(filtro==='Quitado')return c.status==='Quitado';
