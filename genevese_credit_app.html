@@ -1281,8 +1281,22 @@ async function abrirCaixa(){
 
 function renderCaixa(saldo,movimentos){
   movCacheArr=movimentos;
-  const hj=new Date().toLocaleDateString('pt-BR');
-  const movHoje=movimentos.filter(m=>{try{const p=m.dataHora.split(',')[0].trim();return p===hj;}catch(e){return false;}});
+  const hj=new Date();
+  const hjStr=String(hj.getDate()).padStart(2,'0')+'/'+String(hj.getMonth()+1).padStart(2,'0')+'/'+hj.getFullYear();
+  const movHoje=movimentos.filter(m=>{
+    try{
+      const dh=String(m.dataHora||'');
+      // Formato dd/mm/yyyy, HH:mm
+      if(dh.includes(','))return dh.split(',')[0].trim()===hjStr;
+      // Formato Date string (Tue May 26 2026...)
+      const d=new Date(dh);
+      if(!isNaN(d.getTime())){
+        const ds=String(d.getDate()).padStart(2,'0')+'/'+String(d.getMonth()+1).padStart(2,'0')+'/'+d.getFullYear();
+        return ds===hjStr;
+      }
+      return false;
+    }catch(e){return false;}
+  });
   const entHoje=movHoje.filter(m=>m.tipo==='Entrada').reduce((s,m)=>s+m.valor,0);
   const saiHoje=movHoje.filter(m=>m.tipo==='Saída').reduce((s,m)=>s+m.valor,0);
   const corSaldo=saldo>=0?'var(--green)':'var(--red)';
@@ -1329,8 +1343,19 @@ function renderCaixa(saldo,movimentos){
 }
 
 function abrirDesfazer(idx,acao){
-  const hj=new Date().toLocaleDateString('pt-BR');
-  const movHoje=movCacheArr.filter(mv=>{try{return mv.dataHora.split(',')[0].trim()===hj;}catch(e){return false;}});
+  const hjDate2=new Date();
+  const hjStr2=String(hjDate2.getDate()).padStart(2,'0')+'/'+String(hjDate2.getMonth()+1).padStart(2,'0')+'/'+hjDate2.getFullYear();
+  const movHoje=movCacheArr.filter(mv=>{
+    try{
+      const dh=String(mv.dataHora||'');
+      if(dh.includes(','))return dh.split(',')[0].trim()===hjStr2;
+      const d=new Date(dh);
+      if(!isNaN(d.getTime())){
+        return String(d.getDate()).padStart(2,'0')+'/'+String(d.getMonth()+1).padStart(2,'0')+'/'+d.getFullYear()===hjStr2;
+      }
+      return false;
+    }catch(e){return false;}
+  });
   const mov=movHoje[idx];if(!mov)return;
   movDesfazer=mov;tipoDesfazer=acao;
   const isDesfazer=acao==='desfazer';
