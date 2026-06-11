@@ -322,6 +322,14 @@ input[type=date]::-webkit-calendar-picker-indicator{filter:invert(.5);}
           <input id="neg-valor" class="fi" type="number" placeholder="0,00" oninput="calcTotal()" style="margin-bottom:0;">
         </div>
       </div>
+      <div id="pag-renov-data" style="display:none;margin-bottom:14px;">
+        <div style="background:var(--rdim);border:1px solid var(--red);border-radius:12px;padding:14px 16px;">
+          <div style="font-size:10px;font-weight:700;color:var(--red);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;">📅 DATA DA RENOVAÇÃO (obrigatório)</div>
+          <div style="font-size:12px;color:var(--t2);margin-bottom:8px;">Cliente em atraso — informe a nova data do empréstimo</div>
+          <input type="date" id="pag-renov-data-input" class="fi" style="margin-bottom:0;border-color:var(--red);">
+          <div id="pag-renov-venc" style="font-size:11px;color:var(--t3);margin-top:6px;"></div>
+        </div>
+      </div>
       <div class="summary-box">
         <div class="sum-label">Total no Caixa</div>
         <div class="sum-value" id="pag-total"></div>
@@ -506,7 +514,7 @@ input[type=date]::-webkit-calendar-picker-indicator{filter:invert(.5);}
     <div id="wpp-opcoes"></div>
   </div>
 </div><script>
-const API='https://script.google.com/macros/s/AKfycbyJt4jFL2Gmv1FZtgpo54soHUvTgKw880Ivkrnh7-L67T0YaqhtefR_0_ym__zEoD9e/exec';
+const API='https://script.google.com/macros/s/AKfycbxw9c93ELMkUKYnm0ir_o0MvPckoXNnOrH4Y9U7c-eaOPufHJMVZZ3gP4Uk3qkY1bWe/exec';
 const JUROS=[{emp:250,quit:350,renov:100},{emp:350,quit:490,renov:140},{emp:400,quit:560,renov:160},{emp:500,quit:690,renov:190},{emp:800,quit:1100,renov:300},{emp:1000,quit:1390,renov:390}];
 const USERS={admin:{senha:'1234',nome:'Admin'},cobranca:{senha:'5678',nome:'Cobrança'}};
 
@@ -978,6 +986,7 @@ function abrirPag(linha){
   document.getElementById('tog-21h').classList.remove('on');document.getElementById('tog-21h-row').classList.remove('on');
   document.getElementById('tog-neg').classList.remove('on');document.getElementById('tog-neg-row').classList.remove('on');
   document.getElementById('neg-campo').style.display='none';document.getElementById('neg-valor').value='';
+  document.getElementById('pag-renov-data').style.display='none';document.getElementById('pag-renov-data-input').value='';
   const ar=document.getElementById('pag-atraso');
   if(d>0){ar.style.display='block';ar.innerHTML=`<div style="font-size:11px;font-weight:700;color:var(--red);margin-bottom:3px;">📋 REFERÊNCIA DE ATRASO</div><div style="font-size:13px;color:var(--t2)">${d} dia(s) · Multa ref: <strong style="color:var(--red)">${R(d*50)}</strong></div>`;}
   else ar.style.display='none';
@@ -995,7 +1004,26 @@ function selTipo(t){
   const vRef=t==='Quitado'?(j?j.quit:0):(j?j.renov:0);
   document.getElementById('vp-input').value=vRef||'';
   document.getElementById('vp-hint').textContent=t==='Parcial'?'Digite o valor que o cliente pagou':`Padrão: ${R(vRef)} — edite se necessário`;
+  // Mostrar campo de data de renovação se atrasado + renovar
+  const dAtraso=diasA(cliPag.dataEmprestimo);
+  const elRD=document.getElementById('pag-renov-data');
+  if(t==='Renovado'&&dAtraso>0){
+    elRD.style.display='block';
+    const _hj=new Date();
+    document.getElementById('pag-renov-data-input').value=_hj.getFullYear()+'-'+String(_hj.getMonth()+1).padStart(2,'0')+'-'+String(_hj.getDate()).padStart(2,'0');
+    updRenovVenc();
+    document.getElementById('pag-renov-data-input').oninput=updRenovVenc;
+  } else {
+    elRD.style.display='none';
+  }
   calcTotal();
+}
+
+function updRenovVenc(){
+  const v=document.getElementById('pag-renov-data-input').value;
+  const el=document.getElementById('pag-renov-venc');
+  if(v){el.textContent='Novo vencimento: '+D(toS(addD(v,7)));}
+  else{el.textContent='';}
 }
 
 function tog21h(){m21=!m21;document.getElementById('tog-21h').classList.toggle('on',m21);document.getElementById('tog-21h-row').classList.toggle('on',m21);calcTotal();}
@@ -1015,6 +1043,11 @@ function calcTotal(){
 
 async function confirmarPag(){
   if(!cliPag||!tipoPag)return;
+  // Validar data obrigatória para renovação de atrasado
+  const _dAtr=diasA(cliPag.dataEmprestimo);
+  if(tipoPag==='Renovado'&&_dAtr>0&&!document.getElementById('pag-renov-data-input').value){
+    toast('⚠️ Informe a data da renovação');return;
+  }
   if(processando)return;
   processando=true;
   const btn=document.getElementById('btn-conf-pag');
@@ -1031,15 +1064,21 @@ async function confirmarPag(){
   if(idx>=0){
     if(tipoFinal==='Quitado'){clientes[idx].status='Quitado';clientes[idx].statusQuit='Quitado em dia';}
     else if(isParcial){clientes[idx].status='Pendente';}
-    else{clientes[idx].dataEmprestimo=toS(addD(dataEmprestimoOriginal,7));}
+    else{
+      const _renovInput=document.getElementById('pag-renov-data-input').value;
+      clientes[idx].dataEmprestimo=_renovInput||toS(addD(dataEmprestimoOriginal,7));
+    }
   }
   renderCli();
   showOk(isParcial?`💛 Parcial de ${R(vp)} registrado!`:tipoFinal==='Quitado'?'✅ Quitado!':'🔄 Renovado!');
   bloqueioReload=true;setTimeout(()=>bloqueioReload=false,15000);
   if(btn){btn.disabled=false;btn.textContent='Confirmar Pagamento';}
+  // Se atrasado + renovado, pegar data informada
+  const novaDataRenov=(tipoFinal==='Renovado'&&document.getElementById('pag-renov-data-input').value)?document.getElementById('pag-renov-data-input').value:'';
   jsonp({action:'registrarPagamento',linha:cliPag.linha,nome:cliPag.nome,valor:cliPag.valor,
     dataEmprestimo:dataEmprestimoOriginal,tipo:tipoFinal,multa,valorPago:vp,
-    valorDevido:valorDevido+multa,isParcial:isParcial?'true':'false'
+    valorDevido:valorDevido+multa,isParcial:isParcial?'true':'false',
+    novaDataRenovacao:novaDataRenov
   }).then(r=>{if(r&&r.ok)console.log('✅ Salvo');else console.log('⚠️',r);}).catch(e=>console.log('⚠️',e.message));
   processando=false;
 }
