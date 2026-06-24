@@ -222,11 +222,18 @@ input[type=date]::-webkit-calendar-picker-indicator{filter:invert(.5);}
         </div>
       </div>
       <div id="filtro-ddd-wrap" style="display:none;margin-bottom:8px;">
-        <div style="display:flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--gold);border-radius:12px;padding:10px 14px;">
-          <span style="font-size:12px;color:var(--t3);white-space:nowrap;">📞 Filtrar DDD:</span>
-          <input type="tel" id="filtro-ddd-input" maxlength="2" placeholder="Ex: 31" style="flex:1;background:transparent;border:none;color:var(--gold2);font-size:15px;font-weight:700;font-family:'Inter',sans-serif;outline:none;width:50px;" oninput="setFDDD(this.value)">
-          <span id="filtro-ddd-count" style="font-size:11px;color:var(--t3);"></span>
-          <button onclick="limparFiltroDDD()" style="background:transparent;border:none;color:var(--t3);font-size:16px;cursor:pointer;padding:0;">✕</button>
+        <div style="background:var(--card);border:1px solid var(--gold);border-radius:12px;padding:10px 14px;">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+            <span style="font-size:12px;color:var(--t3);white-space:nowrap;">📞 DDD:</span>
+            <input type="tel" id="filtro-ddd-input" maxlength="2" placeholder="Ex: 31" style="flex:1;background:transparent;border:none;color:var(--gold2);font-size:15px;font-weight:700;font-family:'Inter',sans-serif;outline:none;width:50px;" oninput="setFDDD()">
+            <span id="filtro-ddd-count" style="font-size:11px;color:var(--t3);"></span>
+            <button onclick="limparFiltroDDD()" style="background:transparent;border:none;color:var(--t3);font-size:16px;cursor:pointer;padding:0;">✕</button>
+          </div>
+          <div style="display:flex;gap:8px;">
+            <button class="chip active" id="ddd-st-todos" onclick="setDDDStatus('todos',this)">Todos</button>
+            <button class="chip" id="ddd-st-hoje" onclick="setDDDStatus('Hoje',this)">⚠️ Vence Hoje</button>
+            <button class="chip" id="ddd-st-atraso" onclick="setDDDStatus('Atraso',this)">🚨 Atrasado</button>
+          </div>
         </div>
       </div>
       <div id="success-banner" class="success-banner"></div>
@@ -530,7 +537,7 @@ const USERS={admin:{senha:'1234',nome:'Admin'},cobranca:{senha:'5678',nome:'Cobr
 let user=null,clientes=[],pendencias=[],negociacoes=[],prejuizos=[];
 let filtro='todos',cliPag=null,tipoPag=null,m21=false,negPag=false;
 let cliDel=null,cliPrej=null,cliNegoc=null,modoEdit=false,catCusto='Anúncios';
-let pendAtual=null,movDesfazer=null,tipoDesfazer=null,filtroData=null,filtroDDD=null;
+let pendAtual=null,movDesfazer=null,tipoDesfazer=null,filtroData=null,filtroDDD=null,filtroDDDStatus='todos';
 let bloqueioReload=false,processando=false,delOpcao='total';
 let movCacheArr=[];
 
@@ -734,22 +741,38 @@ function navCli(f){
 function abrirFiltroDDD(btn){
   document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
   btn.classList.add('active');
-  filtroDDD=null;filtroData=null;filtro='todos';
+  filtroDDD=null;filtroDDDStatus='todos';filtroData=null;filtro='DDD';
   document.getElementById('filtro-data-wrap').style.display='none';
   document.getElementById('filtro-ddd-wrap').style.display='block';
   document.getElementById('filtro-ddd-input').value='';
   document.getElementById('filtro-ddd-count').textContent='';
+  document.querySelectorAll('#filtro-ddd-wrap .chip').forEach(c=>c.classList.remove('active'));
+  document.getElementById('ddd-st-todos').classList.add('active');
   document.getElementById('filtro-ddd-input').focus();
   renderCli();
 }
 
-function setFDDD(val){
-  filtroDDD=val&&val.length>=2?val.replace(/\D/g,''):'';
+function setDDDStatus(st,btn){
+  filtroDDDStatus=st;
+  document.querySelectorAll('#filtro-ddd-wrap .chip').forEach(c=>c.classList.remove('active'));
+  btn.classList.add('active');
+  setFDDD();
+}
+
+function setFDDD(){
+  const val=document.getElementById('filtro-ddd-input').value||'';
+  filtroDDD=val.length>=2?val.replace(/\D/g,''):'';
+  filtro='DDD';
   renderCli();
   if(filtroDDD){
+    const hj=new Date();hj.setHours(0,0,0,0);
     const total=(clientes||[]).filter(c=>{
+      if(c.status!=='Ativo')return false;
       const tel=String(c.telefone||'').replace(/\D/g,'');
-      return tel.substring(0,2)===filtroDDD;
+      if(tel.substring(0,2)!==filtroDDD)return false;
+      if(filtroDDDStatus==='Hoje'){const v=addD(c.dataEmprestimo,7);v.setHours(0,0,0,0);return v.getTime()===hj.getTime();}
+      if(filtroDDDStatus==='Atraso')return diasA(c.dataEmprestimo)>0;
+      return true;
     }).length;
     document.getElementById('filtro-ddd-count').textContent=total+' encontrado'+(total!==1?'s':'');
   } else {
@@ -758,7 +781,7 @@ function setFDDD(val){
 }
 
 function limparFiltroDDD(){
-  filtroDDD=null;filtro='todos';
+  filtroDDD=null;filtroDDDStatus='todos';filtro='todos';
   document.getElementById('filtro-ddd-wrap').style.display='none';
   document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
   document.getElementById('chip-todos').classList.add('active');
@@ -804,6 +827,7 @@ function renderCli(){
   const hj=new Date();hj.setHours(0,0,0,0);
   const lista=(clientes||[]).filter(c=>{
     if(!c.nome||c.status==='Pendente')return false;
+    if(filtro==='DDD')return true;
     if(filtro==='Ativo')return c.status==='Ativo'&&diasA(c.dataEmprestimo)===0;
     if(filtro==='Data')return c.status==='Ativo'&&filtroData&&c.dataEmprestimo===filtroData;
     if(filtro==='Hoje'){const v=addD(c.dataEmprestimo,7);v.setHours(0,0,0,0);return c.status==='Ativo'&&v.getTime()===hj.getTime();}
@@ -811,12 +835,22 @@ function renderCli(){
     if(filtro==='Quitado')return c.status==='Quitado';
     return true;
   });
-  // Aplicar filtro DDD como overlay
-  const listaFinal=filtroDDD?lista.filter(c=>{
-    const tel=String(c.telefone||'').replace(/\D/g,'');
-    return tel.substring(0,2)===filtroDDD;
-  }):lista;
-  if(!listaFinal.length){document.getElementById('lista-cli').innerHTML='<div class="empty"><div class="empty-icon">🔍</div><div class="empty-text">'+(filtroDDD?'Nenhum cliente com DDD '+filtroDDD:'Nenhum cliente encontrado')+'</div></div>';return;}
+  // Aplicar filtro DDD com status
+  let listaFinal=lista;
+  if(filtro==='DDD'){
+    const hj2=new Date();hj2.setHours(0,0,0,0);
+    listaFinal=lista.filter(c=>{
+      if(c.status!=='Ativo')return false;
+      if(filtroDDD){
+        const tel=String(c.telefone||'').replace(/\D/g,'');
+        if(tel.substring(0,2)!==filtroDDD)return false;
+      }
+      if(filtroDDDStatus==='Hoje'){const v=addD(c.dataEmprestimo,7);v.setHours(0,0,0,0);return v.getTime()===hj2.getTime();}
+      if(filtroDDDStatus==='Atraso')return diasA(c.dataEmprestimo)>0;
+      return true;
+    });
+  }
+  if(!listaFinal.length){document.getElementById('lista-cli').innerHTML='<div class="empty"><div class="empty-icon">🔍</div><div class="empty-text">'+(filtroDDD?'Nenhum cliente com DDD '+filtroDDD+(filtroDDDStatus!=='todos'?' ('+filtroDDDStatus+')':''):'Nenhum cliente encontrado')+'</div></div>';return;}
   const isAdmin=user&&user.perfil==='admin';
   let html='';
   listaFinal.forEach((c,i)=>{
