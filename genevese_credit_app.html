@@ -246,11 +246,23 @@ input[type=date]::-webkit-calendar-picker-indicator{filter:invert(.5);}
   </div>
   <div id="screen-negociacoes" class="screen">
     <div class="topbar"><div class="topbar-title">Negociações</div></div>
-    <div class="page" style="padding-top:20px;"><div id="lista-negoc"></div></div>
+    <div class="page" style="padding-top:20px;">
+      <div class="search-wrap" style="margin-top:0;margin-bottom:10px;">
+        <span class="search-icon">🔍</span>
+        <input id="busca-negoc" class="search-input" placeholder="Buscar por nome..." oninput="renderNegoc()">
+      </div>
+      <div id="lista-negoc"></div>
+    </div>
   </div>
   <div id="screen-prejuizos" class="screen">
     <div class="topbar"><div class="topbar-title">Prejuízos</div></div>
-    <div class="page" style="padding-top:20px;"><div id="lista-prej"></div></div>
+    <div class="page" style="padding-top:20px;">
+      <div class="search-wrap" style="margin-top:0;margin-bottom:10px;">
+        <span class="search-icon">🔍</span>
+        <input id="busca-prej" class="search-input" placeholder="Buscar por nome..." oninput="renderPrej()">
+      </div>
+      <div id="lista-prej"></div>
+    </div>
   </div>
   <div id="screen-custos" class="screen">
     <div class="topbar">
@@ -546,7 +558,7 @@ input[type=date]::-webkit-calendar-picker-indicator{filter:invert(.5);}
     <div id="wpp-opcoes"></div>
   </div>
 </div><script>
-const API='https://script.google.com/macros/s/AKfycbzPCl2R_jU8s7i_XjGcnVJ-4aaAOUACY5YqNnlxGYULbmGlcX6MNeZVDQkrluNPOSg-/exec';
+const API='https://script.google.com/macros/s/AKfycbxV5RTZX7rPO4PGjGn4Gp3kYyEviluzrAqlBVYJO_e6VBixF4esbEGinbQDOCTYt46P/exec';
 const JUROS=[{emp:250,quit:350,renov:100},{emp:350,quit:490,renov:140},{emp:400,quit:560,renov:160},{emp:500,quit:690,renov:190},{emp:800,quit:1100,renov:300},{emp:1000,quit:1390,renov:390}];
 const SECRET_KEY='gnv_2026_k7x9m3qz';
 
@@ -1335,8 +1347,10 @@ async function excluirPend(linha){
 }
 
 function renderNegoc(){
-  const lista=negociacoes||[];
-  if(!lista.length){document.getElementById('lista-negoc').innerHTML='<div class="empty"><div class="empty-icon">🤝</div><div class="empty-text">Nenhuma negociação ativa</div></div>';return;}
+  const buscaEl2=document.getElementById('busca-negoc');
+  const b2=buscaEl2?(buscaEl2.value||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim():'';
+  const lista=(negociacoes||[]).filter(n=>!b2||(n.nome||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').includes(b2));
+  if(!lista.length){document.getElementById('lista-negoc').innerHTML='<div class="empty"><div class="empty-icon">🤝</div><div class="empty-text">'+(b2?'Nenhum cliente encontrado':'Nenhuma negociação ativa')+'</div></div>';return;}
   let html='';
   lista.forEach((n,i)=>{
     const pct=Math.round((n.parcelasPagas/n.parcelas)*100);
@@ -1376,11 +1390,13 @@ async function pagarParcela(linha,pagas,total,nome,vp){
 }
 
 function renderPrej(){
-  const lista=prejuizos||[];
-  if(!lista.length){document.getElementById('lista-prej').innerHTML='<div class="empty"><div class="empty-icon">💸</div><div class="empty-text">Nenhum prejuízo registrado</div></div>';return;}
-  // Total apenas dos não recuperados
-  const total=lista.filter(p=>!p.dataRecuperacao).reduce((s,p)=>s+p.quitar,0);
-  const totalRec=lista.filter(p=>p.dataRecuperacao).reduce((s,p)=>s+p.valorRecuperado,0);
+  const buscaEl=document.getElementById('busca-prej');
+  const b=buscaEl?(buscaEl.value||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim():'';
+  const lista=(prejuizos||[]).filter(p=>!b||(p.nome||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').includes(b));
+  if(!lista.length){document.getElementById('lista-prej').innerHTML='<div class="empty"><div class="empty-icon">💸</div><div class="empty-text">'+(b?'Nenhum cliente encontrado':'Nenhum prejuízo registrado')+'</div></div>';return;}
+  // Total apenas dos não recuperados (sempre sobre todos, não filtrado)
+  const total=(prejuizos||[]).filter(p=>!p.dataRecuperacao).reduce((s,p)=>s+p.quitar,0);
+  const totalRec=(prejuizos||[]).filter(p=>p.dataRecuperacao).reduce((s,p)=>s+p.valorRecuperado,0);
   let html=`<div style="background:var(--rdim);border:1px solid var(--red);border-radius:14px;padding:14px 16px;margin-bottom:10px;text-align:center;">
     <div style="font-size:11px;font-weight:700;color:var(--red);letter-spacing:1px;margin-bottom:4px;">TOTAL EM ABERTO</div>
     <div style="font-family:'Playfair Display',serif;font-size:26px;font-weight:700;color:var(--red)">${R(total)}</div>
