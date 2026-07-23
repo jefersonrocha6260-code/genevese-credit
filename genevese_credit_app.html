@@ -214,6 +214,7 @@ input[type=date]::-webkit-calendar-picker-indicator{filter:invert(.5);}
       <div class="chip-row">
         <button class="chip active" id="chip-todos" onclick="setF('Pipeline',this)">📋 Pipeline</button>
         <button class="chip" id="chip-quitado" onclick="setF('Quitado',this)">✅ Quitados</button>
+        <button class="chip" id="chip-atrasados" onclick="setF('Atraso',this)">🚨 Atrasados</button>
         <button class="chip" id="chip-data" onclick="abrirFiltroData(this)">📅 Por Data</button>
         <button class="chip" id="chip-ddd" onclick="abrirFiltroDDD(this)">📞 DDD</button>
       </div>
@@ -980,7 +981,10 @@ function renderCli(){
       return true;
     });
   }
-  if(!listaFinal.length){document.getElementById('lista-cli').innerHTML='<div class="empty"><div class="empty-icon">🔍</div><div class="empty-text">'+(filtroDDD?'Nenhum cliente com DDD '+filtroDDD+(filtroDDDStatus!=='todos'?' ('+filtroDDDStatus+')':''):'Nenhum cliente encontrado')+'</div></div>';return;}
+  if(filtro==='Atraso'){
+    listaFinal=[...listaFinal].sort((a,b)=>diasA(b.dataEmprestimo,b.prazo)-diasA(a.dataEmprestimo,a.prazo));
+  }
+  if(!listaFinal.length){document.getElementById('lista-cli').innerHTML='<div class="empty"><div class="empty-icon">🔍</div><div class="empty-text">'+(filtroDDD?'Nenhum cliente com DDD '+filtroDDD+(filtroDDDStatus!=='todos'?' ('+filtroDDDStatus+')':''):(filtro==='Atraso'?'Nenhum cliente em atraso':'Nenhum cliente encontrado'))+'</div></div>';return;}
   const isAdmin=user&&user.perfil==='admin';
   let html='';
   listaFinal.forEach((c,i)=>{
