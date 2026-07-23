@@ -89,12 +89,12 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 .search-input::placeholder{color:var(--t3);}
 .search-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--t3);font-size:14px;pointer-events:none;}
 .chip-row{display:flex;gap:8px;padding:14px 0 4px;overflow-x:auto;}
-.pipeline-board{display:flex;gap:10px;overflow-x:auto;padding-bottom:12px;-webkit-overflow-scrolling:touch;}
-.pipeline-col{flex:0 0 240px;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:10px;max-height:calc(100vh - 260px);overflow-y:auto;}
-.pipeline-col-header{position:sticky;top:0;background:var(--card);padding-bottom:8px;margin-bottom:8px;border-bottom:1px solid var(--border);z-index:2;}
-.pipeline-day{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--gold2);}
-.pipeline-count{font-size:10px;color:var(--t3);margin-top:2px;}
-.pipeline-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:10px;margin-bottom:8px;}
+.pipeline-board{display:flex;gap:0;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;margin:0 -16px;padding:0 16px;}
+.pipeline-col{flex:0 0 100%;scroll-snap-align:start;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px;margin-right:12px;max-height:calc(100vh - 250px);overflow-y:auto;}
+.pipeline-col-header{position:sticky;top:0;background:var(--card);padding-bottom:10px;margin-bottom:10px;border-bottom:1px solid var(--border);z-index:2;}
+.pipeline-day{font-size:15px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--gold2);}
+.pipeline-count{font-size:12px;color:var(--t3);margin-top:3px;}
+.pipeline-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:10px;}
 .chip-row::-webkit-scrollbar{display:none;}
 .chip{padding:6px 14px;border-radius:20px;border:1px solid var(--border);font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap;font-family:'Inter',sans-serif;background:transparent;color:var(--t3);}
 .chip.active{background:var(--gdim);border-color:var(--gold);color:var(--gold2);}
@@ -644,7 +644,20 @@ async function init(){
   document.getElementById('busca').addEventListener('input',function(){
     const b=(this.value||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim();
     if(!b){renderCli();return;}
-    const lista=(clientes||[]).filter(c=>c.nome&&(c.nome||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').includes(b));
+    const bDigits=b.replace(/\D/g,'');
+    const norm=s=>String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+    const lista=(clientes||[]).filter(c=>{
+      if(!c.nome)return false;
+      if(norm(c.nome).includes(b))return true;
+      if(norm(c.endereco).includes(b))return true;
+      if(bDigits){
+        const cpf=String(c.cpf||'').replace(/\D/g,'');
+        if(cpf&&cpf.includes(bDigits))return true;
+        const tels=[c.telefone,c.telefone2,c.telefone3,c.telefone4].map(t=>String(t||'').replace(/\D/g,''));
+        if(tels.some(t=>t&&t.includes(bDigits)))return true;
+      }
+      return false;
+    });
     document.getElementById('lista-cli').innerHTML=lista.length?lista.map((c,i)=>{
       const j=getJ(c.valor);const d=c.status==='Ativo'?diasA(c.dataEmprestimo,c.prazo):0;
       const venc=addD(c.dataEmprestimo||new Date().toISOString().split('T')[0],c.prazo||7);
@@ -884,9 +897,16 @@ function renderPipeline(){
     const venc=addD(c.dataEmprestimo,c.prazo||7);
     buckets[venc.getDay()].push(c);
   });
+  // Ordenar: Em Atraso (mais dias primeiro) > Vence Hoje > Em Dia
   ordem.forEach(d=>{
     buckets[d].sort((a,b)=>{
-      const va=addD(a.dataEmprestimo,a.prazo||7),vb=addD(b.dataEmprestimo,b.prazo||7);
+      const da=diasA(a.dataEmprestimo,a.prazo), db=diasA(b.dataEmprestimo,b.prazo);
+      const va=addD(a.dataEmprestimo,a.prazo||7);va.setHours(0,0,0,0);
+      const vb=addD(b.dataEmprestimo,b.prazo||7);vb.setHours(0,0,0,0);
+      const catA = da>0?0:(va.getTime()===hj.getTime()?1:2);
+      const catB = db>0?0:(vb.getTime()===hj.getTime()?1:2);
+      if(catA!==catB) return catA-catB;
+      if(catA===0) return db-da; // mais atrasado primeiro
       return va-vb;
     });
   });
@@ -908,9 +928,10 @@ function renderPipeline(){
         const j=getJ(c.valor);
         const dias=diasA(c.dataEmprestimo,c.prazo);
         const venc=addD(c.dataEmprestimo,c.prazo||7);
+        const vH=new Date(venc);vH.setHours(0,0,0,0);
         let ac='var(--green)',bl='⏳ Em dia',bc='var(--green)';
         if(dias>0){ac='var(--red)';bl=`🚨 ${dias}d atraso`;bc='var(--red)';}
-        else if(venc.getTime()===hj.getTime()){ac='#f39c12';bl='⚠️ Vence hoje';bc='#f39c12';}
+        else if(vH.getTime()===hj.getTime()){ac='#f39c12';bl='⚠️ Vence hoje';bc='#f39c12';}
         const wppBtn=c.telefone?`<button class="btn-sm btn-wpp" onclick="abrirWpp('${c.telefone}','${c.telefone2||''}','${c.nome}','${c.telefone3||''}','${c.telefone4||''}')">💬</button>`:'';
         html+=`<div class="pipeline-card" style="border-left:3px solid ${ac};">
           <div class="cc-name" onclick="abrirHistorico(${c.linha})" style="cursor:pointer;text-decoration:underline dotted;font-size:13px;">${c.nome}</div>
@@ -1745,14 +1766,16 @@ let cliHist=null;
 async function abrirHistorico(linha){
   const c=clientes.find(c=>c.linha===linha);if(!c)return;
   cliHist=c;
-  document.getElementById('hist-nome').textContent=c.nome;
+  document.getElementById('hist-nome').textContent='👤 '+c.nome;
   document.getElementById('hist-info').innerHTML=`
-    <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;"><span style="color:var(--t3)">Telefone</span><span style="font-weight:600">${c.telefone||'-'}</span></div>
-    ${c.telefone2?`<div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;"><span style="color:var(--t3)">Parente 1</span><span style="font-weight:600">${c.telefone2}</span></div>`:''}
-    ${c.telefone3?`<div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;"><span style="color:var(--t3)">Parente 2</span><span style="font-weight:600">${c.telefone3}</span></div>`:''}
-    ${c.telefone4?`<div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;"><span style="color:var(--t3)">Parente 3</span><span style="font-weight:600">${c.telefone4}</span></div>`:''}
-    ${c.endereco?`<div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;gap:10px;"><span style="color:var(--t3);white-space:nowrap;">Endereço</span><span style="font-weight:600;text-align:right;">${c.endereco}</span></div>`:''}
-    <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;"><span style="color:var(--t3)">Valor Emprestado</span><span style="font-weight:600">${R(c.valor)}</span></div>
+    <div style="font-size:10px;font-weight:700;color:var(--gold2);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px;">📇 Dados do Cliente</div>
+    <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px;"><span style="color:var(--t3)">Nome Completo</span><span style="font-weight:600;text-align:right;">${c.nome||'-'}</span></div>
+    <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px;"><span style="color:var(--t3)">Telefone Principal</span><span style="font-weight:600">${c.telefone||'-'}</span></div>
+    <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px;"><span style="color:var(--t3)">Parente 1</span><span style="font-weight:600">${c.telefone2||'-'}</span></div>
+    <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px;"><span style="color:var(--t3)">Parente 2</span><span style="font-weight:600">${c.telefone3||'-'}</span></div>
+    <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px;"><span style="color:var(--t3)">Parente 3</span><span style="font-weight:600">${c.telefone4||'-'}</span></div>
+    <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:10px;gap:10px;"><span style="color:var(--t3);white-space:nowrap;">Endereço</span><span style="font-weight:600;text-align:right;">${c.endereco||'-'}</span></div>
+    <div style="border-top:1px solid var(--border);padding-top:10px;display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;"><span style="color:var(--t3)">Valor Emprestado</span><span style="font-weight:600">${R(c.valor)}</span></div>
     <div style="display:flex;justify-content:space-between;font-size:13px;"><span style="color:var(--t3)">Status</span><span style="font-weight:600">${c.status}</span></div>
   `;
   document.getElementById('historico-lista').innerHTML='<div style="text-align:center;padding:20px;color:var(--t3);">Carregando...</div>';
