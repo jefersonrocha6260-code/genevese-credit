@@ -89,6 +89,12 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 .search-input::placeholder{color:var(--t3);}
 .search-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--t3);font-size:14px;pointer-events:none;}
 .chip-row{display:flex;gap:8px;padding:14px 0 4px;overflow-x:auto;}
+.pipeline-board{display:flex;gap:10px;overflow-x:auto;padding-bottom:12px;-webkit-overflow-scrolling:touch;}
+.pipeline-col{flex:0 0 240px;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:10px;max-height:calc(100vh - 260px);overflow-y:auto;}
+.pipeline-col-header{position:sticky;top:0;background:var(--card);padding-bottom:8px;margin-bottom:8px;border-bottom:1px solid var(--border);z-index:2;}
+.pipeline-day{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--gold2);}
+.pipeline-count{font-size:10px;color:var(--t3);margin-top:2px;}
+.pipeline-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:10px;margin-bottom:8px;}
 .chip-row::-webkit-scrollbar{display:none;}
 .chip{padding:6px 14px;border-radius:20px;border:1px solid var(--border);font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap;font-family:'Inter',sans-serif;background:transparent;color:var(--t3);}
 .chip.active{background:var(--gdim);border-color:var(--gold);color:var(--gold2);}
@@ -206,10 +212,7 @@ input[type=date]::-webkit-calendar-picker-indicator{filter:invert(.5);}
         <input id="busca" class="search-input" placeholder="Buscar por nome...">
       </div>
       <div class="chip-row">
-        <button class="chip active" id="chip-todos" onclick="setF('todos',this)">Todos</button>
-        <button class="chip" id="chip-ativo" onclick="setF('Ativo',this)">Ativos</button>
-        <button class="chip" id="chip-hoje" onclick="setF('Hoje',this)">⚠️ Vence Hoje</button>
-        <button class="chip" id="chip-atraso" onclick="setF('Atraso',this)">🚨 Em Atraso</button>
+        <button class="chip active" id="chip-todos" onclick="setF('Pipeline',this)">📋 Pipeline</button>
         <button class="chip" id="chip-quitado" onclick="setF('Quitado',this)">✅ Quitados</button>
         <button class="chip" id="chip-data" onclick="abrirFiltroData(this)">📅 Por Data</button>
         <button class="chip" id="chip-ddd" onclick="abrirFiltroDDD(this)">📞 DDD</button>
@@ -296,6 +299,7 @@ input[type=date]::-webkit-calendar-picker-indicator{filter:invert(.5);}
     <label class="fl">Parente 1</label><input id="cad-tel2" class="fi" placeholder="(00) 00000-0000" type="tel">
     <label class="fl">Parente 2</label><input id="cad-tel3" class="fi" placeholder="(00) 00000-0000" type="tel">
     <label class="fl">Parente 3</label><input id="cad-tel4" class="fi" placeholder="(00) 00000-0000" type="tel">
+    <label class="fl">Endereço Completo</label><input id="cad-endereco" class="fi" placeholder="Rua, número, bairro, cidade...">
     <label class="fl">Data do Empréstimo</label><input id="cad-data" class="fi" type="date">
     <label class="fl">Prazo</label>
     <select id="cad-prazo" class="fs" onchange="mudouPrazo()">
@@ -557,13 +561,26 @@ input[type=date]::-webkit-calendar-picker-indicator{filter:invert(.5);}
     <div id="wpp-nome" style="font-size:14px;color:var(--t2);margin-bottom:16px;"></div>
     <div id="wpp-opcoes"></div>
   </div>
-</div><script>
-const API='https://script.google.com/macros/s/AKfycbxV5RTZX7rPO4PGjGn4Gp3kYyEviluzrAqlBVYJO_e6VBixF4esbEGinbQDOCTYt46P/exec';
+</div>
+
+<!-- MODAL HISTÓRICO DO CLIENTE -->
+<div id="modal-historico" class="modal-overlay" onclick="closeM('modal-historico')">
+  <div class="modal-sheet" onclick="event.stopPropagation()">
+    <div class="modal-handle"></div>
+    <button class="modal-close" onclick="closeM('modal-historico')">✕</button>
+    <div class="modal-title" id="hist-nome">Cliente</div>
+    <div id="hist-info" class="info-box" style="margin-bottom:16px;"></div>
+    <div class="sec-title">Histórico de Pagamentos</div>
+    <div id="historico-lista"></div>
+  </div>
+</div>
+<script>
+const API='https://script.google.com/macros/s/AKfycbwODaDK5GsYHuRm-oLR0HLGhJYf6S9qwschqy21FfxAn0n830E24GRBiRnoim07YdF1/exec';
 const JUROS=[{emp:250,quit:350,renov:100},{emp:350,quit:490,renov:140},{emp:400,quit:560,renov:160},{emp:500,quit:690,renov:190},{emp:800,quit:1100,renov:300},{emp:1000,quit:1390,renov:390}];
 const SECRET_KEY='gnv_2026_k7x9m3qz';
 
 let user=null,clientes=[],pendencias=[],negociacoes=[],prejuizos=[];
-let filtro='todos',cliPag=null,tipoPag=null,m21=false,negPag=false;
+let filtro='Pipeline',cliPag=null,tipoPag=null,m21=false,negPag=false;
 let cliDel=null,cliPrej=null,cliNegoc=null,modoEdit=false,catCusto='Anúncios';
 let pendAtual=null,movDesfazer=null,tipoDesfazer=null,filtroData=null,filtroDDD=null,filtroDDDStatus='todos';
 let bloqueioReload=false,processando=false,delOpcao='total';
@@ -641,7 +658,7 @@ async function init(){
       return `<div class="cc" style="animation-delay:${i*.03}s">
         <div class="cc-accent" style="background:${ac};border-radius:14px 0 0 14px;"></div>
         <div class="cc-body">
-          <div class="cc-name">${c.nome}</div>
+          <div class="cc-name" onclick="abrirHistorico(${c.linha})" style="cursor:pointer;text-decoration:underline dotted;">${c.nome}</div>
           <div class="cc-meta">${c.telefone?`<span>📞 ${c.telefone}</span>`:''}${wppBtnB}</div>
           <span class="cc-badge" style="background:${bb};color:${bc};border:1px solid ${bc}33;">${bl}</span>
           ${c.status==='Ativo'?`<div style="font-size:11px;color:var(--t3);margin-top:3px;">Vence ${D(toS(venc))}</div>`:''}
@@ -764,13 +781,11 @@ function renderDash(d){
 }
 
 function navCli(f){
-  filtro=f;
+  filtro='Pipeline';
   const navBtn=document.querySelectorAll('.nav-btn')[1];
   showS('clientes',navBtn);
   document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
-  const map={'todos':'chip-todos','Ativo':'chip-ativo','Hoje':'chip-hoje','Atraso':'chip-atraso','Quitado':'chip-quitado'};
-  const el=document.getElementById(map[f]);
-  if(el)el.classList.add('active');
+  document.getElementById('chip-todos').classList.add('active');
   renderCli();
 }
 
@@ -859,7 +874,65 @@ function setF(f,btn){
   renderCli();
 }
 
+function renderPipeline(){
+  const hj=new Date();hj.setHours(0,0,0,0);
+  const ordem=[1,2,3,4,5,6,0];
+  const labels={1:'SEGUNDA',2:'TERÇA',3:'QUARTA',4:'QUINTA',5:'SEXTA',6:'SÁBADO',0:'DOMINGO'};
+  const buckets={0:[],1:[],2:[],3:[],4:[],5:[],6:[]};
+  (clientes||[]).forEach(c=>{
+    if(!c.nome||c.status!=='Ativo'||!c.dataEmprestimo)return;
+    const venc=addD(c.dataEmprestimo,c.prazo||7);
+    buckets[venc.getDay()].push(c);
+  });
+  ordem.forEach(d=>{
+    buckets[d].sort((a,b)=>{
+      const va=addD(a.dataEmprestimo,a.prazo||7),vb=addD(b.dataEmprestimo,b.prazo||7);
+      return va-vb;
+    });
+  });
+  const isAdmin=user&&user.perfil==='admin';
+  let html='<div class="pipeline-board">';
+  ordem.forEach(d=>{
+    const lista=buckets[d];
+    let totalRenov=0;
+    lista.forEach(c=>{const j=getJ(c.valor);if(j)totalRenov+=j.renov;});
+    html+=`<div class="pipeline-col">
+      <div class="pipeline-col-header">
+        <div class="pipeline-day">${labels[d]}</div>
+        <div class="pipeline-count">${lista.length} cliente${lista.length!==1?'s':''}${totalRenov?' · '+R(totalRenov):''}</div>
+      </div>`;
+    if(!lista.length){
+      html+='<div style="text-align:center;padding:20px 10px;color:var(--t3);font-size:11px;">Vazio</div>';
+    } else {
+      lista.forEach(c=>{
+        const j=getJ(c.valor);
+        const dias=diasA(c.dataEmprestimo,c.prazo);
+        const venc=addD(c.dataEmprestimo,c.prazo||7);
+        let ac='var(--green)',bl='⏳ Em dia',bc='var(--green)';
+        if(dias>0){ac='var(--red)';bl=`🚨 ${dias}d atraso`;bc='var(--red)';}
+        else if(venc.getTime()===hj.getTime()){ac='#f39c12';bl='⚠️ Vence hoje';bc='#f39c12';}
+        const wppBtn=c.telefone?`<button class="btn-sm btn-wpp" onclick="abrirWpp('${c.telefone}','${c.telefone2||''}','${c.nome}','${c.telefone3||''}','${c.telefone4||''}')">💬</button>`:'';
+        html+=`<div class="pipeline-card" style="border-left:3px solid ${ac};">
+          <div class="cc-name" onclick="abrirHistorico(${c.linha})" style="cursor:pointer;text-decoration:underline dotted;font-size:13px;">${c.nome}</div>
+          <div style="font-size:11px;color:var(--t3);margin:2px 0 4px;">📅 ${D(toS(venc))}${c.telefone?` · 📞 ${c.telefone}`:''}</div>
+          <span class="cc-badge" style="background:${ac}22;color:${bc};border:1px solid ${bc}33;font-size:10px;">${bl}</span>
+          ${j?`<div style="display:flex;justify-content:space-between;font-size:11px;margin-top:6px;color:var(--t3);"><span>Renovar: <strong style="color:var(--orange)">${R(j.renov)}</strong></span></div>`:''}
+          <div style="display:flex;gap:4px;flex-wrap:wrap;margin-top:8px;">
+            <button class="btn-sm btn-pay" onclick="if(!travar())abrirPag(${c.linha})">💰</button>
+            ${wppBtn}
+            ${isAdmin?`<button class="btn-sm btn-negoc" onclick="if(!travar())abrirNegoc(${c.linha})">🤝</button><button class="btn-sm btn-prej" onclick="if(!travar())abrirPrej(${c.linha})">💸</button><button class="btn-sm btn-edit" onclick="abrirEdit(${c.linha})">✏️</button><button class="btn-sm btn-del" onclick="abrirDel(${c.linha})">🗑️</button>`:''}
+          </div>
+        </div>`;
+      });
+    }
+    html+='</div>';
+  });
+  html+='</div>';
+  document.getElementById('lista-cli').innerHTML=html;
+}
+
 function renderCli(){
+  if(filtro==='Pipeline'){ renderPipeline(); return; }
   const hj=new Date();hj.setHours(0,0,0,0);
   const lista=(clientes||[]).filter(c=>{
     if(!c.nome||c.status==='Pendente')return false;
@@ -903,7 +976,7 @@ function renderCli(){
       <div class="cc-body">
         <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px;">
           <div>
-            <div class="cc-name">${c.nome}</div>
+            <div class="cc-name" onclick="abrirHistorico(${c.linha})" style="cursor:pointer;text-decoration:underline dotted;">${c.nome}</div>
             <div class="cc-meta">${c.telefone?`<span>📞 ${c.telefone}</span>`:''}${wppBtn}</div>
             <span class="cc-badge" style="background:${bb};color:${bc};border:1px solid ${bc}33;">${bl}</span>
             ${c.status==='Ativo'?`<div style="font-size:11px;color:var(--t3);margin-top:3px;">Vence ${D(toS(venc))}${c.prazo&&c.prazo!==7?' · <span style="color:var(--gold2)">'+(c.prazo===15?'Quinzenal':'Mensal')+'</span>':''}</div>`:''}
@@ -937,7 +1010,7 @@ function abrirCad(){
   document.getElementById('modal-cad-title').textContent='Novo Cliente';
   document.getElementById('btn-salvar').textContent='Cadastrar Cliente';
   document.getElementById('edit-linha').value='';
-  ['cad-nome','cad-cpf','cad-tel','cad-tel2','cad-tel3','cad-tel4'].forEach(id=>document.getElementById(id).value='');
+  ['cad-nome','cad-cpf','cad-tel','cad-tel2','cad-tel3','cad-tel4','cad-endereco'].forEach(id=>document.getElementById(id).value='');
   const _hj=new Date();document.getElementById('cad-data').value=_hj.getFullYear()+'-'+String(_hj.getMonth()+1).padStart(2,'0')+'-'+String(_hj.getDate()).padStart(2,'0');
   document.getElementById('cad-prazo').value='7';
   document.getElementById('cad-valor').value='';
@@ -961,6 +1034,7 @@ function abrirEdit(linha){
   document.getElementById('cad-tel2').value=c.telefone2||'';
   document.getElementById('cad-tel3').value=c.telefone3||'';
   document.getElementById('cad-tel4').value=c.telefone4||'';
+  document.getElementById('cad-endereco').value=c.endereco||'';
   document.getElementById('cad-data').value=c.dataEmprestimo||'';
   const pzEdit=c.prazo||7;
   document.getElementById('cad-prazo').value=String(pzEdit);
@@ -981,6 +1055,7 @@ function reemprestar(linha){
   document.getElementById('cad-tel2').value=c.telefone2||'';
   document.getElementById('cad-tel3').value=c.telefone3||'';
   document.getElementById('cad-tel4').value=c.telefone4||'';
+  document.getElementById('cad-endereco').value=c.endereco||'';
   const _hj=new Date();document.getElementById('cad-data').value=_hj.getFullYear()+'-'+String(_hj.getMonth()+1).padStart(2,'0')+'-'+String(_hj.getDate()).padStart(2,'0');
   document.getElementById('cad-prazo').value='7';
   document.getElementById('cad-valor').value='';
@@ -1041,6 +1116,7 @@ async function salvarCliente(){
   const tel2=document.getElementById('cad-tel2').value.trim();
   const tel3=document.getElementById('cad-tel3').value.trim();
   const tel4=document.getElementById('cad-tel4').value.trim();
+  const endereco=document.getElementById('cad-endereco').value.trim();
   const data=document.getElementById('cad-data').value;
   const pzSel=document.getElementById('cad-prazo').value;
   const isSem=pzSel==='7';
@@ -1052,11 +1128,11 @@ async function salvarCliente(){
   toast('💾 Salvando...');
   try{
     let r;
-    if(modoEdit){r=await jsonp({action:'editarCliente',linha,nome,cpf,telefone:tel,telefone2:tel2,telefone3:tel3,telefone4:tel4,dataEmprestimo:data,valor:v,prazo:pzSel});}
-    else{r=await jsonp({action:'cadastrarCliente',nome,cpf,telefone:tel,telefone2:tel2,telefone3:tel3,telefone4:tel4,dataEmprestimo:data,valor:v,prazo:pzSel});}
+    if(modoEdit){r=await jsonp({action:'editarCliente',linha,nome,cpf,telefone:tel,telefone2:tel2,telefone3:tel3,telefone4:tel4,endereco,dataEmprestimo:data,valor:v,prazo:pzSel});}
+    else{r=await jsonp({action:'cadastrarCliente',nome,cpf,telefone:tel,telefone2:tel2,telefone3:tel3,telefone4:tel4,endereco,dataEmprestimo:data,valor:v,prazo:pzSel});}
     if(r.ok){
       closeM('modal-cad');bloqueioReload=false;await reload();
-      if(!modoEdit){filtro='Ativo';document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));const chipAtivo=document.getElementById('chip-ativo');if(chipAtivo)chipAtivo.classList.add('active');renderCli();}
+      if(!modoEdit){filtro='Pipeline';document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));document.getElementById('chip-todos').classList.add('active');renderCli();}
       showOk(modoEdit?`✅ ${nome} atualizado!`:`✅ ${nome} cadastrado!`);
     }else toast('❌ '+(r.error||'Erro'));
   }catch(e){toast('❌ '+e.message);}
@@ -1246,7 +1322,7 @@ async function confirmarPag(){
   jsonp({action:'registrarPagamento',linha:cliPag.linha,nome:cliPag.nome,valor:cliPag.valor,
     dataEmprestimo:dataEmprestimoOriginal,tipo:tipoFinal,multa,valorPago:vp,
     valorDevido:valorDevido+multa,isParcial:isParcial?'true':'false',
-    novaDataRenovacao:novaDataRenov,prazo:cliPag.prazo||7
+    novaDataRenovacao:novaDataRenov,prazo:cliPag.prazo||7,telefone:cliPag.telefone||''
   }).then(r=>{if(r&&r.ok)console.log('✅ Salvo');else console.log('⚠️',r);}).catch(e=>console.log('⚠️',e.message));
   processando=false;
 }
@@ -1663,6 +1739,43 @@ async function confirmarMovCx(){
     else toast('❌ '+(r.error||'Erro'));
   }catch(e){toast('❌ '+e.message);}
   processando=false;
+}
+
+let cliHist=null;
+async function abrirHistorico(linha){
+  const c=clientes.find(c=>c.linha===linha);if(!c)return;
+  cliHist=c;
+  document.getElementById('hist-nome').textContent=c.nome;
+  document.getElementById('hist-info').innerHTML=`
+    <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;"><span style="color:var(--t3)">Telefone</span><span style="font-weight:600">${c.telefone||'-'}</span></div>
+    ${c.telefone2?`<div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;"><span style="color:var(--t3)">Parente 1</span><span style="font-weight:600">${c.telefone2}</span></div>`:''}
+    ${c.telefone3?`<div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;"><span style="color:var(--t3)">Parente 2</span><span style="font-weight:600">${c.telefone3}</span></div>`:''}
+    ${c.telefone4?`<div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;"><span style="color:var(--t3)">Parente 3</span><span style="font-weight:600">${c.telefone4}</span></div>`:''}
+    ${c.endereco?`<div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;gap:10px;"><span style="color:var(--t3);white-space:nowrap;">Endereço</span><span style="font-weight:600;text-align:right;">${c.endereco}</span></div>`:''}
+    <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;"><span style="color:var(--t3)">Valor Emprestado</span><span style="font-weight:600">${R(c.valor)}</span></div>
+    <div style="display:flex;justify-content:space-between;font-size:13px;"><span style="color:var(--t3)">Status</span><span style="font-weight:600">${c.status}</span></div>
+  `;
+  document.getElementById('historico-lista').innerHTML='<div style="text-align:center;padding:20px;color:var(--t3);">Carregando...</div>';
+  openM('modal-historico');
+  try{
+    const r=await jsonp({action:'getHistoricoCliente',telefone:c.telefone||''});
+    const hist=r.historico||[];
+    if(!hist.length){document.getElementById('historico-lista').innerHTML='<div class="empty"><div class="empty-icon">📜</div><div class="empty-text">Nenhum histórico ainda</div></div>';return;}
+    document.getElementById('historico-lista').innerHTML=hist.map(h=>{
+      const cor=h.tipo==='Quitado'?'var(--green)':h.tipo==='Parcial'?'var(--gold)':'var(--orange)';
+      const atrasoTxt=h.diasAtraso>0?`🚨 ${h.diasAtraso}d atraso`:'✅ Em dia';
+      return `<div style="background:var(--card);border:1px solid var(--border);border-left:3px solid ${cor};border-radius:12px;padding:12px 14px;margin-bottom:8px;">
+        <div style="display:flex;justify-content:space-between;margin-bottom:4px;">
+          <span style="font-weight:700;font-size:13px;color:${cor}">${h.tipo}</span>
+          <span style="font-size:11px;color:var(--t3)">${h.dataHora}</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--t3);">
+          <span>${atrasoTxt}</span>
+          <span>Pago: <strong style="color:var(--text)">${R(h.valorPago)}</strong></span>
+        </div>
+      </div>`;
+    }).join('');
+  }catch(e){document.getElementById('historico-lista').innerHTML='<div class="empty"><div class="empty-text">Erro ao carregar histórico</div></div>';}
 }
 
 function abrirWpp(tel,tel2,nome,tel3,tel4){
