@@ -373,9 +373,12 @@ input[type=date]::-webkit-calendar-picker-indicator{filter:invert(.5);}
       </div>
       <div id="pag-renov-data" style="display:none;margin-bottom:14px;">
         <div style="background:var(--rdim);border:1px solid var(--red);border-radius:12px;padding:14px 16px;">
-          <div style="font-size:10px;font-weight:700;color:var(--red);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;">📅 DATA DA RENOVAÇÃO (obrigatório)</div>
-          <div style="font-size:12px;color:var(--t2);margin-bottom:8px;">Cliente em atraso — informe a nova data do empréstimo</div>
-          <input type="date" id="pag-renov-data-input" class="fi" style="margin-bottom:0;border-color:var(--red);">
+          <div style="font-size:10px;font-weight:700;color:var(--red);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;">📅 RENOVAÇÃO — CLIENTE EM ATRASO</div>
+          <div style="font-size:12px;color:var(--t2);margin-bottom:10px;" id="pag-renov-atraso-txt"></div>
+          <label class="fl" style="color:var(--red);">Quantas parcelas ele está pagando agora?</label>
+          <input type="number" id="pag-renov-parcelas" class="fi" min="1" value="1" style="margin-bottom:10px;border-color:var(--red);" oninput="recalcRenovData()">
+          <label class="fl" style="color:var(--red);">Data da renovação (calculada — edite se necessário)</label>
+          <input type="date" id="pag-renov-data-input" class="fi" style="margin-bottom:0;border-color:var(--red);" oninput="updRenovVenc()">
           <div id="pag-renov-venc" style="font-size:11px;color:var(--t3);margin-top:6px;"></div>
         </div>
       </div>
@@ -1254,7 +1257,7 @@ function abrirPag(linha){
   document.getElementById('tog-21h').classList.remove('on');document.getElementById('tog-21h-row').classList.remove('on');
   document.getElementById('tog-neg').classList.remove('on');document.getElementById('tog-neg-row').classList.remove('on');
   document.getElementById('neg-campo').style.display='none';document.getElementById('neg-valor').value='';
-  document.getElementById('pag-renov-data').style.display='none';document.getElementById('pag-renov-data-input').value='';
+  document.getElementById('pag-renov-data').style.display='none';document.getElementById('pag-renov-data-input').value='';document.getElementById('pag-renov-parcelas').value='1';
   const ar=document.getElementById('pag-atraso');
   if(d>0){ar.style.display='block';ar.innerHTML=`<div style="font-size:11px;font-weight:700;color:var(--red);margin-bottom:3px;">📋 REFERÊNCIA DE ATRASO</div><div style="font-size:13px;color:var(--t2)">${d} dia(s) · Multa ref: <strong style="color:var(--red)">${R(d*50)}</strong></div>`;}
   else ar.style.display='none';
@@ -1278,21 +1281,45 @@ function selTipo(t){
   const elRD=document.getElementById('pag-renov-data');
   if(t==='Renovado'&&dAtraso>0){
     elRD.style.display='block';
-    const _hj=new Date();
-    document.getElementById('pag-renov-data-input').value=_hj.getFullYear()+'-'+String(_hj.getMonth()+1).padStart(2,'0')+'-'+String(_hj.getDate()).padStart(2,'0');
-    updRenovVenc();
-    document.getElementById('pag-renov-data-input').oninput=updRenovVenc;
+    document.getElementById('pag-renov-parcelas').value='1';
+    const vencOriginal=addD(cliPag.dataEmprestimo,cliPag.prazo||7);
+    document.getElementById('pag-renov-atraso-txt').textContent='Venceu em '+D(toS(vencOriginal))+' · '+dAtraso+'d de atraso';
+    recalcRenovData();
   } else {
     elRD.style.display='none';
   }
   calcTotal();
 }
 
+function recalcRenovData(){
+  if(!cliPag)return;
+  const parcelas=Math.max(1,Number(document.getElementById('pag-renov-parcelas').value)||1);
+  const prazo=cliPag.prazo||7;
+  const novaData=addD(cliPag.dataEmprestimo,prazo*parcelas);
+  document.getElementById('pag-renov-data-input').value=toS(novaData);
+  // Ajustar valor pago sugerido proporcional às parcelas (só p/ tabela semanal)
+  const j=getJ(cliPag.valor);
+  if(j&&(cliPag.prazo||7)===7&&tipoPag==='Renovado'){
+    document.getElementById('vp-input').value=j.renov*parcelas;
+    calcTotal();
+  }
+  updRenovVenc();
+}
+
 function updRenovVenc(){
   const v=document.getElementById('pag-renov-data-input').value;
   const el=document.getElementById('pag-renov-venc');
-  if(v){el.textContent='Novo vencimento: '+D(toS(addD(v,cliPag?cliPag.prazo||7:7)));}
-  else{el.textContent='';}
+  if(!v){el.textContent='';return;}
+  const prazo=cliPag?cliPag.prazo||7:7;
+  const novoVenc=addD(v,prazo);
+  const hj=new Date();hj.setHours(0,0,0,0);
+  const nvH=new Date(novoVenc);nvH.setHours(0,0,0,0);
+  if(nvH.getTime()>=hj.getTime()){
+    el.innerHTML='Novo vencimento: <strong style="color:var(--green)">'+D(toS(novoVenc))+'</strong> · ✅ cliente ficará em dia';
+  } else {
+    const diasRestantes=Math.floor((hj-nvH)/86400000);
+    el.innerHTML='Novo vencimento: <strong style="color:var(--red)">'+D(toS(novoVenc))+'</strong> · 🚨 ainda restam '+diasRestantes+'d de atraso';
+  }
 }
 
 function tog21h(){m21=!m21;document.getElementById('tog-21h').classList.toggle('on',m21);document.getElementById('tog-21h-row').classList.toggle('on',m21);calcTotal();}
