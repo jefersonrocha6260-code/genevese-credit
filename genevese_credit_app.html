@@ -982,7 +982,10 @@ function irParaDia(idx){
   pipelineDiaAtual=idx;
   const board=document.getElementById('pipeline-board');
   const cols=document.querySelectorAll('.pipeline-col');
-  if(board&&cols[idx]) board.scrollTo({left:cols[idx].offsetLeft-14,behavior:'smooth'});
+  if(board&&cols[idx]){
+    const target=cols[idx].getBoundingClientRect().left-board.getBoundingClientRect().left+board.scrollLeft;
+    board.scrollTo({left:target,behavior:'smooth'});
+  }
   document.querySelectorAll('.pipeline-tab').forEach(t=>t.classList.remove('active'));
   const tab=document.getElementById('ptab-'+idx);
   if(tab)tab.classList.add('active');
