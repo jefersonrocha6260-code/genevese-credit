@@ -95,6 +95,12 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 .pipeline-day{font-size:15px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--gold2);}
 .pipeline-count{font-size:12px;color:var(--t3);margin-top:3px;}
 .pipeline-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:10px;}
+.pipeline-nav{display:flex;align-items:center;gap:6px;margin-bottom:10px;}
+.pipeline-nav-btn{background:var(--card);border:1px solid var(--border);border-radius:8px;color:var(--gold2);font-size:14px;font-weight:700;cursor:pointer;padding:6px 10px;flex-shrink:0;}
+.pipeline-tabs{display:flex;gap:6px;overflow-x:auto;flex:1;}
+.pipeline-tabs::-webkit-scrollbar{display:none;}
+.pipeline-tab{padding:6px 10px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--t3);font-size:10px;font-weight:700;cursor:pointer;white-space:nowrap;font-family:'Inter',sans-serif;}
+.pipeline-tab.active{background:var(--gdim);border-color:var(--gold);color:var(--gold2);}
 .chip-row::-webkit-scrollbar{display:none;}
 .chip{padding:6px 14px;border-radius:20px;border:1px solid var(--border);font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap;font-family:'Inter',sans-serif;background:transparent;color:var(--t3);}
 .chip.active{background:var(--gdim);border-color:var(--gold);color:var(--gold2);}
@@ -662,7 +668,7 @@ async function init(){
       }
       return false;
     });
-    document.getElementById('lista-cli').innerHTML=lista.length?lista.map((c,i)=>{
+    const mainHtml=lista.length?lista.map((c,i)=>{
       const j=getJ(c.valor);const d=c.status==='Ativo'?diasA(c.dataEmprestimo,c.prazo):0;
       const venc=addD(c.dataEmprestimo||new Date().toISOString().split('T')[0],c.prazo||7);
       const vH=new Date(venc);vH.setHours(0,0,0,0);const hj=new Date();hj.setHours(0,0,0,0);
@@ -678,6 +684,7 @@ async function init(){
           <div class="cc-name" onclick="abrirHistorico(${c.linha})" style="cursor:pointer;text-decoration:underline dotted;">${c.nome}</div>
           <div class="cc-meta">${c.telefone?`<span>📞 ${c.telefone}</span>`:''}${wppBtnB}</div>
           <span class="cc-badge" style="background:${bb};color:${bc};border:1px solid ${bc}33;">${bl}</span>
+          ${pendenciaBadge(c.nome)}
           ${c.status==='Ativo'?`<div style="font-size:11px;color:var(--t3);margin-top:3px;">Vence ${D(toS(venc))}</div>`:''}
           <div class="cc-actions">
             ${c.status==='Ativo'?`<button class="btn-sm btn-pay" onclick="if(!travar())abrirPag(${c.linha})">💰 Pagar</button>`:''}
@@ -689,7 +696,10 @@ async function init(){
           ${c.status==='Quitado'?`<div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--border);display:flex;justify-content:space-between;font-size:12px;"><span style="color:var(--t3)">Emprestado: <strong style="color:var(--text)">${R(c.valor)}</strong></span><span style="color:${(c.statusQuit||'').includes('atraso')?'var(--red)':'var(--green)'};">${c.statusQuit||'Quitado'}</span></div>`:''}
         </div>
       </div>`;
-    }).join(''):'<div class="empty"><div class="empty-icon">🔍</div><div class="empty-text">Nenhum resultado</div></div>';
+    }).join(''):'';
+    const extras=buildExtraCardsTexto(b);
+    if(!lista.length&&!extras){document.getElementById('lista-cli').innerHTML='<div class="empty"><div class="empty-icon">🔍</div><div class="empty-text">Nenhum resultado</div></div>';}
+    else{document.getElementById('lista-cli').innerHTML=mainHtml+extras;}
   });
 }
 
@@ -842,7 +852,13 @@ function setFDDD(){
       if(filtroDDDStatus==='Atraso')return diasA(c.dataEmprestimo,c.prazo)>0;
       return true;
     }).length;
-    document.getElementById('filtro-ddd-count').textContent=total+' encontrado'+(total!==1?'s':'');
+    let totalExtra=0;
+    if(filtroDDDStatus==='todos'){
+      totalExtra+=(prejuizos||[]).filter(p=>!p.dataRecuperacao&&String(p.telefone||'').replace(/\D/g,'').substring(0,2)===filtroDDD).length;
+      totalExtra+=(negociacoes||[]).filter(n=>String(n.telefone||'').replace(/\D/g,'').substring(0,2)===filtroDDD).length;
+    }
+    const totalGeral=total+totalExtra;
+    document.getElementById('filtro-ddd-count').textContent=totalGeral+' encontrado'+(totalGeral!==1?'s':'');
   } else {
     document.getElementById('filtro-ddd-count').textContent='';
   }
@@ -915,7 +931,12 @@ function renderPipeline(){
     });
   });
   const isAdmin=user&&user.perfil==='admin';
-  let html='<div class="pipeline-board">';
+  let nav='<div class="pipeline-nav"><button class="pipeline-nav-btn" onclick="pipelinePrev()">‹</button><div class="pipeline-tabs" id="pipeline-tabs">';
+  ordem.forEach((d,idx)=>{
+    nav+=`<button class="pipeline-tab${idx===0?' active':''}" id="ptab-${idx}" onclick="irParaDia(${idx})">${labels[d].slice(0,3)}</button>`;
+  });
+  nav+='</div><button class="pipeline-nav-btn" onclick="pipelineNext()">›</button></div>';
+  let html='<div class="pipeline-board" id="pipeline-board">';
   ordem.forEach(d=>{
     const lista=buckets[d];
     let totalRenov=0;
@@ -953,8 +974,21 @@ function renderPipeline(){
     html+='</div>';
   });
   html+='</div>';
-  document.getElementById('lista-cli').innerHTML=html;
+  document.getElementById('lista-cli').innerHTML=nav+html;
 }
+
+let pipelineDiaAtual=0;
+function irParaDia(idx){
+  pipelineDiaAtual=idx;
+  const board=document.getElementById('pipeline-board');
+  const cols=document.querySelectorAll('.pipeline-col');
+  if(board&&cols[idx]) board.scrollTo({left:cols[idx].offsetLeft-14,behavior:'smooth'});
+  document.querySelectorAll('.pipeline-tab').forEach(t=>t.classList.remove('active'));
+  const tab=document.getElementById('ptab-'+idx);
+  if(tab)tab.classList.add('active');
+}
+function pipelinePrev(){irParaDia(Math.max(0,pipelineDiaAtual-1));}
+function pipelineNext(){irParaDia(Math.min(6,pipelineDiaAtual+1));}
 
 function renderCli(){
   if(filtro==='Pipeline'){ renderPipeline(); return; }
@@ -1007,6 +1041,7 @@ function renderCli(){
             <div class="cc-name" onclick="abrirHistorico(${c.linha})" style="cursor:pointer;text-decoration:underline dotted;">${c.nome}</div>
             <div class="cc-meta">${c.telefone?`<span>📞 ${c.telefone}</span>`:''}${wppBtn}</div>
             <span class="cc-badge" style="background:${bb};color:${bc};border:1px solid ${bc}33;">${bl}</span>
+            ${pendenciaBadge(c.nome)}
             ${c.status==='Ativo'?`<div style="font-size:11px;color:var(--t3);margin-top:3px;">Vence ${D(toS(venc))}${c.prazo&&c.prazo!==7?' · <span style="color:var(--gold2)">'+(c.prazo===15?'Quinzenal':'Mensal')+'</span>':''}</div>`:''}
           </div>
         </div>
@@ -1030,6 +1065,9 @@ function renderCli(){
       </div>
     </div>`;
   });
+  if(filtro==='DDD'&&filtroDDD&&filtroDDDStatus==='todos'){
+    html+=buildExtraCardsDDD(filtroDDD);
+  }
   document.getElementById('lista-cli').innerHTML=html;
 }
 
@@ -1830,6 +1868,58 @@ async function abrirHistorico(linha){
       </div>`;
     }).join('');
   }catch(e){document.getElementById('historico-lista').innerHTML='<div class="empty"><div class="empty-text">Erro ao carregar histórico</div></div>';}
+}
+
+function normTxt(s){return String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');}
+
+function pendenciaDoNome(nome){
+  const n=normTxt(nome);
+  return (pendencias||[]).find(p=>normTxt(p.nome)===n)||null;
+}
+
+function pendenciaBadge(nome){
+  const p=pendenciaDoNome(nome);
+  if(!p)return'';
+  return `<div style="font-size:11px;color:var(--gold2);margin-top:4px;">⏳ Pendência em aberto: <strong>${R(p.saldo)}</strong></div>`;
+}
+
+function cardPrejuizoExtra(p){
+  return `<div class="cc">
+    <div class="cc-accent" style="background:var(--red);border-radius:14px 0 0 14px;"></div>
+    <div class="cc-body">
+      <div class="cc-name" style="font-size:15px;font-weight:600;">${p.nome}</div>
+      <div class="cc-meta">${p.telefone?`<span>📞 ${p.telefone}</span>`:''}</div>
+      <span class="cc-badge" style="background:var(--rdim);color:var(--red);border:1px solid #e74c3c33;">💸 Está em Prejuízos · ${p.diasAtr}d atraso</span>
+      <div style="margin-top:8px;"><button class="btn-sm" style="background:var(--card);color:var(--t2);border:1px solid var(--border);" onclick="showS('prejuizos',document.querySelectorAll('.nav-btn')[4])">Ver na aba Prejuízos</button></div>
+    </div>
+  </div>`;
+}
+
+function cardNegociacaoExtra(n){
+  const rest=n.parcelas-n.parcelasPagas;
+  return `<div class="cc">
+    <div class="cc-accent" style="background:var(--purple);border-radius:14px 0 0 14px;"></div>
+    <div class="cc-body">
+      <div class="cc-name" style="font-size:15px;font-weight:600;">${n.nome}</div>
+      <div class="cc-meta">${n.telefone?`<span>📞 ${n.telefone}</span>`:''}</div>
+      <span class="cc-badge" style="background:var(--pdim);color:var(--purple);border:1px solid #9b59b633;">🤝 Está em Negociação · ${rest} parcela(s) restante(s)</span>
+      <div style="margin-top:8px;"><button class="btn-sm" style="background:var(--card);color:var(--t2);border:1px solid var(--border);" onclick="showS('negociacoes',document.querySelectorAll('.nav-btn')[3])">Ver na aba Negociações</button></div>
+    </div>
+  </div>`;
+}
+
+function buildExtraCardsTexto(q){
+  let html='';
+  (prejuizos||[]).filter(p=>!p.dataRecuperacao&&normTxt(p.nome).includes(q)).forEach(p=>{html+=cardPrejuizoExtra(p);});
+  (negociacoes||[]).filter(n=>normTxt(n.nome).includes(q)).forEach(n=>{html+=cardNegociacaoExtra(n);});
+  return html;
+}
+
+function buildExtraCardsDDD(ddd){
+  let html='';
+  (prejuizos||[]).filter(p=>!p.dataRecuperacao&&String(p.telefone||'').replace(/\D/g,'').substring(0,2)===ddd).forEach(p=>{html+=cardPrejuizoExtra(p);});
+  (negociacoes||[]).filter(n=>String(n.telefone||'').replace(/\D/g,'').substring(0,2)===ddd).forEach(n=>{html+=cardNegociacaoExtra(n);});
+  return html;
 }
 
 function abrirWpp(tel,tel2,nome,tel3,tel4){
