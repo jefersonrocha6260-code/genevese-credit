@@ -1969,7 +1969,7 @@ async function responderPergunta(pergunta){
 
   // 2. Perguntas agregadas usando o último dashboard carregado
   const d=ultimoDashboard||{};
-  if(q.includes('atrasad'))return `🚨 Você tem <strong>${d.emAtraso||0}</strong> cliente(s) em atraso.`;
+  if(q.includes('atras'))return `🚨 Você tem <strong>${d.emAtraso||0}</strong> cliente(s) em atraso.`;
   if(q.includes('vence hoje')||q.includes('vencem hoje'))return `⚠️ <strong>${d.venceHoje||0}</strong> cliente(s) vencem hoje.`;
   if(q.includes('quantos clientes')||q.includes('quantos ativos'))return `💼 Você tem <strong>${d.ativos||0}</strong> cliente(s) ativo(s).`;
   if(q.includes('na rua')||q.includes('total emprestado'))return `💰 Você tem <strong>${R(d.totalNaRua||0)}</strong> na rua (emprestado a clientes ativos).`;
@@ -1978,6 +1978,30 @@ async function responderPergunta(pergunta){
   if(q.includes('negocia'))return `🤝 Você tem <strong>${(negociacoes||[]).length}</strong> negociação(ões) ativa(s).`;
   if(q.includes('pendenc'))return `⏳ Você tem <strong>${R(d.totalPendencias||0)}</strong> em pendências abertas.`;
   if(q.includes('custo'))return `💳 Seus custos deste mês somam <strong>${R(d.totalCustosMes||0)}</strong>.`;
+  if(q.includes('emprest')&&q.includes('semana')){
+    const hj0=new Date();hj0.setHours(0,0,0,0);
+    const diaSemana=hj0.getDay();
+    const diff=(diaSemana===0?-6:1-diaSemana);
+    const seg=new Date(hj0);seg.setDate(hj0.getDate()+diff);
+    const dom=new Date(seg);dom.setDate(seg.getDate()+6);dom.setHours(23,59,59,999);
+    let total=0,qtd=0;
+    (clientes||[]).forEach(c=>{
+      if(!c.dataEmprestimo)return;
+      const dt=new Date(c.dataEmprestimo+'T12:00:00');
+      if(dt>=seg&&dt<=dom){total+=Number(c.valor)||0;qtd++;}
+    });
+    return `💰 Você emprestou <strong>${R(total)}</strong> essa semana, em <strong>${qtd}</strong> empréstimo(s) (segunda a domingo).`;
+  }
+  if(q.includes('emprest')&&(q.includes('mes')||q.includes('mês'))){
+    const hj0=new Date();
+    let total=0,qtd=0;
+    (clientes||[]).forEach(c=>{
+      if(!c.dataEmprestimo)return;
+      const dt=new Date(c.dataEmprestimo+'T12:00:00');
+      if(dt.getMonth()===hj0.getMonth()&&dt.getFullYear()===hj0.getFullYear()){total+=Number(c.valor)||0;qtd++;}
+    });
+    return `💰 Você emprestou <strong>${R(total)}</strong> este mês, em <strong>${qtd}</strong> empréstimo(s).`;
+  }
   if(q.includes('semana'))return `📅 Projeção de renovações para esta semana: <strong>${R(d.projecaoSemana||0)}</strong>.`;
   if((q.includes('mes')||q.includes('mês'))&&q.includes('renov'))return `📆 Projeção de renovações para este mês: <strong>${R(d.projecaoMes||0)}</strong>.`;
   if(q.includes('quitad'))return `✅ Abra a aba Clientes e toque no chip "Quitados" para ver a lista completa.`;
