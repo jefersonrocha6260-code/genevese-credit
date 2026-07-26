@@ -1914,10 +1914,19 @@ async function enviarPergunta(){
 async function responderPergunta(pergunta){
   const q=normTxt(pergunta);
   const qDigits=pergunta.replace(/\D/g,'');
+  const stopWords=new Set(['dados','cliente','clientes','historico','histórico','numero','número','telefone','quero','saber','sobre','qual','quais','entrega','entregue','esta','está','ele','ela','desse','deste','onde','como','que','uma','dos','das','com','tem','vou','fazer','pra','para','hoje','essa','esse','aqui']);
+  const termos=q.split(/[^a-z0-9]+/).filter(w=>w.length>=3&&!stopWords.has(w));
 
   // 1. Tentar achar cliente por nome/telefone (ativo ou quitado)
-  let achou=(clientes||[]).find(c=>c.nome&&normTxt(c.nome)&&q.includes(normTxt(c.nome)));
-  let origem=achou?'cliente':null;
+  let achou=null,origem=null;
+  if(termos.length){
+    const candidatos=(clientes||[]).filter(c=>c.nome&&termos.some(t=>normTxt(c.nome).includes(t)));
+    if(candidatos.length===1){achou=candidatos[0];origem='cliente';}
+    else if(candidatos.length>1){
+      const lista=candidatos.slice(0,8).map(c=>`• ${c.nome} — 📞 ${c.telefone||'-'}`).join('<br>');
+      return `Encontrei mais de um cliente. Qual deles?<br>${lista}`;
+    }
+  }
   if(!achou&&qDigits.length>=8){
     achou=(clientes||[]).find(c=>{
       const tels=[c.telefone,c.telefone2,c.telefone3,c.telefone4].map(t=>String(t||'').replace(/\D/g,''));
@@ -1925,16 +1934,16 @@ async function responderPergunta(pergunta){
     });
     if(achou)origem='cliente';
   }
-  if(!achou){
-    const pj=(prejuizos||[]).find(p=>p.nome&&q.includes(normTxt(p.nome)));
+  if(!achou&&termos.length){
+    const pj=(prejuizos||[]).find(p=>p.nome&&termos.some(t=>normTxt(p.nome).includes(t)));
     if(pj){achou=pj;origem='prejuizo';}
   }
-  if(!achou){
-    const ng=(negociacoes||[]).find(n=>n.nome&&q.includes(normTxt(n.nome)));
+  if(!achou&&termos.length){
+    const ng=(negociacoes||[]).find(n=>n.nome&&termos.some(t=>normTxt(n.nome).includes(t)));
     if(ng){achou=ng;origem='negociacao';}
   }
-  if(!achou){
-    const pd=(pendencias||[]).find(p=>p.nome&&q.includes(normTxt(p.nome)));
+  if(!achou&&termos.length){
+    const pd=(pendencias||[]).find(p=>p.nome&&termos.some(t=>normTxt(p.nome).includes(t)));
     if(pd){achou=pd;origem='pendencia';}
   }
 
@@ -2094,7 +2103,6 @@ async function responderPergunta(pergunta){
   }
   if(q.includes('atras'))return `🚨 Você tem <strong>${d.emAtraso||0}</strong> cliente(s) em atraso.`;
   if(q.includes('vence hoje')||q.includes('vencem hoje'))return `⚠️ <strong>${d.venceHoje||0}</strong> cliente(s) vencem hoje.`;
-  if(q.includes('quantos clientes')||q.includes('quantos ativos'))return `💼 Você tem <strong>${d.ativos||0}</strong> cliente(s) ativo(s).`;
   if(q.includes('na rua')||q.includes('total emprestado'))return `💰 Você tem <strong>${R(d.totalNaRua||0)}</strong> na rua (emprestado a clientes ativos).`;
   if(q.includes('caixa'))return `📈 Seu Caixa Real está em <strong>${R(d.caixaMes||0)}</strong>.`;
   if(q.includes('prejuizo')||q.includes('prejuízo'))return `💸 Você tem <strong>${R(d.totalPrejuizo||0)}</strong> em prejuízos ainda não recuperados.`;
@@ -2135,6 +2143,7 @@ async function responderPergunta(pergunta){
   if((q.includes('mes')||q.includes('mês'))&&q.includes('renov'))return `📆 Projeção de renovações para este mês: <strong>${R(d.projecaoMes||0)}</strong>.`;
   if(q.includes('quitad'))return `✅ Abra a aba Clientes e toque no chip "Quitados" para ver a lista completa.`;
 
+  if(q.includes('quantos clientes')||q.includes('quantos ativos'))return `💼 Você tem <strong>${d.ativos||0}</strong> cliente(s) ativo(s).`;
   return 'Não encontrei nada sobre isso 🤔 Tente perguntar pelo nome de um cliente, ou sobre atrasados, vencimentos, caixa, prejuízos, negociações, pendências ou custos.';
 }
 
