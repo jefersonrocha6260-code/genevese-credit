@@ -64,6 +64,24 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 .stat-label{font-size:10px;font-weight:600;color:var(--t3);letter-spacing:1px;text-transform:uppercase;}
 .stat-wide{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:16px 18px;margin-bottom:10px;display:flex;align-items:center;gap:14px;cursor:pointer;position:relative;overflow:hidden;}
 .stat-wide::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);}
+@keyframes chatGlow{0%,100%{box-shadow:0 0 20px #c9a84c14;}50%{box-shadow:0 0 36px #c9a84c26;}}
+.chat-card{background:linear-gradient(135deg,#0d1420,#141e2e 60%,#0d1626);border:1px solid var(--gdim);border-radius:22px;padding:18px;margin-bottom:16px;position:relative;overflow:hidden;animation:chatGlow 4s ease-in-out infinite;}
+.chat-card::before{content:'';position:absolute;top:-60%;left:-20%;width:160%;height:160%;background:radial-gradient(circle at 25% 15%,#c9a84c22,transparent 55%);pointer-events:none;}
+.chat-card::after{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);}
+.chat-card-header{display:flex;align-items:center;gap:12px;margin-bottom:14px;position:relative;z-index:1;}
+.chat-icon{font-size:22px;width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,#1a2a4a,#0d1420);border:1px solid var(--gold);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.chat-title{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;color:var(--gold2);}
+.chat-sub{font-size:11px;color:var(--t3);margin-top:2px;}
+.chat-resposta{position:relative;z-index:1;max-height:260px;overflow-y:auto;}
+.chat-resposta:not(:empty){margin-bottom:12px;}
+.chat-bubble{background:#ffffff08;border:1px solid var(--border);border-radius:14px;padding:12px 14px;margin-bottom:8px;font-size:13px;line-height:1.7;color:var(--text);animation:fadeIn .3s ease both;}
+.chat-bubble.user{background:var(--gdim);border-color:var(--gold);color:var(--gold2);font-weight:600;font-size:13px;}
+.chat-input-wrap{display:flex;gap:8px;position:relative;z-index:1;}
+.chat-input{flex:1;padding:13px 16px;background:#ffffff0a;border:1px solid var(--gdim);border-radius:14px;color:var(--text);font-size:14px;font-family:'Inter',sans-serif;outline:none;transition:border .2s,box-shadow .2s;}
+.chat-input:focus{border-color:var(--gold);box-shadow:0 0 0 3px #c9a84c22;}
+.chat-input::placeholder{color:var(--t3);}
+.chat-send{width:46px;height:46px;border-radius:14px;background:linear-gradient(135deg,#b8943e,#c9a84c);border:none;color:#0d1420;font-size:17px;cursor:pointer;flex-shrink:0;}
+.chat-send:active{transform:scale(.95);}
 .cc{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:8px;position:relative;overflow:hidden;animation:fadeIn .3s ease both;}
 .cc-accent{position:absolute;left:0;top:0;bottom:0;width:3px;}
 .cc-body{padding-left:10px;}
@@ -183,7 +201,6 @@ input[type=date]::-webkit-calendar-picker-indicator{filter:invert(.5);}
     <input id="login-senha" type="password" class="fi" placeholder="••••••••">
     <p id="login-err" class="l-err"></p>
     <button class="btn-gold" onclick="fazerLogin()">Acessar Sistema</button>
-    <p class="l-hint">Admin: 1234 · Cobrança: 5678</p>
   </div>
 </div>
 <div id="app" style="display:none;">
@@ -201,7 +218,23 @@ input[type=date]::-webkit-calendar-picker-indicator{filter:invert(.5);}
         </div>
       </div>
     </div>
-    <div class="page" id="dash-content" style="padding-top:20px;">
+    <div class="page" style="padding-top:20px;padding-bottom:0;">
+      <div class="chat-card">
+        <div class="chat-card-header">
+          <span class="chat-icon">✨</span>
+          <div>
+            <div class="chat-title">Assistente Genevese</div>
+            <div class="chat-sub">Pergunte sobre um cliente ou seus números</div>
+          </div>
+        </div>
+        <div id="chat-resposta" class="chat-resposta"></div>
+        <div class="chat-input-wrap">
+          <input id="chat-input" class="chat-input" placeholder="O que você quer saber hoje?" onkeydown="if(event.key==='Enter')enviarPergunta()">
+          <button class="chat-send" onclick="enviarPergunta()">➤</button>
+        </div>
+      </div>
+    </div>
+    <div class="page" id="dash-content" style="padding-top:0;">
       <div style="text-align:center;padding:40px;color:var(--t3);"><div style="width:24px;height:24px;border:2px solid var(--border);border-top:2px solid var(--gold);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 12px;"></div>Carregando...</div>
     </div>
   </div>
@@ -595,6 +628,7 @@ let cliDel=null,cliPrej=null,cliNegoc=null,modoEdit=false,catCusto='Anúncios';
 let pendAtual=null,movDesfazer=null,tipoDesfazer=null,filtroData=null,filtroDDD=null,filtroDDDStatus='todos';
 let bloqueioReload=false,processando=false,delOpcao='total';
 let movCacheArr=[];
+let ultimoDashboard=null;
 
 const R=v=>Number(v).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
 const D=s=>{if(!s)return'';const d=new Date(s+'T12:00:00');return d.toLocaleDateString('pt-BR');};
@@ -709,6 +743,7 @@ async function reload(){
     const d=await jsonp({action:'getDashboard'});
     clientes=d.clientes||[];pendencias=d.pendencias||[];
     negociacoes=d.negociacoes||[];prejuizos=d.prejuizos||[];
+    ultimoDashboard=d;
     renderDash(d);renderCli();renderPend();renderNegoc();renderPrej();
   }catch(e){
     toast('❌ '+e.message);
@@ -738,17 +773,6 @@ function showS(id,btn){
 // ─── DASHBOARD ── MODIFICADO ────────────────────────────────────────────────
 function renderDash(d){
   const{totalNaRua=0,ativos=0,emAtraso=0,venceHoje=0,caixaMes=0,totalPrejuizo=0,totalPendencias=0,totalCustosMes=0,projecaoSemana=0,projecaoMes=0}=d;
-  // Calcular totais de renovação e emprestado para Vence Hoje e Em Atraso
-  const hj=new Date();hj.setHours(0,0,0,0);
-  let totalRenovHoje=0,totalEmpHoje=0,totalRenovAtraso=0,totalEmpAtraso=0;
-  (clientes||[]).forEach(c=>{
-    if(c.status!=='Ativo')return;
-    const j=getJ(c.valor);if(!j)return;
-    const venc=addD(c.dataEmprestimo,c.prazo||7);venc.setHours(0,0,0,0);
-    const dias=diasA(c.dataEmprestimo,c.prazo);
-    if(venc.getTime()===hj.getTime()&&dias===0){totalRenovHoje+=j.renov;totalEmpHoje+=Number(c.valor);}
-    if(dias>0){totalRenovAtraso+=j.renov;totalEmpAtraso+=Number(c.valor);}
-  });
   let html=`
     <div class="stat-grid">
       <div class="stat-card" style="border-color:#c9a84c33;"><span class="stat-icon">💰</span><div class="stat-value" style="color:var(--gold2);font-size:18px;">${R(totalNaRua)}</div><div class="stat-label">Na Rua</div></div>
@@ -758,38 +782,6 @@ function renderDash(d){
       <div style="font-size:28px;">📈</div>
       <div style="flex:1;"><div style="font-size:10px;font-weight:600;color:var(--t3);letter-spacing:1px;text-transform:uppercase;margin-bottom:3px;">Caixa Real</div><div style="font-family:'Playfair Display',serif;font-size:26px;font-weight:700;color:var(--gold2);">${R(caixaMes)}</div></div>
       <div style="font-size:11px;color:var(--t3);">📜 Ver</div>
-    </div>
-    <div class="stat-grid">
-      <div class="stat-card" onclick="navCli('Hoje')" style="cursor:pointer;">
-        <span class="stat-icon">⚠️</span>
-        <div class="stat-value" style="color:#f39c12;">${venceHoje}</div>
-        <div class="stat-label" style="margin-bottom:10px;">Vence Hoje ↗</div>
-        <div style="border-top:1px solid var(--border);padding-top:8px;display:flex;flex-direction:column;gap:5px;">
-          <div style="display:flex;justify-content:space-between;align-items:center;">
-            <span style="font-size:9px;font-weight:700;color:var(--t3);letter-spacing:.8px;text-transform:uppercase;">Renovação</span>
-            <span style="font-size:12px;font-weight:700;color:var(--orange);">${R(totalRenovHoje)}</span>
-          </div>
-          <div style="display:flex;justify-content:space-between;align-items:center;">
-            <span style="font-size:9px;font-weight:700;color:var(--t3);letter-spacing:.8px;text-transform:uppercase;">Emprestado</span>
-            <span style="font-size:12px;font-weight:700;color:var(--text);">${R(totalEmpHoje)}</span>
-          </div>
-        </div>
-      </div>
-      <div class="stat-card" onclick="navCli('Atraso')" style="cursor:pointer;">
-        <span class="stat-icon">🚨</span>
-        <div class="stat-value" style="color:var(--red);">${emAtraso}</div>
-        <div class="stat-label" style="margin-bottom:10px;">Em Atraso ↗</div>
-        <div style="border-top:1px solid var(--border);padding-top:8px;display:flex;flex-direction:column;gap:5px;">
-          <div style="display:flex;justify-content:space-between;align-items:center;">
-            <span style="font-size:9px;font-weight:700;color:var(--t3);letter-spacing:.8px;text-transform:uppercase;">Renovação</span>
-            <span style="font-size:12px;font-weight:700;color:var(--orange);">${R(totalRenovAtraso)}</span>
-          </div>
-          <div style="display:flex;justify-content:space-between;align-items:center;">
-            <span style="font-size:9px;font-weight:700;color:var(--t3);letter-spacing:.8px;text-transform:uppercase;">Emprestado</span>
-            <span style="font-size:12px;font-weight:700;color:var(--text);">${R(totalEmpAtraso)}</span>
-          </div>
-        </div>
-      </div>
     </div>
     <div class="stat-grid">
       <div class="stat-card" onclick="showS('pendencias',document.querySelectorAll('.nav-btn')[2])" style="cursor:pointer;"><span class="stat-icon">⏳</span><div class="stat-value" style="color:var(--orange);font-size:18px;">${R(totalPendencias)}</div><div class="stat-label">Pendências ↗</div></div>
@@ -1874,6 +1866,124 @@ async function abrirHistorico(linha){
 }
 
 function normTxt(s){return String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');}
+
+// ============================================================
+// ASSISTENTE — busca inteligente por palavras-chave (sem custo, sem IA externa)
+// ============================================================
+function pushChatBubble(texto,isUser){
+  const el=document.getElementById('chat-resposta');
+  const div=document.createElement('div');
+  div.className='chat-bubble'+(isUser?' user':'');
+  div.innerHTML=texto;
+  el.appendChild(div);
+  el.scrollTop=el.scrollHeight;
+}
+
+async function enviarPergunta(){
+  const inp=document.getElementById('chat-input');
+  const pergunta=(inp.value||'').trim();
+  if(!pergunta)return;
+  pushChatBubble(pergunta,true);
+  inp.value='';
+  pushChatBubble('⏳ Buscando...',false);
+  let resposta;
+  try{ resposta=await responderPergunta(pergunta); }
+  catch(e){ resposta='⚠️ Não consegui buscar isso agora.'; }
+  const el=document.getElementById('chat-resposta');
+  if(el.lastChild)el.removeChild(el.lastChild);
+  pushChatBubble(resposta,false);
+}
+
+async function responderPergunta(pergunta){
+  const q=normTxt(pergunta);
+  const qDigits=pergunta.replace(/\D/g,'');
+
+  // 1. Tentar achar cliente por nome/telefone (ativo ou quitado)
+  let achou=(clientes||[]).find(c=>c.nome&&normTxt(c.nome)&&q.includes(normTxt(c.nome)));
+  let origem=achou?'cliente':null;
+  if(!achou&&qDigits.length>=8){
+    achou=(clientes||[]).find(c=>{
+      const tels=[c.telefone,c.telefone2,c.telefone3,c.telefone4].map(t=>String(t||'').replace(/\D/g,''));
+      return tels.some(t=>t&&(qDigits.includes(t)||t.includes(qDigits)));
+    });
+    if(achou)origem='cliente';
+  }
+  if(!achou){
+    const pj=(prejuizos||[]).find(p=>p.nome&&q.includes(normTxt(p.nome)));
+    if(pj){achou=pj;origem='prejuizo';}
+  }
+  if(!achou){
+    const ng=(negociacoes||[]).find(n=>n.nome&&q.includes(normTxt(n.nome)));
+    if(ng){achou=ng;origem='negociacao';}
+  }
+  if(!achou){
+    const pd=(pendencias||[]).find(p=>p.nome&&q.includes(normTxt(p.nome)));
+    if(pd){achou=pd;origem='pendencia';}
+  }
+
+  if(achou&&origem==='cliente'){
+    const dias=achou.status==='Ativo'?diasA(achou.dataEmprestimo,achou.prazo):0;
+    const venc=addD(achou.dataEmprestimo,achou.prazo||7);
+    let statusTxt;
+    if(achou.status==='Quitado')statusTxt='✅ Quitado'+(achou.statusQuit?' — '+achou.statusQuit:'');
+    else if(dias>0)statusTxt=`🚨 Em atraso há ${dias} dia(s)`;
+    else{
+      const hj=new Date();hj.setHours(0,0,0,0);const vH=new Date(venc);vH.setHours(0,0,0,0);
+      statusTxt=vH.getTime()===hj.getTime()?'⚠️ Vence hoje':'⏳ Em dia';
+    }
+    let txt=`<strong>${achou.nome}</strong><br>`;
+    txt+=`📞 ${achou.telefone||'-'}<br>`;
+    if(achou.telefone2)txt+=`👤 Parente 1: ${achou.telefone2}<br>`;
+    if(achou.telefone3)txt+=`👤 Parente 2: ${achou.telefone3}<br>`;
+    if(achou.telefone4)txt+=`👤 Parente 3: ${achou.telefone4}<br>`;
+    if(achou.endereco)txt+=`📍 ${achou.endereco}<br>`;
+    txt+=`💰 Emprestado: ${R(achou.valor)}<br>`;
+    if(achou.status==='Ativo'){
+      const j=getJ(achou.valor);
+      txt+=`🔄 Renovar: ${R(j?j.renov:0)} · ✅ Quitar: ${R(j?j.quit:0)}<br>`;
+      txt+=`📅 Vencimento: ${D(toS(venc))}<br>`;
+    }
+    txt+=`Status: ${statusTxt}`;
+    const pend=pendenciaDoNome(achou.nome);
+    if(pend)txt+=`<br>⏳ Pendência em aberto: ${R(pend.saldo)}`;
+    try{
+      const rh=await jsonp({action:'getHistoricoCliente',telefone:achou.telefone||''});
+      const hist=(rh.historico||[]).slice(0,3);
+      if(hist.length){
+        txt+='<br><br><strong>Últimos pagamentos:</strong><br>';
+        hist.forEach(h=>{txt+=`• ${h.dataHora} — ${h.tipo} — ${R(h.valorPago)}<br>`;});
+      }
+    }catch(e){}
+    return txt;
+  }
+  if(achou&&origem==='prejuizo'){
+    return `<strong>${achou.nome}</strong><br>📞 ${achou.telefone||'-'}<br>💸 Está em <strong>Prejuízos</strong><br>Valor a quitar: ${R(achou.quitar)}<br>Dias em atraso: ${achou.diasAtr}${achou.dataRecuperacao?'<br>✅ Recuperado em '+achou.dataRecuperacao:''}`;
+  }
+  if(achou&&origem==='negociacao'){
+    const rest=achou.parcelas-achou.parcelasPagas;
+    return `<strong>${achou.nome}</strong><br>📞 ${achou.telefone||'-'}<br>🤝 Está em <strong>Negociação</strong><br>${achou.parcelasPagas}/${achou.parcelas} parcelas pagas (${rest} restante(s))<br>Valor da parcela: ${R(achou.valorParcela)}`;
+  }
+  if(achou&&origem==='pendencia'){
+    return `<strong>${achou.nome}</strong><br>⏳ Possui <strong>pendência em aberto</strong><br>Devido: ${R(achou.valorDevido)} · Pago: ${R(achou.valorPago)}<br>Saldo: ${R(achou.saldo)}`;
+  }
+
+  // 2. Perguntas agregadas usando o último dashboard carregado
+  const d=ultimoDashboard||{};
+  if(q.includes('atrasad'))return `🚨 Você tem <strong>${d.emAtraso||0}</strong> cliente(s) em atraso.`;
+  if(q.includes('vence hoje')||q.includes('vencem hoje'))return `⚠️ <strong>${d.venceHoje||0}</strong> cliente(s) vencem hoje.`;
+  if(q.includes('quantos clientes')||q.includes('quantos ativos'))return `💼 Você tem <strong>${d.ativos||0}</strong> cliente(s) ativo(s).`;
+  if(q.includes('na rua')||q.includes('total emprestado'))return `💰 Você tem <strong>${R(d.totalNaRua||0)}</strong> na rua (emprestado a clientes ativos).`;
+  if(q.includes('caixa'))return `📈 Seu Caixa Real está em <strong>${R(d.caixaMes||0)}</strong>.`;
+  if(q.includes('prejuizo')||q.includes('prejuízo'))return `💸 Você tem <strong>${R(d.totalPrejuizo||0)}</strong> em prejuízos ainda não recuperados.`;
+  if(q.includes('negocia'))return `🤝 Você tem <strong>${(negociacoes||[]).length}</strong> negociação(ões) ativa(s).`;
+  if(q.includes('pendenc'))return `⏳ Você tem <strong>${R(d.totalPendencias||0)}</strong> em pendências abertas.`;
+  if(q.includes('custo'))return `💳 Seus custos deste mês somam <strong>${R(d.totalCustosMes||0)}</strong>.`;
+  if(q.includes('semana'))return `📅 Projeção de renovações para esta semana: <strong>${R(d.projecaoSemana||0)}</strong>.`;
+  if((q.includes('mes')||q.includes('mês'))&&q.includes('renov'))return `📆 Projeção de renovações para este mês: <strong>${R(d.projecaoMes||0)}</strong>.`;
+  if(q.includes('quitad'))return `✅ Abra a aba Clientes e toque no chip "Quitados" para ver a lista completa.`;
+
+  return 'Não encontrei nada sobre isso 🤔 Tente perguntar pelo nome de um cliente, ou sobre atrasados, vencimentos, caixa, prejuízos, negociações, pendências ou custos.';
+}
 
 function pendenciaDoNome(nome){
   const n=normTxt(nome);
