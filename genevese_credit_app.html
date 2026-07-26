@@ -1986,6 +1986,44 @@ async function responderPergunta(pergunta){
 
   // 2. Perguntas agregadas usando o último dashboard carregado
   const d=ultimoDashboard||{};
+  if(q.includes('ddd')&&q.includes('atras')){
+    const grupos={};
+    (clientes||[]).forEach(c=>{
+      if(c.status!=='Ativo')return;
+      const dias=diasA(c.dataEmprestimo,c.prazo);
+      if(dias<=0)return;
+      const ddd=String(c.telefone||'').replace(/\D/g,'').substring(0,2);
+      if(!ddd)return;
+      if(!grupos[ddd])grupos[ddd]={qtd:0,valor:0};
+      grupos[ddd].qtd++;
+      grupos[ddd].valor+=Number(c.valor)||0;
+    });
+    const lista=Object.entries(grupos).sort((a,b)=>b[1].qtd-a[1].qtd);
+    if(!lista.length)return '✅ Nenhum cliente em atraso no momento.';
+    let txt='<strong>📞 DDDs com mais atraso:</strong><br>';
+    lista.slice(0,10).forEach(([ddd,info])=>{
+      txt+=`• DDD ${ddd}: <strong>${info.qtd}</strong> cliente(s) — ${R(info.valor)}<br>`;
+    });
+    return txt;
+  }
+  if(q.includes('ddd')){
+    const grupos={};
+    (clientes||[]).forEach(c=>{
+      if(c.status!=='Ativo')return;
+      const ddd=String(c.telefone||'').replace(/\D/g,'').substring(0,2);
+      if(!ddd)return;
+      if(!grupos[ddd])grupos[ddd]={qtd:0,valor:0};
+      grupos[ddd].qtd++;
+      grupos[ddd].valor+=Number(c.valor)||0;
+    });
+    const lista=Object.entries(grupos).sort((a,b)=>b[1].qtd-a[1].qtd);
+    if(!lista.length)return 'Nenhum cliente ativo com telefone cadastrado.';
+    let txt='<strong>📞 Clientes ativos por DDD:</strong><br>';
+    lista.slice(0,10).forEach(([ddd,info])=>{
+      txt+=`• DDD ${ddd}: <strong>${info.qtd}</strong> cliente(s) — ${R(info.valor)}<br>`;
+    });
+    return txt;
+  }
   if(q.includes('atras'))return `🚨 Você tem <strong>${d.emAtraso||0}</strong> cliente(s) em atraso.`;
   if(q.includes('vence hoje')||q.includes('vencem hoje'))return `⚠️ <strong>${d.venceHoje||0}</strong> cliente(s) vencem hoje.`;
   if(q.includes('quantos clientes')||q.includes('quantos ativos'))return `💼 Você tem <strong>${d.ativos||0}</strong> cliente(s) ativo(s).`;
