@@ -1986,6 +1986,43 @@ async function responderPergunta(pergunta){
 
   // 2. Perguntas agregadas usando o último dashboard carregado
   const d=ultimoDashboard||{};
+
+  // 2a. Listar NÚMEROS de telefone de um DDD específico + categoria
+  const dddDigitsMatch=pergunta.match(/ddd[^\d]*(\d{2})/i)||q.match(/\b(\d{2})\b/);
+  const pedeNumeros=q.includes('numero')||q.includes('número')||q.includes(' nr ')||q.startsWith('nr ')||q.includes('lista')||q.includes('liste')||q.includes('telefone');
+  if(dddDigitsMatch&&q.includes('ddd')&&pedeNumeros){
+    const dddAlvo=dddDigitsMatch[1];
+    const wantPrejuizo=q.includes('prejuizo')||q.includes('prejuízo');
+    const wantNegociacao=q.includes('negocia');
+    const wantPendencia=q.includes('pendenc');
+    const wantAtraso=q.includes('atras');
+    if(wantPrejuizo){
+      const itens=(prejuizos||[]).filter(p=>!p.dataRecuperacao&&String(p.telefone||'').replace(/\D/g,'').substring(0,2)===dddAlvo)
+        .map(p=>`• ${p.nome} — 📞 ${p.telefone||'-'} — ${R(p.quitar)} (${p.diasAtr}d)`);
+      return itens.length?`<strong>💸 Prejuízos DDD ${dddAlvo}:</strong><br>`+itens.join('<br>'):`Nenhum cliente em Prejuízos com DDD ${dddAlvo}.`;
+    }
+    if(wantNegociacao){
+      const itens=(negociacoes||[]).filter(n=>String(n.telefone||'').replace(/\D/g,'').substring(0,2)===dddAlvo)
+        .map(n=>`• ${n.nome} — 📞 ${n.telefone||'-'} — ${n.parcelasPagas}/${n.parcelas} parcelas`);
+      return itens.length?`<strong>🤝 Negociações DDD ${dddAlvo}:</strong><br>`+itens.join('<br>'):`Nenhum cliente em Negociação com DDD ${dddAlvo}.`;
+    }
+    if(wantPendencia){
+      const itens=(pendencias||[]).map(p=>{
+        const cli=(clientes||[]).find(c=>normTxt(c.nome)===normTxt(p.nome));
+        return {p,tel:cli?cli.telefone:''};
+      }).filter(x=>String(x.tel||'').replace(/\D/g,'').substring(0,2)===dddAlvo)
+        .map(x=>`• ${x.p.nome} — 📞 ${x.tel||'-'} — Saldo: ${R(x.p.saldo)}`);
+      return itens.length?`<strong>⏳ Pendências DDD ${dddAlvo}:</strong><br>`+itens.join('<br>'):`Nenhum cliente em Pendência com DDD ${dddAlvo}.`;
+    }
+    // padrão (ou explicitamente atraso): lista atrasados
+    const itens=(clientes||[]).filter(c=>{
+      if(c.status!=='Ativo')return false;
+      if(diasA(c.dataEmprestimo,c.prazo)<=0)return false;
+      return String(c.telefone||'').replace(/\D/g,'').substring(0,2)===dddAlvo;
+    }).map(c=>`• ${c.nome} — 📞 ${c.telefone} — ${diasA(c.dataEmprestimo,c.prazo)}d atraso`);
+    return itens.length?`<strong>🚨 Atrasados DDD ${dddAlvo}:</strong><br>`+itens.join('<br>'):`Nenhum cliente em atraso com DDD ${dddAlvo}.`;
+  }
+
   if(q.includes('ddd')){
     const wantAtraso=q.includes('atras');
     const wantPrejuizo=q.includes('prejuizo')||q.includes('prejuízo');
