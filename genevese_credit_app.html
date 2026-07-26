@@ -1870,6 +1870,23 @@ function normTxt(s){return String(s||'').toLowerCase().normalize('NFD').replace(
 // ============================================================
 // ASSISTENTE — busca inteligente por palavras-chave (sem custo, sem IA externa)
 // ============================================================
+function parseCaixaData(dh){
+  try{
+    const s=String(dh||'');
+    if(s.includes(',')){
+      const [dataParte]=s.split(',');
+      const partes=dataParte.trim().split('/');
+      if(partes.length===3){
+        const [dd,mm,yyyy]=partes.map(Number);
+        return new Date(yyyy,mm-1,dd,12,0,0);
+      }
+    }
+    const d=new Date(s);
+    if(!isNaN(d.getTime()))return d;
+  }catch(e){}
+  return null;
+}
+
 function pushChatBubble(texto,isUser){
   const el=document.getElementById('chat-resposta');
   const div=document.createElement('div');
@@ -1984,23 +2001,29 @@ async function responderPergunta(pergunta){
     const diff=(diaSemana===0?-6:1-diaSemana);
     const seg=new Date(hj0);seg.setDate(hj0.getDate()+diff);
     const dom=new Date(seg);dom.setDate(seg.getDate()+6);dom.setHours(23,59,59,999);
-    let total=0,qtd=0;
-    (clientes||[]).forEach(c=>{
-      if(!c.dataEmprestimo)return;
-      const dt=new Date(c.dataEmprestimo+'T12:00:00');
-      if(dt>=seg&&dt<=dom){total+=Number(c.valor)||0;qtd++;}
-    });
-    return `💰 Você emprestou <strong>${R(total)}</strong> essa semana, em <strong>${qtd}</strong> empréstimo(s) (segunda a domingo).`;
+    try{
+      const cx=await jsonp({action:'getCaixaReal'});
+      let total=0,qtd=0;
+      (cx.movimentos||[]).forEach(m=>{
+        if(m.tipo!=='Saída'||!String(m.descricao||'').startsWith('Empréstimo:'))return;
+        const dt=parseCaixaData(m.dataHora);
+        if(dt&&dt>=seg&&dt<=dom){total+=m.valor;qtd++;}
+      });
+      return `💰 Você emprestou <strong>${R(total)}</strong> essa semana, em <strong>${qtd}</strong> empréstimo(s) novo(s) (segunda a domingo). Renovações não contam aqui.`;
+    }catch(e){return '⚠️ Não consegui calcular isso agora.';}
   }
   if(q.includes('emprest')&&(q.includes('mes')||q.includes('mês'))){
     const hj0=new Date();
-    let total=0,qtd=0;
-    (clientes||[]).forEach(c=>{
-      if(!c.dataEmprestimo)return;
-      const dt=new Date(c.dataEmprestimo+'T12:00:00');
-      if(dt.getMonth()===hj0.getMonth()&&dt.getFullYear()===hj0.getFullYear()){total+=Number(c.valor)||0;qtd++;}
-    });
-    return `💰 Você emprestou <strong>${R(total)}</strong> este mês, em <strong>${qtd}</strong> empréstimo(s).`;
+    try{
+      const cx=await jsonp({action:'getCaixaReal'});
+      let total=0,qtd=0;
+      (cx.movimentos||[]).forEach(m=>{
+        if(m.tipo!=='Saída'||!String(m.descricao||'').startsWith('Empréstimo:'))return;
+        const dt=parseCaixaData(m.dataHora);
+        if(dt&&dt.getMonth()===hj0.getMonth()&&dt.getFullYear()===hj0.getFullYear()){total+=m.valor;qtd++;}
+      });
+      return `💰 Você emprestou <strong>${R(total)}</strong> este mês, em <strong>${qtd}</strong> empréstimo(s) novo(s). Renovações não contam aqui.`;
+    }catch(e){return '⚠️ Não consegui calcular isso agora.';}
   }
   if(q.includes('semana'))return `📅 Projeção de renovações para esta semana: <strong>${R(d.projecaoSemana||0)}</strong>.`;
   if((q.includes('mes')||q.includes('mês'))&&q.includes('renov'))return `📆 Projeção de renovações para este mês: <strong>${R(d.projecaoMes||0)}</strong>.`;
