@@ -1986,42 +1986,73 @@ async function responderPergunta(pergunta){
 
   // 2. Perguntas agregadas usando o último dashboard carregado
   const d=ultimoDashboard||{};
-  if(q.includes('ddd')&&q.includes('atras')){
-    const grupos={};
-    (clientes||[]).forEach(c=>{
-      if(c.status!=='Ativo')return;
-      const dias=diasA(c.dataEmprestimo,c.prazo);
-      if(dias<=0)return;
-      const ddd=String(c.telefone||'').replace(/\D/g,'').substring(0,2);
-      if(!ddd)return;
-      if(!grupos[ddd])grupos[ddd]={qtd:0,valor:0};
-      grupos[ddd].qtd++;
-      grupos[ddd].valor+=Number(c.valor)||0;
-    });
-    const lista=Object.entries(grupos).sort((a,b)=>b[1].qtd-a[1].qtd);
-    if(!lista.length)return '✅ Nenhum cliente em atraso no momento.';
-    let txt='<strong>📞 DDDs com mais atraso:</strong><br>';
-    lista.slice(0,10).forEach(([ddd,info])=>{
-      txt+=`• DDD ${ddd}: <strong>${info.qtd}</strong> cliente(s) — ${R(info.valor)}<br>`;
-    });
-    return txt;
-  }
   if(q.includes('ddd')){
-    const grupos={};
-    (clientes||[]).forEach(c=>{
-      if(c.status!=='Ativo')return;
-      const ddd=String(c.telefone||'').replace(/\D/g,'').substring(0,2);
+    const wantAtraso=q.includes('atras');
+    const wantPrejuizo=q.includes('prejuizo')||q.includes('prejuízo');
+    const wantNegociacao=q.includes('negocia');
+    const wantPendencia=q.includes('pendenc');
+    const algumaCategoria=wantAtraso||wantPrejuizo||wantNegociacao||wantPendencia;
+    const mostrar={
+      atraso: algumaCategoria?wantAtraso:true,
+      prejuizo: algumaCategoria?wantPrejuizo:true,
+      negociacao: algumaCategoria?wantNegociacao:true,
+      pendencia: algumaCategoria?wantPendencia:true,
+    };
+    const dddMap={};
+    const add=(ddd,cat,valor)=>{
       if(!ddd)return;
-      if(!grupos[ddd])grupos[ddd]={qtd:0,valor:0};
-      grupos[ddd].qtd++;
-      grupos[ddd].valor+=Number(c.valor)||0;
+      if(!dddMap[ddd])dddMap[ddd]={atraso:{qtd:0,valor:0},prejuizo:{qtd:0,valor:0},negociacao:{qtd:0,valor:0},pendencia:{qtd:0,valor:0}};
+      dddMap[ddd][cat].qtd++;
+      dddMap[ddd][cat].valor+=Number(valor)||0;
+    };
+    if(mostrar.atraso){
+      (clientes||[]).forEach(c=>{
+        if(c.status!=='Ativo')return;
+        const dias=diasA(c.dataEmprestimo,c.prazo);
+        if(dias<=0)return;
+        add(String(c.telefone||'').replace(/\D/g,'').substring(0,2),'atraso',c.valor);
+      });
+    }
+    if(mostrar.prejuizo){
+      (prejuizos||[]).filter(p=>!p.dataRecuperacao).forEach(p=>{
+        add(String(p.telefone||'').replace(/\D/g,'').substring(0,2),'prejuizo',p.quitar);
+      });
+    }
+    if(mostrar.negociacao){
+      (negociacoes||[]).forEach(n=>{
+        add(String(n.telefone||'').replace(/\D/g,'').substring(0,2),'negociacao',n.totalNegociado);
+      });
+    }
+    if(mostrar.pendencia){
+      (pendencias||[]).forEach(p=>{
+        const cli=(clientes||[]).find(c=>normTxt(c.nome)===normTxt(p.nome));
+        const ddd=cli?String(cli.telefone||'').replace(/\D/g,'').substring(0,2):'';
+        add(ddd,'pendencia',p.saldo);
+      });
+    }
+    const dddsOrdenados=Object.keys(dddMap).sort((a,b)=>{
+      const totalA=(mostrar.atraso?dddMap[a].atraso.qtd:0)+(mostrar.prejuizo?dddMap[a].prejuizo.qtd:0)+(mostrar.negociacao?dddMap[a].negociacao.qtd:0)+(mostrar.pendencia?dddMap[a].pendencia.qtd:0);
+      const totalB=(mostrar.atraso?dddMap[b].atraso.qtd:0)+(mostrar.prejuizo?dddMap[b].prejuizo.qtd:0)+(mostrar.negociacao?dddMap[b].negociacao.qtd:0)+(mostrar.pendencia?dddMap[b].pendencia.qtd:0);
+      return totalB-totalA;
     });
-    const lista=Object.entries(grupos).sort((a,b)=>b[1].qtd-a[1].qtd);
-    if(!lista.length)return 'Nenhum cliente ativo com telefone cadastrado.';
-    let txt='<strong>📞 Clientes ativos por DDD:</strong><br>';
-    lista.slice(0,10).forEach(([ddd,info])=>{
-      txt+=`• DDD ${ddd}: <strong>${info.qtd}</strong> cliente(s) — ${R(info.valor)}<br>`;
+    const labelMap={atraso:'Atraso',prejuizo:'Prejuízo',negociacao:'Negociação',pendencia:'Pendência'};
+    const categoriasAtivas=Object.keys(mostrar).filter(k=>mostrar[k]);
+    const tituloCategorias=categoriasAtivas.map(k=>labelMap[k]).join(', ');
+    if(!dddsOrdenados.length)return `✅ Nada encontrado em ${tituloCategorias} por DDD no momento.`;
+    let txt=`<strong>📞 ${tituloCategorias} por DDD:</strong><br><br>`;
+    let temConteudo=false;
+    dddsOrdenados.slice(0,10).forEach(ddd=>{
+      const g=dddMap[ddd];
+      const linhas=[];
+      if(mostrar.atraso&&g.atraso.qtd)linhas.push(`🚨 Atraso: ${g.atraso.qtd} (${R(g.atraso.valor)})`);
+      if(mostrar.prejuizo&&g.prejuizo.qtd)linhas.push(`💸 Prejuízo: ${g.prejuizo.qtd} (${R(g.prejuizo.valor)})`);
+      if(mostrar.negociacao&&g.negociacao.qtd)linhas.push(`🤝 Negociação: ${g.negociacao.qtd} (${R(g.negociacao.valor)})`);
+      if(mostrar.pendencia&&g.pendencia.qtd)linhas.push(`⏳ Pendência: ${g.pendencia.qtd} (${R(g.pendencia.valor)})`);
+      if(!linhas.length)return;
+      temConteudo=true;
+      txt+=`<strong>DDD ${ddd}</strong><br>${linhas.join('<br>')}<br><br>`;
     });
+    if(!temConteudo)return `✅ Nada encontrado em ${tituloCategorias} por DDD no momento.`;
     return txt;
   }
   if(q.includes('atras'))return `🚨 Você tem <strong>${d.emAtraso||0}</strong> cliente(s) em atraso.`;
